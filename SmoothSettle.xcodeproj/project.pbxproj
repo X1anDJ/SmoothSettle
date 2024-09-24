@@ -8,20 +8,62 @@
 
 /* Begin PBXBuildFile section */
 		DC4C9EB12C9FFCCB00ADEA13 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4C9EB02C9FFCCB00ADEA13 /* AppDelegate.swift */; };
-		DC4C9EB52C9FFCCB00ADEA13 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4C9EB42C9FFCCB00ADEA13 /* ViewController.swift */; };
+		DC4C9EB52C9FFCCB00ADEA13 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4C9EB42C9FFCCB00ADEA13 /* MainViewController.swift */; };
 		DC4C9EBB2C9FFCCB00ADEA13 /* SmoothSettle.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DC4C9EB92C9FFCCB00ADEA13 /* SmoothSettle.xcdatamodeld */; };
 		DC4C9EBD2C9FFCCC00ADEA13 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DC4C9EBC2C9FFCCC00ADEA13 /* Assets.xcassets */; };
 		DC4C9EC02C9FFCCC00ADEA13 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DC4C9EBE2C9FFCCC00ADEA13 /* LaunchScreen.storyboard */; };
+		DC4C9ED72CA0DF7500ADEA13 /* SimplifyDebts.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4C9ED62CA0DF7500ADEA13 /* SimplifyDebts.swift */; };
+		DC4C9ED92CA0DF9A00ADEA13 /* Dinics.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4C9ED82CA0DF9A00ADEA13 /* Dinics.swift */; };
+		DC4C9EDB2CA0DFBF00ADEA13 /* NetworkFlowSolverBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4C9EDA2CA0DFBF00ADEA13 /* NetworkFlowSolverBase.swift */; };
+		DC4C9EDE2CA126D800ADEA13 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4C9EDD2CA126D800ADEA13 /* UIColor+Extension.swift */; };
+		DC4C9EE02CA1270500ADEA13 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4C9EDF2CA1270500ADEA13 /* Colors.swift */; };
+		DC4C9EE32CA1298100ADEA13 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4C9EE22CA1298100ADEA13 /* MainViewModel.swift */; };
+		DC4C9EE62CA12A7500ADEA13 /* AddTripViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4C9EE52CA12A7500ADEA13 /* AddTripViewController.swift */; };
+		DC531AF52CA1FA530053DC24 /* Person+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC531AEF2CA1FA530053DC24 /* Person+CoreDataClass.swift */; };
+		DC531AF62CA1FA530053DC24 /* Person+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC531AF02CA1FA530053DC24 /* Person+CoreDataProperties.swift */; };
+		DC531AF72CA1FA530053DC24 /* Trip+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC531AF12CA1FA530053DC24 /* Trip+CoreDataClass.swift */; };
+		DC531AF82CA1FA530053DC24 /* Trip+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC531AF22CA1FA530053DC24 /* Trip+CoreDataProperties.swift */; };
+		DC531AF92CA1FA530053DC24 /* Bill+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC531AF32CA1FA530053DC24 /* Bill+CoreDataClass.swift */; };
+		DC531AFA2CA1FA530053DC24 /* Bill+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC531AF42CA1FA530053DC24 /* Bill+CoreDataProperties.swift */; };
+		DC531AFD2CA201350053DC24 /* Trip+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC531AFC2CA201350053DC24 /* Trip+Convenience.swift */; };
+		DC531AFF2CA2014C0053DC24 /* Person+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC531AFE2CA2014C0053DC24 /* Person+Convenience.swift */; };
+		DC531B022CA201C00053DC24 /* TripRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC531B012CA201C00053DC24 /* TripRepository.swift */; };
+		DC531B042CA204AC0053DC24 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC531B032CA204AC0053DC24 /* CoreDataManager.swift */; };
+		DC531B072CA209920053DC24 /* PeopleSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC531B062CA209920053DC24 /* PeopleSliderView.swift */; };
+		DC531B0A2CA22AED0053DC24 /* BillTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC531B092CA22AED0053DC24 /* BillTableViewCell.swift */; };
+		DC531B112CA247400053DC24 /* AddBillViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC531B102CA247400053DC24 /* AddBillViewController.swift */; };
+		DC531B132CA24FF40053DC24 /* PeopleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC531B122CA24FF40053DC24 /* PeopleCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		DC4C9EAD2C9FFCCB00ADEA13 /* SmoothSettle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmoothSettle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC4C9EB02C9FFCCB00ADEA13 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		DC4C9EB42C9FFCCB00ADEA13 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		DC4C9EB42C9FFCCB00ADEA13 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		DC4C9EBA2C9FFCCB00ADEA13 /* SmoothSettle.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SmoothSettle.xcdatamodel; sourceTree = "<group>"; };
 		DC4C9EBC2C9FFCCC00ADEA13 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DC4C9EBF2C9FFCCC00ADEA13 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DC4C9EC12C9FFCCC00ADEA13 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DC4C9ED62CA0DF7500ADEA13 /* SimplifyDebts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplifyDebts.swift; sourceTree = "<group>"; };
+		DC4C9ED82CA0DF9A00ADEA13 /* Dinics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dinics.swift; sourceTree = "<group>"; };
+		DC4C9EDA2CA0DFBF00ADEA13 /* NetworkFlowSolverBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkFlowSolverBase.swift; sourceTree = "<group>"; };
+		DC4C9EDD2CA126D800ADEA13 /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
+		DC4C9EDF2CA1270500ADEA13 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
+		DC4C9EE22CA1298100ADEA13 /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
+		DC4C9EE52CA12A7500ADEA13 /* AddTripViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTripViewController.swift; sourceTree = "<group>"; };
+		DC531AEF2CA1FA530053DC24 /* Person+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Person+CoreDataClass.swift"; sourceTree = "<group>"; };
+		DC531AF02CA1FA530053DC24 /* Person+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Person+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		DC531AF12CA1FA530053DC24 /* Trip+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Trip+CoreDataClass.swift"; sourceTree = "<group>"; };
+		DC531AF22CA1FA530053DC24 /* Trip+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Trip+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		DC531AF32CA1FA530053DC24 /* Bill+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bill+CoreDataClass.swift"; sourceTree = "<group>"; };
+		DC531AF42CA1FA530053DC24 /* Bill+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bill+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		DC531AFC2CA201350053DC24 /* Trip+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Trip+Convenience.swift"; sourceTree = "<group>"; };
+		DC531AFE2CA2014C0053DC24 /* Person+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Person+Convenience.swift"; sourceTree = "<group>"; };
+		DC531B012CA201C00053DC24 /* TripRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripRepository.swift; sourceTree = "<group>"; };
+		DC531B032CA204AC0053DC24 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
+		DC531B062CA209920053DC24 /* PeopleSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleSliderView.swift; sourceTree = "<group>"; };
+		DC531B092CA22AED0053DC24 /* BillTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillTableViewCell.swift; sourceTree = "<group>"; };
+		DC531B102CA247400053DC24 /* AddBillViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBillViewController.swift; sourceTree = "<group>"; };
+		DC531B122CA24FF40053DC24 /* PeopleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,14 +96,100 @@
 		DC4C9EAF2C9FFCCB00ADEA13 /* SmoothSettle */ = {
 			isa = PBXGroup;
 			children = (
+				DC531B0F2CA247150053DC24 /* AddBill */,
+				DC531B052CA2097E0053DC24 /* PeopleSliderView */,
+				DC531AFB2CA1FA590053DC24 /* CoreData */,
+				DC4C9EE42CA12A5F00ADEA13 /* AddTrip */,
+				DC4C9EE12CA1297500ADEA13 /* MainView */,
+				DC4C9EDC2CA126C000ADEA13 /* Extension+Util */,
+				DC4C9EC72CA0BBE900ADEA13 /* Algorithm */,
 				DC4C9EB02C9FFCCB00ADEA13 /* AppDelegate.swift */,
-				DC4C9EB42C9FFCCB00ADEA13 /* ViewController.swift */,
 				DC4C9EBC2C9FFCCC00ADEA13 /* Assets.xcassets */,
 				DC4C9EBE2C9FFCCC00ADEA13 /* LaunchScreen.storyboard */,
 				DC4C9EC12C9FFCCC00ADEA13 /* Info.plist */,
 				DC4C9EB92C9FFCCB00ADEA13 /* SmoothSettle.xcdatamodeld */,
 			);
 			path = SmoothSettle;
+			sourceTree = "<group>";
+		};
+		DC4C9EC72CA0BBE900ADEA13 /* Algorithm */ = {
+			isa = PBXGroup;
+			children = (
+				DC4C9ED62CA0DF7500ADEA13 /* SimplifyDebts.swift */,
+				DC4C9ED82CA0DF9A00ADEA13 /* Dinics.swift */,
+				DC4C9EDA2CA0DFBF00ADEA13 /* NetworkFlowSolverBase.swift */,
+			);
+			path = Algorithm;
+			sourceTree = "<group>";
+		};
+		DC4C9EDC2CA126C000ADEA13 /* Extension+Util */ = {
+			isa = PBXGroup;
+			children = (
+				DC4C9EDD2CA126D800ADEA13 /* UIColor+Extension.swift */,
+				DC4C9EDF2CA1270500ADEA13 /* Colors.swift */,
+			);
+			path = "Extension+Util";
+			sourceTree = "<group>";
+		};
+		DC4C9EE12CA1297500ADEA13 /* MainView */ = {
+			isa = PBXGroup;
+			children = (
+				DC4C9EB42C9FFCCB00ADEA13 /* MainViewController.swift */,
+				DC4C9EE22CA1298100ADEA13 /* MainViewModel.swift */,
+				DC531B092CA22AED0053DC24 /* BillTableViewCell.swift */,
+			);
+			path = MainView;
+			sourceTree = "<group>";
+		};
+		DC4C9EE42CA12A5F00ADEA13 /* AddTrip */ = {
+			isa = PBXGroup;
+			children = (
+				DC4C9EE52CA12A7500ADEA13 /* AddTripViewController.swift */,
+			);
+			path = AddTrip;
+			sourceTree = "<group>";
+		};
+		DC531AFB2CA1FA590053DC24 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				DC531B002CA201B30053DC24 /* CoreDataManager */,
+				DC531AEF2CA1FA530053DC24 /* Person+CoreDataClass.swift */,
+				DC531AF02CA1FA530053DC24 /* Person+CoreDataProperties.swift */,
+				DC531AF12CA1FA530053DC24 /* Trip+CoreDataClass.swift */,
+				DC531AF22CA1FA530053DC24 /* Trip+CoreDataProperties.swift */,
+				DC531AF32CA1FA530053DC24 /* Bill+CoreDataClass.swift */,
+				DC531AF42CA1FA530053DC24 /* Bill+CoreDataProperties.swift */,
+				DC531AFC2CA201350053DC24 /* Trip+Convenience.swift */,
+				DC531AFE2CA2014C0053DC24 /* Person+Convenience.swift */,
+			);
+			name = CoreData;
+			path = ../CoreData;
+			sourceTree = "<group>";
+		};
+		DC531B002CA201B30053DC24 /* CoreDataManager */ = {
+			isa = PBXGroup;
+			children = (
+				DC531B012CA201C00053DC24 /* TripRepository.swift */,
+				DC531B032CA204AC0053DC24 /* CoreDataManager.swift */,
+			);
+			path = CoreDataManager;
+			sourceTree = "<group>";
+		};
+		DC531B052CA2097E0053DC24 /* PeopleSliderView */ = {
+			isa = PBXGroup;
+			children = (
+				DC531B062CA209920053DC24 /* PeopleSliderView.swift */,
+				DC531B122CA24FF40053DC24 /* PeopleCell.swift */,
+			);
+			path = PeopleSliderView;
+			sourceTree = "<group>";
+		};
+		DC531B0F2CA247150053DC24 /* AddBill */ = {
+			isa = PBXGroup;
+			children = (
+				DC531B102CA247400053DC24 /* AddBillViewController.swift */,
+			);
+			path = AddBill;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -134,9 +262,30 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC531AF92CA1FA530053DC24 /* Bill+CoreDataClass.swift in Sources */,
+				DC531AF82CA1FA530053DC24 /* Trip+CoreDataProperties.swift in Sources */,
+				DC531B022CA201C00053DC24 /* TripRepository.swift in Sources */,
+				DC4C9EDE2CA126D800ADEA13 /* UIColor+Extension.swift in Sources */,
+				DC531B0A2CA22AED0053DC24 /* BillTableViewCell.swift in Sources */,
+				DC531AF52CA1FA530053DC24 /* Person+CoreDataClass.swift in Sources */,
+				DC4C9EE02CA1270500ADEA13 /* Colors.swift in Sources */,
+				DC4C9EDB2CA0DFBF00ADEA13 /* NetworkFlowSolverBase.swift in Sources */,
+				DC531B132CA24FF40053DC24 /* PeopleCell.swift in Sources */,
+				DC531AFA2CA1FA530053DC24 /* Bill+CoreDataProperties.swift in Sources */,
+				DC531B112CA247400053DC24 /* AddBillViewController.swift in Sources */,
 				DC4C9EBB2C9FFCCB00ADEA13 /* SmoothSettle.xcdatamodeld in Sources */,
-				DC4C9EB52C9FFCCB00ADEA13 /* ViewController.swift in Sources */,
+				DC531AFF2CA2014C0053DC24 /* Person+Convenience.swift in Sources */,
+				DC4C9ED92CA0DF9A00ADEA13 /* Dinics.swift in Sources */,
+				DC4C9EE62CA12A7500ADEA13 /* AddTripViewController.swift in Sources */,
+				DC531AF72CA1FA530053DC24 /* Trip+CoreDataClass.swift in Sources */,
+				DC531AFD2CA201350053DC24 /* Trip+Convenience.swift in Sources */,
+				DC4C9ED72CA0DF7500ADEA13 /* SimplifyDebts.swift in Sources */,
+				DC531AF62CA1FA530053DC24 /* Person+CoreDataProperties.swift in Sources */,
+				DC4C9EB52C9FFCCB00ADEA13 /* MainViewController.swift in Sources */,
 				DC4C9EB12C9FFCCB00ADEA13 /* AppDelegate.swift in Sources */,
+				DC531B072CA209920053DC24 /* PeopleSliderView.swift in Sources */,
+				DC531B042CA204AC0053DC24 /* CoreDataManager.swift in Sources */,
+				DC4C9EE32CA1298100ADEA13 /* MainViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
