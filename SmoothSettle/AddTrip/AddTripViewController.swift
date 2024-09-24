@@ -2,9 +2,9 @@
 //  AddTripViewController.swift
 //  SmoothSettle
 //
-//  Created by Dajun Xian on 2024/9/22.
+//  Created by Dajun Xian on 2024/9/23.
 //
-import Foundation
+
 import UIKit
 
 protocol AddTripViewControllerDelegate: AnyObject {
@@ -12,63 +12,53 @@ protocol AddTripViewControllerDelegate: AnyObject {
 }
 
 class AddTripViewController: UIViewController {
-    
+
     // Delegate to notify the MainViewController of the added trip
     weak var delegate: AddTripViewControllerDelegate?
     
     // UI Elements
-    let addTripTitleLabel = UILabel()
     let titleTextField = UITextField()
-    let titleSectionLabel = UILabel()
     let peopleSliderView = PeopleSliderView()
-    let peopleSectionLabel = UILabel()
     let datePicker = UIDatePicker()
+    let navigationBar = UINavigationBar()
+    
+    let titleSectionLabel = UILabel()
+    let peopleSectionLabel = UILabel()
     let dateSectionLabel = UILabel()
-    let confirmButton = UIButton(type: .system)
     
     // People array to add to the trip
     var people: [Person] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         style()
         layout()
-        setupActions()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        animatePopup(show: true)
-    }
-    
-    // Animate the popup from the bottom
-    private func animatePopup(show: Bool) {
-        let targetPosition = show ? view.bounds.height * 0.5 : view.bounds.height
-        UIView.animate(withDuration: 0.3) {
-            self.view.frame.origin.y = targetPosition
-        }
-    }
-    
-    // Dismiss the view with animation
-    @objc private func dismissPopup() {
-        animatePopup(show: false)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            self.dismiss(animated: false, completion: nil)
+        
+        // Setting the presentation style to pageSheet
+        if #available(iOS 15.0, *) {
+            self.modalPresentationStyle = .pageSheet
+            self.sheetPresentationController?.detents = [.medium(), .large()]
+            self.sheetPresentationController?.prefersGrabberVisible = true
+        } else {
+            self.modalPresentationStyle = .formSheet
         }
     }
     
     // Handle confirm button action
-    @objc private func didTapConfirmButton() {
+    @objc private func didTapAddButton() {
         guard let title = titleTextField.text, !title.isEmpty else {
-            // Alert user if title is empty
             let alert = UIAlertController(title: "Invalid Input", message: "Please enter a title for the trip.", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default))
             present(alert, animated: true)
             return
         }
-        // Notify the delegate with the new trip data
         delegate?.didAddTrip(title: title, people: people, date: datePicker.date)
-        dismissPopup()
+        dismiss(animated: true, completion: nil)
+    }
+    
+    @objc private func didTapCancelButton() {
+        dismiss(animated: true, completion: nil)
     }
 }
 
@@ -76,67 +66,70 @@ class AddTripViewController: UIViewController {
 extension AddTripViewController {
     
     private func style() {
-        view.backgroundColor = .white
-        view.layer.cornerRadius = 16
-        view.clipsToBounds = true
-        
-        // Add Trip Title Label
-        addTripTitleLabel.text = "Add a Trip"
-        addTripTitleLabel.font = UIFont.boldSystemFont(ofSize: 24)
-        addTripTitleLabel.textAlignment = .center
-        addTripTitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        // Title Section Label
-        titleSectionLabel.text = "Trip Title"
-        titleSectionLabel.font = UIFont.systemFont(ofSize: 16)
-        titleSectionLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.systemGray6 // Light gray background
         
         // Title TextField
         titleTextField.placeholder = "Enter trip title"
         titleTextField.borderStyle = .roundedRect
         titleTextField.translatesAutoresizingMaskIntoConstraints = false
         
-        // People Section Label
-        peopleSectionLabel.text = "People"
-        peopleSectionLabel.font = UIFont.systemFont(ofSize: 16)
-        peopleSectionLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        // People Slider
+        // People Slider View
         peopleSliderView.translatesAutoresizingMaskIntoConstraints = false
         peopleSliderView.delegate = self
         
-        // Date Section Label
-        dateSectionLabel.text = "Date"
-        dateSectionLabel.font = UIFont.systemFont(ofSize: 16)
-        dateSectionLabel.translatesAutoresizingMaskIntoConstraints = false
-        
         // Date Picker
         datePicker.datePickerMode = .date
+        datePicker.contentHorizontalAlignment = .leading
         datePicker.translatesAutoresizingMaskIntoConstraints = false
         
-        // Confirm Button
-        confirmButton.setTitle("Add Trip", for: .normal)
-        confirmButton.translatesAutoresizingMaskIntoConstraints = false
-        confirmButton.addTarget(self, action: #selector(didTapConfirmButton), for: .touchUpInside)
+        // Setup Navigation Bar (without a separate background and separator)
+        let navItem = UINavigationItem(title: "New Trip")
+        let cancelItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(didTapCancelButton))
+        let addItem = UIBarButtonItem(title: "Add", style: .plain, target: self, action: #selector(didTapAddButton))
+        navItem.leftBarButtonItem = cancelItem
+        navItem.rightBarButtonItem = addItem
+        
+        navigationBar.setItems([navItem], animated: false)
+        navigationBar.isTranslucent = true
+        navigationBar.backgroundColor = .clear // No background color
+        navigationBar.shadowImage = UIImage() // Remove the shadow line
+        navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationBar.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Section Titles
+        titleSectionLabel.text = "Trip Title"
+        titleSectionLabel.font = UIFont.systemFont(ofSize: 14)
+        titleSectionLabel.textColor = .gray
+        titleSectionLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        peopleSectionLabel.text = "People"
+        peopleSectionLabel.font = UIFont.systemFont(ofSize: 14)
+        peopleSectionLabel.textColor = .gray
+        peopleSectionLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        dateSectionLabel.text = "Date"
+        dateSectionLabel.font = UIFont.systemFont(ofSize: 14)
+        dateSectionLabel.textColor = .gray
+        dateSectionLabel.translatesAutoresizingMaskIntoConstraints = false
     }
     
     private func layout() {
-        view.addSubview(addTripTitleLabel)
+        view.addSubview(navigationBar)
         view.addSubview(titleSectionLabel)
         view.addSubview(titleTextField)
         view.addSubview(peopleSectionLabel)
         view.addSubview(peopleSliderView)
         view.addSubview(dateSectionLabel)
         view.addSubview(datePicker)
-        view.addSubview(confirmButton)
         
         NSLayoutConstraint.activate([
-            // Add Trip Title Label Constraints
-            addTripTitleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
-            addTripTitleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            // Navigation Bar Constraints
+            navigationBar.topAnchor.constraint(equalTo: view.topAnchor),
+            navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
             // Title Section Label Constraints
-            titleSectionLabel.topAnchor.constraint(equalTo: addTripTitleLabel.bottomAnchor, constant: 16),
+            titleSectionLabel.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 20),
             titleSectionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             titleSectionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
@@ -144,7 +137,7 @@ extension AddTripViewController {
             titleTextField.topAnchor.constraint(equalTo: titleSectionLabel.bottomAnchor, constant: 8),
             titleTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             titleTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            titleTextField.heightAnchor.constraint(equalToConstant: 40),
+            titleTextField.heightAnchor.constraint(equalToConstant: 44),
             
             // People Section Label Constraints
             peopleSectionLabel.topAnchor.constraint(equalTo: titleTextField.bottomAnchor, constant: 16),
@@ -165,40 +158,24 @@ extension AddTripViewController {
             // Date Picker Constraints
             datePicker.topAnchor.constraint(equalTo: dateSectionLabel.bottomAnchor, constant: 8),
             datePicker.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            datePicker.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            
-            // Confirm Button Constraints
-            confirmButton.topAnchor.constraint(equalTo: datePicker.bottomAnchor, constant: 16),
-            confirmButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            confirmButton.heightAnchor.constraint(equalToConstant: 44),
-            confirmButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
+            datePicker.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
-    }
-    
-    private func setupActions() {
-        // Swipe down to dismiss the view
-        let swipeDownGesture = UISwipeGestureRecognizer(target: self, action: #selector(dismissPopup))
-        swipeDownGesture.direction = .down
-        view.addGestureRecognizer(swipeDownGesture)
     }
 }
 
 // MARK: - PeopleSliderViewDelegate
 extension AddTripViewController: PeopleSliderViewDelegate {
     func didSelectPerson(_ person: Person, for trip: Trip?, context: SliderContext) {
-        
+        // Handle person selection
     }
     
-    
     func didTapAddPerson(for trip: Trip?) {
-        // Show alert to add a person
         let alert = UIAlertController(title: "Add Person", message: "Enter the name of the person", preferredStyle: .alert)
         alert.addTextField { textField in
             textField.placeholder = "Person Name"
         }
         alert.addAction(UIAlertAction(title: "Add", style: .default, handler: { [weak self] _ in
             if let name = alert.textFields?.first?.text, !name.isEmpty {
-                // Create a new Person object for the new trip being created
                 let person = Person(context: CoreDataManager.shared.context)
                 person.name = name
                 self?.people.append(person)
@@ -207,5 +184,4 @@ extension AddTripViewController: PeopleSliderViewDelegate {
         }))
         present(alert, animated: true)
     }
-    
 }

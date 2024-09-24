@@ -80,11 +80,20 @@ class PeopleSliderView: UIView {
 extension PeopleSliderView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if people.count == 0 {
+            return 2
+        }
+        
         return people.count + 1 // +1 for the "plus" button
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PeopleCell", for: indexPath) as! PeopleCell
+        
+        if people.count == 0 && indexPath.item == 1 {
+            cell.configureEmptyButton()
+            return cell
+        }
         
         if indexPath.item == 0 {
             // First cell is always the "plus" button for adding new people
@@ -102,6 +111,8 @@ extension PeopleSliderView: UICollectionViewDataSource, UICollectionViewDelegate
         if indexPath.item == 0 {
             // "plus" button tapped
             delegate?.didTapAddPerson(for: trip) // Trigger delegate method for adding a new person
+        } else if people.count == 0 && indexPath.item == 1 {
+            delegate?.didTapAddPerson(for: trip)
         } else {
             // A person was tapped, trigger delegate for person selection
             let person = people[indexPath.item - 1]

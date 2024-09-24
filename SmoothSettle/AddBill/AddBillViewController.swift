@@ -4,7 +4,6 @@
 //
 //  Created by Dajun Xian on 2024/9/23.
 //
-
 import Foundation
 import UIKit
 
@@ -12,28 +11,31 @@ protocol AddBillViewControllerDelegate: AnyObject {
     func didAddBill(title: String, amount: Double, date: Date, payer: Person, involvers: [Person])
 }
 
-
 class AddBillViewController: UIViewController {
     
+    // Delegate to notify the MainViewController of the added bill
     weak var delegate: AddBillViewControllerDelegate?
-    
-    let tripTitleLabel = UILabel()
+
+    // UI Elements
     let billTitleTextField = UITextField()
     let amountTextField = UITextField()
     let datePicker = UIDatePicker()
-    let payerLabel = UILabel()
     let payerSliderView = PeopleSliderView()
-    let involversLabel = UILabel()
     let involversSliderView = PeopleSliderView()
-    let confirmButton = UIButton(type: .system)
-    
+
+    // Section labels
+    let billTitleSectionLabel = UILabel()
+    let amountSectionLabel = UILabel()
+    let dateSectionLabel = UILabel()
+    let payerSectionLabel = UILabel()
+    let involversSectionLabel = UILabel()
+
     var selectedPayer: Person?
     var selectedInvolvers: [Person] = []
-    
+
     // Pass the current trip and people
     var currentTrip: Trip?
     var people: [Person] = []
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,39 +44,52 @@ class AddBillViewController: UIViewController {
         setupActions()
         payerSliderView.context = .payer
         involversSliderView.context = .involver
+        
+        if #available(iOS 15.0, *) {
+            self.modalPresentationStyle = .pageSheet
+            let requiredHeight = calculateRequiredHeight()
+            let customDetent = UISheetPresentationController.Detent.custom(identifier: .init("customHeight")) { _ in
+                return requiredHeight
+            }
+            
+            self.sheetPresentationController?.detents = [customDetent] // Set to use only the custom detent
+            self.sheetPresentationController?.prefersGrabberVisible = true
+        } else {
+            self.modalPresentationStyle = .formSheet
+        }
 
+        if #available(iOS 15.0, *) {
+            self.navigationController?.navigationBar.scrollEdgeAppearance = self.navigationController?.navigationBar.standardAppearance
+        }
     }
+    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        involversSliderView.delegate = self // Use the same slider view for selecting involvers
-        payerSliderView.delegate = self // Use the same slider view for selecting the payer
+        involversSliderView.delegate = self
+        payerSliderView.delegate = self
         payerSliderView.allowSelection = true
         involversSliderView.allowSelection = true
         
         payerSliderView.people = people
         involversSliderView.people = people
-//        
-//        print("people in this trip: \(people.count)")
+    }
+    
+    // Calculate the necessary height based on the content
+    private func calculateRequiredHeight() -> CGFloat {
+        let padding: CGFloat = 30
         
-        animatePopup(show: true)
-    }
-    
-    // Animate the popup from the bottom
-    private func animatePopup(show: Bool) {
-        let targetPosition = show ? view.bounds.height * 0.4 : view.bounds.height
-        UIView.animate(withDuration: 0.3) {
-            self.view.frame.origin.y = targetPosition
-        }
-    }
-    
-    // Dismiss the view with animation
-    @objc private func dismissPopup() {
-        animatePopup(show: false)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            self.dismiss(animated: false, completion: nil)
-        }
+        // Example of how to calculate the height of all elements
+        let billTitleHeight: CGFloat = 50 // TextField height
+        let amountHeight: CGFloat = 50
+        let datePickerHeight: CGFloat = 50
+        let payerSliderHeight: CGFloat = 100
+        let involverSliderHeight: CGFloat = 100
+        
+        // Add padding between elements and the total required height
+        let totalHeight = billTitleHeight + amountHeight + datePickerHeight + payerSliderHeight + involverSliderHeight + (padding * 6)
+        return totalHeight
     }
     
     // Handle confirm button action
@@ -82,7 +97,6 @@ class AddBillViewController: UIViewController {
         guard let title = billTitleTextField.text, !title.isEmpty,
               let amountText = amountTextField.text, let amount = Double(amountText),
               let payer = selectedPayer else {
-            // Show alert if necessary fields are missing
             let alert = UIAlertController(title: "Invalid Input", message: "Please fill all the required fields.", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default))
             present(alert, animated: true)
@@ -91,7 +105,11 @@ class AddBillViewController: UIViewController {
         
         // Notify the delegate with the new bill data
         delegate?.didAddBill(title: title, amount: amount, date: datePicker.date, payer: payer, involvers: selectedInvolvers)
-        dismissPopup()
+        dismiss(animated: true, completion: nil)
+    }
+    
+    @objc private func didTapCancelButton() {
+        dismiss(animated: true, completion: nil)
     }
 }
 
@@ -99,20 +117,26 @@ class AddBillViewController: UIViewController {
 extension AddBillViewController {
     
     private func style() {
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor.systemGray6 // Light gray background
         view.layer.cornerRadius = 16
         view.clipsToBounds = true
         
-        // Trip Title Label
-        tripTitleLabel.text = currentTrip?.title
-        tripTitleLabel.font = UIFont.boldSystemFont(ofSize: 18)
-        tripTitleLabel.textAlignment = .center
-        tripTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        // Bill Title Section Label
+        billTitleSectionLabel.text = "Bill Title"
+        billTitleSectionLabel.font = UIFont.systemFont(ofSize: 14)
+        billTitleSectionLabel.textColor = .gray
+        billTitleSectionLabel.translatesAutoresizingMaskIntoConstraints = false
         
         // Bill Title TextField
         billTitleTextField.placeholder = "Enter bill title"
         billTitleTextField.borderStyle = .roundedRect
         billTitleTextField.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Amount Section Label
+        amountSectionLabel.text = "Amount"
+        amountSectionLabel.font = UIFont.systemFont(ofSize: 14)
+        amountSectionLabel.textColor = .gray
+        amountSectionLabel.translatesAutoresizingMaskIntoConstraints = false
         
         // Amount TextField
         amountTextField.placeholder = "Enter amount"
@@ -120,102 +144,118 @@ extension AddBillViewController {
         amountTextField.keyboardType = .decimalPad
         amountTextField.translatesAutoresizingMaskIntoConstraints = false
         
+        // Date Section Label
+        dateSectionLabel.text = "Date"
+        dateSectionLabel.font = UIFont.systemFont(ofSize: 14)
+        dateSectionLabel.textColor = .gray
+        dateSectionLabel.translatesAutoresizingMaskIntoConstraints = false
+        
         // Date Picker
         datePicker.datePickerMode = .date
+        datePicker.contentHorizontalAlignment = .leading
         datePicker.translatesAutoresizingMaskIntoConstraints = false
         
-        // Payer Label
-        payerLabel.text = "Who Paid?"
-        payerLabel.font = UIFont.systemFont(ofSize: 16)
-        payerLabel.translatesAutoresizingMaskIntoConstraints = false
+        // Payer Section Label
+        payerSectionLabel.text = "Who Paid?"
+        payerSectionLabel.font = UIFont.systemFont(ofSize: 14)
+        payerSectionLabel.textColor = .gray
+        payerSectionLabel.translatesAutoresizingMaskIntoConstraints = false
         
         // Payer Slider View
         payerSliderView.translatesAutoresizingMaskIntoConstraints = false
-        payerSliderView.people = people
-
         
-        // Involvers Label
-        involversLabel.text = "Who's Involved?"
-        involversLabel.font = UIFont.systemFont(ofSize: 16)
-        involversLabel.translatesAutoresizingMaskIntoConstraints = false
+        // Involvers Section Label
+        involversSectionLabel.text = "Who's Involved?"
+        involversSectionLabel.font = UIFont.systemFont(ofSize: 14)
+        involversSectionLabel.textColor = .gray
+        involversSectionLabel.translatesAutoresizingMaskIntoConstraints = false
         
         // Involvers Slider View
         involversSliderView.translatesAutoresizingMaskIntoConstraints = false
-        involversSliderView.people = people
-
         
-        // Confirm Button
-        confirmButton.setTitle("Add Bill", for: .normal)
-        confirmButton.translatesAutoresizingMaskIntoConstraints = false
-        confirmButton.addTarget(self, action: #selector(didTapConfirmButton), for: .touchUpInside)
+        // Setup Navigation Bar (transparent)
+        navigationItem.title = "Add Bill"
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(didTapCancelButton))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add", style: .plain, target: self, action: #selector(didTapConfirmButton))
+        
+        if let navigationBar = navigationController?.navigationBar {
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithTransparentBackground() // Makes the navigation bar transparent
+            appearance.backgroundColor = .clear // Sets the background to clear
+            appearance.shadowImage = UIImage() // Removes the shadow image
+            appearance.shadowColor = nil // Removes the shadow line
+
+            navigationBar.standardAppearance = appearance
+            navigationBar.scrollEdgeAppearance = appearance
+            navigationBar.isTranslucent = true // Ensure translucency
+        }
     }
     
     private func layout() {
-        view.addSubview(tripTitleLabel)
+        view.addSubview(billTitleSectionLabel)
         view.addSubview(billTitleTextField)
+        view.addSubview(amountSectionLabel)
         view.addSubview(amountTextField)
+        view.addSubview(dateSectionLabel)
         view.addSubview(datePicker)
-        view.addSubview(payerLabel)
+        view.addSubview(payerSectionLabel)
         view.addSubview(payerSliderView)
-        view.addSubview(involversLabel)
+        view.addSubview(involversSectionLabel)
         view.addSubview(involversSliderView)
-        view.addSubview(confirmButton)
         
         NSLayoutConstraint.activate([
-            // Trip Title Label Constraints
-            tripTitleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 80),
-            tripTitleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            tripTitleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            // Bill Title Section
+            billTitleSectionLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 70),
+            billTitleSectionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            billTitleSectionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
-            // Bill Title TextField Constraints
-            billTitleTextField.topAnchor.constraint(equalTo: tripTitleLabel.bottomAnchor, constant: 16),
+            billTitleTextField.topAnchor.constraint(equalTo: billTitleSectionLabel.bottomAnchor, constant: 8),
             billTitleTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             billTitleTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
-            // Amount TextField
-            // Amount TextField Constraints
-            amountTextField.topAnchor.constraint(equalTo: billTitleTextField.bottomAnchor, constant: 16),
+            // Amount Section
+            amountSectionLabel.topAnchor.constraint(equalTo: billTitleTextField.bottomAnchor, constant: 16),
+            amountSectionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            amountSectionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            
+            amountTextField.topAnchor.constraint(equalTo: amountSectionLabel.bottomAnchor, constant: 8),
             amountTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             amountTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
-            // Date Picker Constraints
-            datePicker.topAnchor.constraint(equalTo: amountTextField.bottomAnchor, constant: 16),
+            // Date Section
+            dateSectionLabel.topAnchor.constraint(equalTo: amountTextField.bottomAnchor, constant: 16),
+            dateSectionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            dateSectionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            
+            datePicker.topAnchor.constraint(equalTo: dateSectionLabel.bottomAnchor, constant: 8),
             datePicker.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             datePicker.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
-            // Payer Label Constraints
-            payerLabel.topAnchor.constraint(equalTo: datePicker.bottomAnchor, constant: 16),
-            payerLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            payerLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            // Payer Section
+            payerSectionLabel.topAnchor.constraint(equalTo: datePicker.bottomAnchor, constant: 16),
+            payerSectionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            payerSectionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
-            // Payer Slider View Constraints
-            payerSliderView.topAnchor.constraint(equalTo: payerLabel.bottomAnchor, constant: 8),
+            payerSliderView.topAnchor.constraint(equalTo: payerSectionLabel.bottomAnchor, constant: 8),
             payerSliderView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             payerSliderView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             payerSliderView.heightAnchor.constraint(equalToConstant: 80),
             
-            // Involvers Label Constraints
-            involversLabel.topAnchor.constraint(equalTo: payerSliderView.bottomAnchor, constant: 16),
-            involversLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            involversLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            // Involvers Section
+            involversSectionLabel.topAnchor.constraint(equalTo: payerSliderView.bottomAnchor, constant: 16),
+            involversSectionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            involversSectionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
-            // Involvers Slider View Constraints
-            involversSliderView.topAnchor.constraint(equalTo: involversLabel.bottomAnchor, constant: 8),
+            involversSliderView.topAnchor.constraint(equalTo: involversSectionLabel.bottomAnchor, constant: 8),
             involversSliderView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             involversSliderView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            involversSliderView.heightAnchor.constraint(equalToConstant: 80),
-            
-            // Confirm Button Constraints
-            confirmButton.topAnchor.constraint(equalTo: involversSliderView.bottomAnchor, constant: 16),
-            confirmButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            confirmButton.heightAnchor.constraint(equalToConstant: 44),
-            confirmButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
+            involversSliderView.heightAnchor.constraint(equalToConstant: 80)
         ])
     }
     
     private func setupActions() {
         // Swipe down to dismiss the view
-        let swipeDownGesture = UISwipeGestureRecognizer(target: self, action: #selector(dismissPopup))
+        let swipeDownGesture = UISwipeGestureRecognizer(target: self, action: #selector(didTapCancelButton))
         swipeDownGesture.direction = .down
         view.addGestureRecognizer(swipeDownGesture)
     }
@@ -224,38 +264,28 @@ extension AddBillViewController {
 // MARK: - PeopleSliderViewDelegate for Payer and Involvers
 extension AddBillViewController: PeopleSliderViewDelegate {
     func didTapAddPerson(for trip: Trip?) {
-        
+        // Handle adding a person
     }
     
     func didSelectPerson(_ person: Person, for trip: Trip?, context: SliderContext) {
         switch context {
         case .payer:
-            print("Payer selected: \(String(describing: person.name))")
-            // Handle payer selection separately
             if selectedPayer == person {
                 selectedPayer = nil
             } else {
                 selectedPayer = person
             }
-            
-            // Update the slider view for payer
             payerSliderView.selectedPayer = selectedPayer
             payerSliderView.reload()
             
         case .involver:
-            // Handle involver selection separately
-            print("Involver selected: \(String(describing: person.name))")
             if selectedInvolvers.contains(person) {
                 selectedInvolvers.removeAll { $0 == person }
             } else {
                 selectedInvolvers.append(person)
             }
-            
-            // Update the slider view for involvers
             involversSliderView.selectedInvolvers = selectedInvolvers
             involversSliderView.reload()
         }
     }
-
-
 }

@@ -46,12 +46,13 @@ class PeopleCell: UICollectionViewCell {
     func configure(with person: Person, isSelected: Bool) {
         let initials = person.name?.components(separatedBy: " ").compactMap { $0.first }.map { String($0) }.joined() ?? "?"
         initialsLabel.text = initials
+        initialsLabel.textColor = .white
         circleView.backgroundColor = Colors.primaryLight // Set background color for person cells
         
         // Apply a red border if selected, otherwise no border
         if isSelected {
-            circleView.layer.borderWidth = 5.0
-            circleView.layer.borderColor = UIColor.systemRed.cgColor
+            circleView.layer.borderWidth = 2.0
+            circleView.layer.borderColor = UIColor.systemBlue.cgColor
         } else {
             circleView.layer.borderWidth = 0
         }
@@ -63,5 +64,14 @@ class PeopleCell: UICollectionViewCell {
         initialsLabel.textColor = .white
         circleView.backgroundColor = .systemGreen
         circleView.layer.borderWidth = 0 // No border for the add button
+    }
+    
+    // Configure a empty button
+    func configureEmptyButton() {
+        initialsLabel.text = ""
+        initialsLabel.textColor = .clear
+        circleView.backgroundColor = .white
+        circleView.layer.borderColor = UIColor.systemGray5.cgColor
+        circleView.layer.borderWidth = 1
     }
 }

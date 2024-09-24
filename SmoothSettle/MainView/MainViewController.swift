@@ -199,14 +199,26 @@ extension MainViewController {
     
     @objc func didTapAddBill() {
         let addBillVC = AddBillViewController()
-        addBillVC.modalPresentationStyle = .overCurrentContext
-        addBillVC.view.frame = CGRect(x: 0, y: view.bounds.height, width: view.bounds.width, height: view.bounds.height * 0.6)
-        
         addBillVC.currentTrip = viewModel.currentTrip
         addBillVC.people = viewModel.people
         addBillVC.delegate = self
-        present(addBillVC, animated: false)
+
+        let navController = UINavigationController(rootViewController: addBillVC)
+        
+        // Configure the sheet presentation
+        if #available(iOS 15.0, *) {
+            navController.modalPresentationStyle = .pageSheet
+            if let sheet = navController.sheetPresentationController {
+                sheet.detents = [.medium(), .large()]
+                sheet.prefersGrabberVisible = true
+            }
+        } else {
+            navController.modalPresentationStyle = .formSheet
+        }
+        
+        present(navController, animated: true, completion: nil)
     }
+
 
     @objc func showTripDropdown() {
         let dropdownMenu = UIAlertController(title: "Switch Trip", message: nil, preferredStyle: .actionSheet)

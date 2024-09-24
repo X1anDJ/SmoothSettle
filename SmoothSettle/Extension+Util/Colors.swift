@@ -14,4 +14,5 @@ struct Colors {
     static let primaryLight = UIColor(hex: "95B3CB")
     static let accentYellow = UIColor(hex: "F7972C")
     static let accentOrange = UIColor(hex: "F35517")
+    //static let accentBlue = UIColor(hex: )
 }
