@@ -165,6 +165,10 @@ extension AddTripViewController {
 
 // MARK: - PeopleSliderViewDelegate
 extension AddTripViewController: PeopleSliderViewDelegate {
+    func didRequestRemovePerson(_ person: Person) {
+        // Handle remove a person in add trip selection
+    }
+    
     func didSelectPerson(_ person: Person, for trip: Trip?, context: SliderContext) {
         // Handle person selection
     }

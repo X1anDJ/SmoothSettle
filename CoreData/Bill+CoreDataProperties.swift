@@ -27,6 +27,11 @@ extension Bill {
 
 // MARK: Generated accessors for involvers
 extension Bill {
+    
+    // Computed property to return involvers as an array of Person objects
+    var involversArray: [Person] {
+        return involvers?.allObjects as? [Person] ?? []
+    }
 
     @objc(addInvolversObject:)
     @NSManaged public func addToInvolvers(_ value: Person)
@@ -39,6 +44,8 @@ extension Bill {
 
     @objc(removeInvolvers:)
     @NSManaged public func removeFromInvolvers(_ values: NSSet)
+    
+    
 
 }
 

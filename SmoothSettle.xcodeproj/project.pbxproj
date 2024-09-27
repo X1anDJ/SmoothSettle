@@ -96,11 +96,11 @@
 		DC4C9EAF2C9FFCCB00ADEA13 /* SmoothSettle */ = {
 			isa = PBXGroup;
 			children = (
+				DC531AFB2CA1FA590053DC24 /* CoreData */,
+				DC4C9EE12CA1297500ADEA13 /* MainView */,
+				DC4C9EE42CA12A5F00ADEA13 /* AddTrip */,
 				DC531B0F2CA247150053DC24 /* AddBill */,
 				DC531B052CA2097E0053DC24 /* PeopleSliderView */,
-				DC531AFB2CA1FA590053DC24 /* CoreData */,
-				DC4C9EE42CA12A5F00ADEA13 /* AddTrip */,
-				DC4C9EE12CA1297500ADEA13 /* MainView */,
 				DC4C9EDC2CA126C000ADEA13 /* Extension+Util */,
 				DC4C9EC72CA0BBE900ADEA13 /* Algorithm */,
 				DC4C9EB02C9FFCCB00ADEA13 /* AppDelegate.swift */,
@@ -155,12 +155,12 @@
 				DC531B002CA201B30053DC24 /* CoreDataManager */,
 				DC531AEF2CA1FA530053DC24 /* Person+CoreDataClass.swift */,
 				DC531AF02CA1FA530053DC24 /* Person+CoreDataProperties.swift */,
+				DC531AFE2CA2014C0053DC24 /* Person+Convenience.swift */,
 				DC531AF12CA1FA530053DC24 /* Trip+CoreDataClass.swift */,
 				DC531AF22CA1FA530053DC24 /* Trip+CoreDataProperties.swift */,
 				DC531AF32CA1FA530053DC24 /* Bill+CoreDataClass.swift */,
 				DC531AF42CA1FA530053DC24 /* Bill+CoreDataProperties.swift */,
 				DC531AFC2CA201350053DC24 /* Trip+Convenience.swift */,
-				DC531AFE2CA2014C0053DC24 /* Person+Convenience.swift */,
 			);
 			name = CoreData;
 			path = ../CoreData;

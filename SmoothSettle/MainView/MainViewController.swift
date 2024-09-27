@@ -66,6 +66,7 @@ class MainViewController: UIViewController {
         viewModel.$people
             .receive(on: DispatchQueue.main)
             .sink { [weak self] people in
+                print("setupBindings detects viewModel.$people changes" )
                 self?.updatePeopleSlider(with: people)
             }
             .store(in: &cancellables)
@@ -91,9 +92,14 @@ class MainViewController: UIViewController {
         }
     }
     
+    
+    
     func updatePeopleSlider(with people: [Person]) {
-        peopleSliderView.people = people
+        print("Updating people slider with \(people.count) people")
+        peopleSliderView.people = people  // didSet method in peopleSliderView will do collectionView.reloadData()
+//        peopleSliderView.reload()
     }
+
 }
 
 extension MainViewController {
@@ -125,6 +131,8 @@ extension MainViewController {
         
         peopleSliderView.translatesAutoresizingMaskIntoConstraints = false
         peopleSliderView.delegate = self
+        print("PeopleSliderView delegate set: \(peopleSliderView.delegate != nil)")
+        
         
         addBillButton.translatesAutoresizingMaskIntoConstraints = false
         addBillButton.setTitle("Add a Bill", for: .normal)
@@ -235,12 +243,28 @@ extension MainViewController {
 }
 
 // Delegate for PeopleSliderView
-extension MainViewController: PeopleSliderViewDelegate {
+extension MainViewController: PeopleSliderViewDelegate, PeopleCellDelegate {
+    func didRequestRemovePerson(_ person: Person) {
+        print("Called MainViewController didRequestRemovePerson")
+        if !viewModel.requestToRemovePerson(person) {
+            print("Failed to remove person because they are involved in bills")
+        } else {
+//            peopleSliderView.reload()
+            
+            print("Person removed successfully")
+        }
+        
+        peopleSliderView.hideAllRemoveButtons()
+        
+    }
+    
     func didSelectPerson(_ person: Person, for trip: Trip?, context: SliderContext) {
         // Add logic to handle person selection if needed
     }
     
     func didTapAddPerson(for trip: Trip?) {
+        print("Add person tapped")
+        
         guard let trip = trip else { return }
         
         // Show alert to add a person
@@ -250,7 +274,13 @@ extension MainViewController: PeopleSliderViewDelegate {
                 textField.placeholder = "Person Name"
             }
             alert.addAction(UIAlertAction(title: "Add", style: .default, handler: { [weak self] _ in
-                if let name = alert.textFields?.first?.text, !name.isEmpty {
+                if let name = alert.textFields?.first?.text, name.isEmpty {
+                    // Show another alert if the name is empty
+                    let errorAlert = UIAlertController(title: "Invalid Input", message: "The name cannot be empty.", preferredStyle: .alert)
+                    errorAlert.addAction(UIAlertAction(title: "OK", style: .default))
+                    self?.present(errorAlert, animated: true)
+                } else if let name = alert.textFields?.first?.text {
+                    // Add person to the current trip
                     self?.viewModel.addPersonToCurrentTrip(name: name)
                 }
             }))

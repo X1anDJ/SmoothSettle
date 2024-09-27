@@ -263,6 +263,10 @@ extension AddBillViewController {
 
 // MARK: - PeopleSliderViewDelegate for Payer and Involvers
 extension AddBillViewController: PeopleSliderViewDelegate {
+    func didRequestRemovePerson(_ person: Person) {
+        // Handle removing a person
+    }
+    
     func didTapAddPerson(for trip: Trip?) {
         // Handle adding a person
     }

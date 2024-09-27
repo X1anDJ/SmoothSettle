@@ -93,11 +93,24 @@ extension TripRepository {
     }
 
     // Remove a person from a trip
-    func removePerson(_ person: Person, from trip: Trip) {
+    func removePerson(_ person: Person, from trip: Trip) -> Bool {
+        // Check if the person is involved in any bill
+        print("Trip repo checking if the person is involved in any bill")
+        for bill in trip.billsArray {
+            if bill.payer == person || bill.involversArray.contains(person) {
+                // Person is involved in a bill, so cannot be removed
+                return false
+            }
+        }
+        
+        // If the person is not involved in any bill, proceed with removal
         trip.removeFromPeople(person)
         context.delete(person)
         saveContext()
+        
+        return true
     }
+
     
     // Update a person
     func updatePerson(_ person: Person, name: String, balance: Double) {

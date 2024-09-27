@@ -83,4 +83,19 @@ class MainViewModel: ObservableObject {
         currentTrip.settled = isSettled
         tripRepository.saveContext() // Persist changes
     }
+    
+    func requestToRemovePerson(_ person: Person) -> Bool {
+        guard let currentTrip = currentTrip else { return false }
+        
+        // Call the repository method to remove the person
+        let wasRemoved = tripRepository.removePerson(person, from: currentTrip)
+        
+        // If the person was removed, reload the people array
+        if wasRemoved {
+            people = tripRepository.fetchPeople(for: currentTrip) // Reload people array
+        }
+        
+        return wasRemoved
+    }
+
 }
