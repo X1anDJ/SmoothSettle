@@ -321,7 +321,22 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        
+        // Create and configure the BillDetailView
+        let billDetailView = BillDetailView(frame: CGRect(x: 0, y: 0, width: 300, height: 400))
+        billDetailView.center = self.view.center
+        billDetailView.configure(with: viewModel.bills[indexPath.row])
+        
+        // Add it to the current view
+        self.view.addSubview(billDetailView)
+        
+        // Animate its appearance
+        billDetailView.alpha = 0
+        UIView.animate(withDuration: 0.3) {
+            billDetailView.alpha = 1
+        }
     }
+
 }
 
 extension MainViewController: AddTripViewControllerDelegate {

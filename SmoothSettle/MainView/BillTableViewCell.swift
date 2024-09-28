@@ -1,10 +1,3 @@
-//
-//  BillTableViewCell.swift
-//  SmoothSettle
-//
-//  Created by Dajun Xian on 2024/9/23.
-//
-
 import UIKit
 
 class BillTableViewCell: UITableViewCell {
@@ -13,36 +6,40 @@ class BillTableViewCell: UITableViewCell {
     let billTitleLabel = UILabel()
     let dateLabel = UILabel()
     let payerCircleView = UIView()
-    let payerInitialsLabel = UILabel() // Label for initials inside payer's circle
+    let payerInitialsLabel = UILabel()
     let paidLabel = UILabel()
-    var involversCircleStackView = UIStackView()
+    let involversCircleContainerView = UIView()
     let amountLabel = UILabel()
+    
+    // Properties to store involvers count
+    private var storedInvolversCount: Int = 0
     
     // Initialize the cell
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupViews()
-        layoutViews()
+        setupConstraints()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+   
     // Setup UI elements
     private func setupViews() {
         // Bill Title Label
         billTitleLabel.font = UIFont.boldSystemFont(ofSize: 16)
         billTitleLabel.textColor = .black
+        billTitleLabel.translatesAutoresizingMaskIntoConstraints = false
         
         // Date Label
         dateLabel.font = UIFont.systemFont(ofSize: 14)
         dateLabel.textColor = .darkGray
         dateLabel.textAlignment = .right
+        dateLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        // Payer Circle (blue) and Initials Label
-        payerCircleView.layer.cornerRadius = 15
-        payerCircleView.backgroundColor = .systemBlue
+        // Payer Circle and Initials Label
+        payerCircleView.backgroundColor = Colors.primaryMedium
         payerCircleView.translatesAutoresizingMaskIntoConstraints = false
         
         payerInitialsLabel.font = UIFont.systemFont(ofSize: 14, weight: .bold)
@@ -50,69 +47,84 @@ class BillTableViewCell: UITableViewCell {
         payerInitialsLabel.textAlignment = .center
         payerInitialsLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        payerCircleView.addSubview(payerInitialsLabel) // Add initials label to the circle
+        payerCircleView.addSubview(payerInitialsLabel)
         
         // Paid Label
-        paidLabel.text = "paid"
+        paidLabel.text = "Paid for"
+        paidLabel.textAlignment = .center
         paidLabel.font = UIFont.systemFont(ofSize: 14)
         paidLabel.textColor = .black
+        paidLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        // Involvers Circle Stack View (for orange circles)
-        involversCircleStackView = UIStackView()
-        involversCircleStackView.axis = .horizontal
-        involversCircleStackView.spacing = 4
-        involversCircleStackView.distribution = .fillEqually
-        involversCircleStackView.alignment = .center
+        // Involvers Circle Container View
+        involversCircleContainerView.translatesAutoresizingMaskIntoConstraints = false
         
         // Amount Label
         amountLabel.font = UIFont.boldSystemFont(ofSize: 18)
         amountLabel.textColor = .black
         amountLabel.textAlignment = .right
+        amountLabel.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    // Layout the UI elements
-    private func layoutViews() {
-        let firstRowStack = UIStackView(arrangedSubviews: [billTitleLabel, dateLabel])
-        firstRowStack.axis = .horizontal
-        firstRowStack.distribution = .equalSpacing
+    // Setup constraints manually
+    private func setupConstraints() {
+        contentView.addSubview(billTitleLabel)
+        contentView.addSubview(dateLabel)
+        contentView.addSubview(payerCircleView)
+        contentView.addSubview(paidLabel)
+        contentView.addSubview(involversCircleContainerView)
+        contentView.addSubview(amountLabel)
         
-        let secondRowStack = UIStackView(arrangedSubviews: [payerCircleView, paidLabel, involversCircleStackView, amountLabel])
-        secondRowStack.axis = .horizontal
-        secondRowStack.spacing = 8
-        secondRowStack.alignment = .center
-        secondRowStack.distribution = .equalSpacing
-        
-        // Add the subviews
-        contentView.addSubview(firstRowStack)
-        contentView.addSubview(secondRowStack)
-        
-        // Constraints for first row (bill title and date)
-        firstRowStack.translatesAutoresizingMaskIntoConstraints = false
+        // First Row Constraints
         NSLayoutConstraint.activate([
-            firstRowStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
-            firstRowStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            firstRowStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
+            billTitleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            billTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            billTitleLabel.trailingAnchor.constraint(lessThanOrEqualTo: dateLabel.leadingAnchor, constant: -8),
+            
+            dateLabel.centerYAnchor.constraint(equalTo: billTitleLabel.centerYAnchor),
+            dateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
         ])
         
-        // Constraints for payer circle
+        // Payer Circle Constraints
         NSLayoutConstraint.activate([
+            payerCircleView.topAnchor.constraint(equalTo: billTitleLabel.bottomAnchor, constant: 8),
+            payerCircleView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             payerCircleView.widthAnchor.constraint(equalToConstant: 30),
-            payerCircleView.heightAnchor.constraint(equalToConstant: 30)
+            payerCircleView.heightAnchor.constraint(equalTo: payerCircleView.widthAnchor),
         ])
+        payerCircleView.layer.cornerRadius = 15
         
-        // Center the initials inside the payer's circle
+        // Center initials inside payer's circle
         NSLayoutConstraint.activate([
             payerInitialsLabel.centerXAnchor.constraint(equalTo: payerCircleView.centerXAnchor),
-            payerInitialsLabel.centerYAnchor.constraint(equalTo: payerCircleView.centerYAnchor)
+            payerInitialsLabel.centerYAnchor.constraint(equalTo: payerCircleView.centerYAnchor),
         ])
         
-        // Constraints for second row (payer, paid label, involvers, and amount)
-        secondRowStack.translatesAutoresizingMaskIntoConstraints = false
+        // Paid Label Constraints
         NSLayoutConstraint.activate([
-            secondRowStack.topAnchor.constraint(equalTo: firstRowStack.bottomAnchor, constant: 8),
-            secondRowStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            secondRowStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            secondRowStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8)
+            paidLabel.centerYAnchor.constraint(equalTo: payerCircleView.centerYAnchor),
+            paidLabel.leadingAnchor.constraint(equalTo: payerCircleView.trailingAnchor, constant: 8),
+            paidLabel.widthAnchor.constraint(equalToConstant: 60),
+        ])
+        
+        // Amount Label Constraints
+        NSLayoutConstraint.activate([
+            amountLabel.centerYAnchor.constraint(equalTo: payerCircleView.centerYAnchor),
+            amountLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            amountLabel.widthAnchor.constraint(equalToConstant: 90),
+        ])
+        
+        // Involvers Circle Container Constraints
+        NSLayoutConstraint.activate([
+            involversCircleContainerView.centerYAnchor.constraint(equalTo: payerCircleView.centerYAnchor),
+            involversCircleContainerView.leadingAnchor.constraint(equalTo: paidLabel.trailingAnchor, constant: 8),
+            involversCircleContainerView.trailingAnchor.constraint(equalTo: amountLabel.leadingAnchor, constant: -8),
+            involversCircleContainerView.heightAnchor.constraint(equalToConstant: 20), // Will be updated dynamically
+        ])
+        
+        // Bottom Constraint
+        NSLayoutConstraint.activate([
+            payerCircleView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8)
         ])
     }
     
@@ -121,23 +133,83 @@ class BillTableViewCell: UITableViewCell {
         billTitleLabel.text = billTitle
         dateLabel.text = date
         amountLabel.text = "$\(amount)"
-        
-        // Set payer initials
         payerInitialsLabel.text = getInitials(from: payerName)
+        storedInvolversCount = involversCount
         
-        // Reset involvers
-        involversCircleStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        // Update involvers
+        updateInvolvers()
+    }
+    
+    // Update involver circles
+    private func updateInvolvers() {
+        // Remove existing involver views
+        involversCircleContainerView.subviews.forEach { $0.removeFromSuperview() }
         
-        // Create orange circles for each involver
-        for _ in 0..<involversCount {
-            let involverCircle = UIView()
-            involverCircle.layer.cornerRadius = 10
-            involverCircle.backgroundColor = .systemRed
-            involversCircleStackView.addArrangedSubview(involverCircle)
-            involverCircle.translatesAutoresizingMaskIntoConstraints = false
+        let spacing: CGFloat = 4.0
+        
+        // Calculate available width for involvers
+        let leftFixedWidths: CGFloat = 16 + 30 + 8 + 60 + 8  // Left margin, payerCircleView, spacing, paidLabel, spacing
+        let rightFixedWidths: CGFloat = 8 + 90 + 16          // spacing, amountLabel, right margin
+        let totalFixedWidths = leftFixedWidths + rightFixedWidths
+        
+        let availableWidth = contentView.bounds.width - totalFixedWidths
+        
+        // Total spacing between circles
+        let totalSpacing = CGFloat(max(storedInvolversCount - 1, 0)) * spacing
+        
+        // Calculate circle width
+        var circleWidth = (availableWidth - totalSpacing) / CGFloat(storedInvolversCount)
+        
+        // Minimum and maximum circle widths
+        let minCircleWidth: CGFloat = 5.0
+        let maxCircleWidth: CGFloat = 15.0
+        
+        // Clamp circleWidth between min and max values
+        circleWidth = max(min(circleWidth, maxCircleWidth), minCircleWidth)
+        
+        // Update container height constraint to match circle size
+        for constraint in involversCircleContainerView.constraints {
+            if constraint.firstAttribute == .height {
+                constraint.constant = circleWidth
+                break
+            }
+        }
+        
+        // Create involver circles
+        var previousCircle: UIView? = nil
+        for _ in 0..<storedInvolversCount {
+            let circleView = UIView()
+            circleView.backgroundColor = Colors.accentOrange
+            circleView.translatesAutoresizingMaskIntoConstraints = false
+            circleView.layer.cornerRadius = circleWidth / 2
+            circleView.layer.masksToBounds = true
+            
+            involversCircleContainerView.addSubview(circleView)
+            
+            // Constraints for circleView
             NSLayoutConstraint.activate([
-                involverCircle.widthAnchor.constraint(equalToConstant: 20),
-                involverCircle.heightAnchor.constraint(equalToConstant: 20)
+                circleView.widthAnchor.constraint(equalToConstant: circleWidth),
+                circleView.heightAnchor.constraint(equalToConstant: circleWidth),
+                circleView.centerYAnchor.constraint(equalTo: involversCircleContainerView.centerYAnchor)
+            ])
+            
+            if let previous = previousCircle {
+                NSLayoutConstraint.activate([
+                    circleView.leadingAnchor.constraint(equalTo: previous.trailingAnchor, constant: spacing)
+                ])
+            } else {
+                NSLayoutConstraint.activate([
+                    circleView.leadingAnchor.constraint(equalTo: involversCircleContainerView.leadingAnchor)
+                ])
+            }
+            
+            previousCircle = circleView
+        }
+        
+        // Adjust trailing anchor of the last circle
+        if let lastCircle = previousCircle {
+            NSLayoutConstraint.activate([
+                lastCircle.trailingAnchor.constraint(lessThanOrEqualTo: involversCircleContainerView.trailingAnchor)
             ])
         }
     }
@@ -149,3 +221,4 @@ class BillTableViewCell: UITableViewCell {
         return initials
     }
 }
+

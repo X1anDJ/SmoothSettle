@@ -53,7 +53,7 @@ class AddBillViewController: UIViewController {
             }
             
             self.sheetPresentationController?.detents = [customDetent] // Set to use only the custom detent
-            self.sheetPresentationController?.prefersGrabberVisible = true
+            self.sheetPresentationController?.prefersGrabberVisible = false
         } else {
             self.modalPresentationStyle = .formSheet
         }
@@ -212,6 +212,7 @@ extension AddBillViewController {
             billTitleTextField.topAnchor.constraint(equalTo: billTitleSectionLabel.bottomAnchor, constant: 8),
             billTitleTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             billTitleTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            billTitleTextField.heightAnchor.constraint(equalToConstant: 44),
             
             // Amount Section
             amountSectionLabel.topAnchor.constraint(equalTo: billTitleTextField.bottomAnchor, constant: 16),
@@ -221,7 +222,7 @@ extension AddBillViewController {
             amountTextField.topAnchor.constraint(equalTo: amountSectionLabel.bottomAnchor, constant: 8),
             amountTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             amountTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            
+            amountTextField.heightAnchor.constraint(equalToConstant: 44),
             // Date Section
             dateSectionLabel.topAnchor.constraint(equalTo: amountTextField.bottomAnchor, constant: 16),
             dateSectionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),

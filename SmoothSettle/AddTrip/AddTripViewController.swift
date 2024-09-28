@@ -38,8 +38,8 @@ class AddTripViewController: UIViewController {
         // Setting the presentation style to pageSheet
         if #available(iOS 15.0, *) {
             self.modalPresentationStyle = .pageSheet
-            self.sheetPresentationController?.detents = [.medium(), .large()]
-            self.sheetPresentationController?.prefersGrabberVisible = true
+            self.sheetPresentationController?.detents = [.medium()]
+            self.sheetPresentationController?.prefersGrabberVisible = false
         } else {
             self.modalPresentationStyle = .formSheet
         }

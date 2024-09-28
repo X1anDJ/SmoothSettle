@@ -52,11 +52,11 @@ class PeopleCell: UICollectionViewCell {
             circleView.heightAnchor.constraint(equalToConstant: 60),
             circleView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             circleView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            
-            removePersonButton.widthAnchor.constraint(equalToConstant: 30),
-            removePersonButton.heightAnchor.constraint(equalToConstant: 30),
-            removePersonButton.centerXAnchor.constraint(equalTo: circleView.centerXAnchor, constant: 20),
-            removePersonButton.centerYAnchor.constraint(equalTo: circleView.centerYAnchor, constant: -20),
+//            
+//            removePersonButton.widthAnchor.constraint(equalToConstant: 30),
+//            removePersonButton.heightAnchor.constraint(equalToConstant: 30),
+            removePersonButton.centerXAnchor.constraint(equalTo: circleView.centerXAnchor, constant: 30),
+            removePersonButton.centerYAnchor.constraint(equalTo: circleView.centerYAnchor, constant: -30),
             
             initialsLabel.centerXAnchor.constraint(equalTo: circleView.centerXAnchor),
             initialsLabel.centerYAnchor.constraint(equalTo: circleView.centerYAnchor)
@@ -95,7 +95,7 @@ class PeopleCell: UICollectionViewCell {
         person = nil
         initialsLabel.text = "+"
         initialsLabel.textColor = .white
-        circleView.backgroundColor = .systemGreen
+        circleView.backgroundColor = Colors.accentYellow
         circleView.layer.borderWidth = 0 // No border for the add button
         print("Configure add button")
         removePersonButton.isHidden = true

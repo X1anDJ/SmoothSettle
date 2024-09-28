@@ -33,6 +33,7 @@
 		DC531B0A2CA22AED0053DC24 /* BillTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC531B092CA22AED0053DC24 /* BillTableViewCell.swift */; };
 		DC531B112CA247400053DC24 /* AddBillViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC531B102CA247400053DC24 /* AddBillViewController.swift */; };
 		DC531B132CA24FF40053DC24 /* PeopleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC531B122CA24FF40053DC24 /* PeopleCell.swift */; };
+		DC531B682CA76D890053DC24 /* BillDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC531B672CA76D890053DC24 /* BillDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -64,6 +65,7 @@
 		DC531B092CA22AED0053DC24 /* BillTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillTableViewCell.swift; sourceTree = "<group>"; };
 		DC531B102CA247400053DC24 /* AddBillViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBillViewController.swift; sourceTree = "<group>"; };
 		DC531B122CA24FF40053DC24 /* PeopleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleCell.swift; sourceTree = "<group>"; };
+		DC531B672CA76D890053DC24 /* BillDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,6 +139,7 @@
 				DC4C9EB42C9FFCCB00ADEA13 /* MainViewController.swift */,
 				DC4C9EE22CA1298100ADEA13 /* MainViewModel.swift */,
 				DC531B092CA22AED0053DC24 /* BillTableViewCell.swift */,
+				DC531B672CA76D890053DC24 /* BillDetailView.swift */,
 			);
 			path = MainView;
 			sourceTree = "<group>";
@@ -270,6 +273,7 @@
 				DC531AF52CA1FA530053DC24 /* Person+CoreDataClass.swift in Sources */,
 				DC4C9EE02CA1270500ADEA13 /* Colors.swift in Sources */,
 				DC4C9EDB2CA0DFBF00ADEA13 /* NetworkFlowSolverBase.swift in Sources */,
+				DC531B682CA76D890053DC24 /* BillDetailView.swift in Sources */,
 				DC531B132CA24FF40053DC24 /* PeopleCell.swift in Sources */,
 				DC531AFA2CA1FA530053DC24 /* Bill+CoreDataProperties.swift in Sources */,
 				DC531B112CA247400053DC24 /* AddBillViewController.swift in Sources */,
