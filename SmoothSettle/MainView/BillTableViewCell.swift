@@ -146,6 +146,7 @@ class BillTableViewCell: UITableViewCell {
         involversCircleContainerView.subviews.forEach { $0.removeFromSuperview() }
         
         let spacing: CGFloat = 4.0
+        let fixedCircleCountThreshold = 6  // Set your desired threshold here
         
         // Calculate available width for involvers
         let leftFixedWidths: CGFloat = 16 + 30 + 8 + 60 + 8  // Left margin, payerCircleView, spacing, paidLabel, spacing
@@ -157,15 +158,21 @@ class BillTableViewCell: UITableViewCell {
         // Total spacing between circles
         let totalSpacing = CGFloat(max(storedInvolversCount - 1, 0)) * spacing
         
-        // Calculate circle width
-        var circleWidth = (availableWidth - totalSpacing) / CGFloat(storedInvolversCount)
-        
         // Minimum and maximum circle widths
-        let minCircleWidth: CGFloat = 5.0
-        let maxCircleWidth: CGFloat = 15.0
+        let minCircleWidth: CGFloat = 1.0
+        let maxCircleWidth: CGFloat = 16.0
         
-        // Clamp circleWidth between min and max values
-        circleWidth = max(min(circleWidth, maxCircleWidth), minCircleWidth)
+        var circleWidth: CGFloat
+        
+        if storedInvolversCount <= fixedCircleCountThreshold {
+            // Use fixed circle size
+            circleWidth = maxCircleWidth
+        } else {
+            // Calculate circle width dynamically
+            circleWidth = (availableWidth - totalSpacing) / CGFloat(storedInvolversCount)
+            // Clamp circleWidth between minCircleWidth and maxCircleWidth
+            circleWidth = max(min(circleWidth, maxCircleWidth), minCircleWidth)
+        }
         
         // Update container height constraint to match circle size
         for constraint in involversCircleContainerView.constraints {
@@ -221,4 +228,3 @@ class BillTableViewCell: UITableViewCell {
         return initials
     }
 }
-
