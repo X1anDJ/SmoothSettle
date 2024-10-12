@@ -15,6 +15,7 @@ class MainViewController: UIViewController {
     let containerView = UIView() // Container for the table view to apply the shadow
     let customTableView = UITableView()
     let addBillButton = UIButton(type: .system)
+    let userButton = UIButton(type: .system)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -113,6 +114,15 @@ extension MainViewController {
         titleLabel.font = UIFont.preferredFont(forTextStyle: .extraLargeTitle)
         titleLabel.textAlignment = .left
         
+        
+        // Set up userButton
+        userButton.translatesAutoresizingMaskIntoConstraints = false
+        userButton.setImage(UIImage(systemName: "person.circle"), for: .normal)
+        userButton.tintColor = .systemGray
+        userButton.layer.cornerRadius = 40
+        userButton.clipsToBounds = true
+        userButton.addTarget(self, action: #selector(didTapUserButton), for: .touchUpInside)
+
         currentTripButton.translatesAutoresizingMaskIntoConstraints = false
         let arrowIconAttachment = NSTextAttachment()
         arrowIconAttachment.image = UIImage(systemName: "chevron.down")
@@ -154,6 +164,7 @@ extension MainViewController {
         stackView.addArrangedSubview(titleLabel)
         stackView.addArrangedSubview(currentTripButton)
         
+        view.addSubview(userButton)
         view.addSubview(stackView)
         view.addSubview(addTripButton)
         view.addSubview(peopleSliderView)
@@ -167,6 +178,12 @@ extension MainViewController {
             stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40),
             stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
 
+            // User Button Constraints
+            userButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
+            userButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            userButton.widthAnchor.constraint(equalToConstant: 80),
+            userButton.heightAnchor.constraint(equalToConstant: 80),
+            
             // Add Trip Button Constraints
             addTripButton.centerYAnchor.constraint(equalTo: currentTripButton.centerYAnchor),
             addTripButton.leadingAnchor.constraint(equalTo: currentTripButton.trailingAnchor, constant: 8),
@@ -196,6 +213,17 @@ extension MainViewController {
             addBillButton.heightAnchor.constraint(equalToConstant: 44)
         ])
     }
+    
+    @objc func didTapUserButton() {
+        let userVC = UserViewController()
+        if let delegate = UIApplication.shared.delegate as? AppDelegate {
+            userVC.logoutDelegate = delegate
+        }
+        let navigationController = UINavigationController(rootViewController: userVC)
+        navigationController.modalPresentationStyle = .fullScreen
+        present(navigationController, animated: true, completion: nil)
+    }
+
     
     @objc func didTapAddTrip() {
         let addTripVC = AddTripViewController()
