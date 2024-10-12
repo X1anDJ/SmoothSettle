@@ -6,50 +6,45 @@ class MainViewController: UIViewController {
     var viewModel = MainViewModel()
     var cancellables = Set<AnyCancellable>()
     
-    // UI Components
-    let stackView = UIStackView()
-    let titleLabel = UILabel()
-    let currentTripButton = UIButton()
-    let addTripButton = UIButton()
-    let peopleSliderView = PeopleSliderView()
-    let containerView = UIView() // Container for the table view to apply the shadow
-    let customTableView = UITableView()
-    let addBillButton = UIButton(type: .system)
-    let userButton = UIButton(type: .system)
+    var mainView: MainView {
+        return self.view as! MainView
+    }
+    
+    override func loadView() {
+        self.view = MainView()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setBackgroundImage()
-        style()
-        layout()
         setupBindings()
         viewModel.loadAllTrips()
         
-        peopleSliderView.delegate = self
-        peopleSliderView.allowSelection = false
+        // Add target for cardRightArrowButton here
+        mainView.cardRightArrowButton.addTarget(self, action: #selector(didTapCardRightArrowButton), for: .touchUpInside)
+        mainView.cardHeaderView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapCardRightArrowButton)))
         
-        customTableView.register(BillTableViewCell.self, forCellReuseIdentifier: "BillCell")
+        // Set up delegates and data sources
+        mainView.peopleSliderView.delegate = self
+        mainView.peopleSliderView.allowSelection = false
         
-        // Adding rounded corners to the table view
-        customTableView.layer.cornerRadius = 15
-        customTableView.layer.masksToBounds = true
+        mainView.customTableView.register(BillTableViewCell.self, forCellReuseIdentifier: "BillCell")
+        mainView.customTableView.delegate = self
+        mainView.customTableView.dataSource = self
         
-        // Set up the shadow for containerView
-        containerView.layer.shadowColor = UIColor.black.cgColor
-        containerView.layer.shadowOpacity = 0.1
-        containerView.layer.shadowOffset = CGSize(width: 0, height: 4)
-        containerView.layer.shadowRadius = 8
-        containerView.layer.masksToBounds = false // Allow shadow to be outside bounds
+        // Set up target-actions for buttons
+        mainView.userButton.addTarget(self, action: #selector(didTapUserButton), for: .touchUpInside)
+//        mainView.addTripButton.addTarget(self, action: #selector(didTapAddTrip), for: .touchUpInside)
+        
+        
+        mainView.settleButton.addTarget(self, action: #selector(didTapSettle), for: .touchUpInside)
+        
+        mainView.addBillButton.addTarget(self, action: #selector(didTapAddBill), for: .touchUpInside)
+//        mainView.currentTripButton.addTarget(self, action: #selector(showTripDropdown), for: .touchUpInside)
+        
+        setupTripDropdownMenu()
     }
     
-    func setBackgroundImage() {
-        let backgroundImageView = UIImageView(frame: self.view.bounds)
-        backgroundImageView.image = UIImage(named: "background0")
-        backgroundImageView.contentMode = .scaleAspectFill
-        self.view.addSubview(backgroundImageView)
-        self.view.sendSubviewToBack(backgroundImageView)
-    }
     
     // Set up bindings between the view model and the UI
     func setupBindings() {
@@ -59,7 +54,15 @@ class MainViewController: UIViewController {
             .sink { [weak self] trip in
                 self?.updateCurrentTripUI(with: trip)
                 self?.updatePeopleSlider(with: trip?.peopleArray ?? [])
-                self?.peopleSliderView.trip = trip
+                self?.mainView.peopleSliderView.trip = trip
+            }
+            .store(in: &cancellables)
+        
+        // Observe trips changes and update the dropdown menu
+        viewModel.$trips
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.setupTripDropdownMenu() // Rebuild the UIMenu whenever trips are updated
             }
             .store(in: &cancellables)
         
@@ -67,7 +70,6 @@ class MainViewController: UIViewController {
         viewModel.$people
             .receive(on: DispatchQueue.main)
             .sink { [weak self] people in
-                print("setupBindings detects viewModel.$people changes" )
                 self?.updatePeopleSlider(with: people)
             }
             .store(in: &cancellables)
@@ -76,143 +78,56 @@ class MainViewController: UIViewController {
         viewModel.$bills
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
-                self?.customTableView.reloadData()
+                self?.mainView.customTableView.reloadData()
             }
             .store(in: &cancellables)
     }
     
+
+
     func updateCurrentTripUI(with trip: Trip?) {
         if let trip = trip {
             let currentTripText = NSMutableAttributedString(string: trip.title ?? "Unnamed Trip")
             let arrowIconAttachment = NSTextAttachment()
             arrowIconAttachment.image = UIImage(systemName: "chevron.down")
             currentTripText.append(NSAttributedString(attachment: arrowIconAttachment))
-            currentTripButton.setAttributedTitle(currentTripText, for: .normal)
+            mainView.currentTripButton.setAttributedTitle(currentTripText, for: .normal)
         } else {
-            currentTripButton.setAttributedTitle(NSAttributedString(string: "No Trip Selected"), for: .normal)
+            mainView.currentTripButton.setAttributedTitle(NSAttributedString(string: "No Trip Selected"), for: .normal)
         }
     }
     
-    
-    
     func updatePeopleSlider(with people: [Person]) {
-        print("Updating people slider with \(people.count) people")
-        peopleSliderView.people = people  // didSet method in peopleSliderView will do collectionView.reloadData()
-//        peopleSliderView.reload()
-    }
-
-}
-
-extension MainViewController {
-    func style() {
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .vertical
-        stackView.spacing = 20
-        
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.text = "Current Trip"
-        titleLabel.font = UIFont.preferredFont(forTextStyle: .extraLargeTitle)
-        titleLabel.textAlignment = .left
-        
-        
-        // Set up userButton
-        userButton.translatesAutoresizingMaskIntoConstraints = false
-        userButton.setImage(UIImage(systemName: "person.circle"), for: .normal)
-        userButton.tintColor = .systemGray
-        userButton.layer.cornerRadius = 40
-        userButton.clipsToBounds = true
-        userButton.addTarget(self, action: #selector(didTapUserButton), for: .touchUpInside)
-
-        currentTripButton.translatesAutoresizingMaskIntoConstraints = false
-        let arrowIconAttachment = NSTextAttachment()
-        arrowIconAttachment.image = UIImage(systemName: "chevron.down")
-        let currentTripText = NSMutableAttributedString(string: "Select Trip ")
-        currentTripText.append(NSAttributedString(attachment: arrowIconAttachment))
-        currentTripButton.setAttributedTitle(currentTripText, for: .normal)
-        currentTripButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .extraLargeTitle2)
-        currentTripButton.contentHorizontalAlignment = .left
-        currentTripButton.addTarget(self, action: #selector(showTripDropdown), for: .touchUpInside)
-        
-        addTripButton.translatesAutoresizingMaskIntoConstraints = false
-        let plusIcon = UIImage(systemName: "plus")
-        addTripButton.setImage(plusIcon, for: .normal)
-        addTripButton.tintColor = .systemBlue
-        addTripButton.addTarget(self, action: #selector(didTapAddTrip), for: .touchUpInside)
-        
-        peopleSliderView.translatesAutoresizingMaskIntoConstraints = false
-        peopleSliderView.delegate = self
-        print("PeopleSliderView delegate set: \(peopleSliderView.delegate != nil)")
-        
-        
-        addBillButton.translatesAutoresizingMaskIntoConstraints = false
-        addBillButton.setTitle("Add a Bill", for: .normal)
-        addBillButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .headline)
-        addBillButton.setTitleColor(.systemBlue, for: .normal)
-        addBillButton.addTarget(self, action: #selector(didTapAddBill), for: .touchUpInside)
-        
-        // Set up the container view
-        containerView.translatesAutoresizingMaskIntoConstraints = false
-        containerView.backgroundColor = .clear // Make container view clear to see shadow
-        
-        customTableView.translatesAutoresizingMaskIntoConstraints = false
-        customTableView.delegate = self
-        customTableView.dataSource = self
-        customTableView.register(UITableViewCell.self, forCellReuseIdentifier: "BillCell")
+        mainView.peopleSliderView.people = people
     }
     
-    func layout() {
-        stackView.addArrangedSubview(titleLabel)
-        stackView.addArrangedSubview(currentTripButton)
+    func setupTripDropdownMenu() {
+        // Create actions for each existing trip
+        let tripMenuActions = viewModel.trips.map { trip in
+            UIAction(title: trip.title ?? "Unnamed Trip", image: nil) { [weak self] _ in
+                self?.viewModel.selectTrip(trip)
+            }
+        }
         
-        view.addSubview(userButton)
-        view.addSubview(stackView)
-        view.addSubview(addTripButton)
-        view.addSubview(peopleSliderView)
-        view.addSubview(addBillButton)
-        view.addSubview(containerView)
+        // Add a special action for adding a new trip
+        let addTripAction = UIAction(title: "Add Trip", image: UIImage(systemName: "plus")) { [weak self] _ in
+            self?.didTapAddTrip() // Call the function to add a new trip
+        }
         
-        containerView.addSubview(customTableView) // Add table view inside the container
-
-        NSLayoutConstraint.activate([
-            // Stack View Constraints
-            stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40),
-            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-
-            // User Button Constraints
-            userButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
-            userButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            userButton.widthAnchor.constraint(equalToConstant: 80),
-            userButton.heightAnchor.constraint(equalToConstant: 80),
-            
-            // Add Trip Button Constraints
-            addTripButton.centerYAnchor.constraint(equalTo: currentTripButton.centerYAnchor),
-            addTripButton.leadingAnchor.constraint(equalTo: currentTripButton.trailingAnchor, constant: 8),
-
-            // People Slider View Constraints
-            peopleSliderView.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 16),
-            peopleSliderView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            peopleSliderView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            peopleSliderView.heightAnchor.constraint(equalToConstant: 80),
-
-            // Container View (TableView) Constraints
-            containerView.topAnchor.constraint(equalTo: peopleSliderView.bottomAnchor, constant: 16),
-            containerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            containerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            containerView.bottomAnchor.constraint(equalTo: addBillButton.topAnchor, constant: -16),
-
-            // Custom TableView inside the containerView Constraints
-            customTableView.topAnchor.constraint(equalTo: containerView.topAnchor),
-            customTableView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-            customTableView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            customTableView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
-
-            // Add Bill Button Constraints
-            addBillButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            addBillButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            addBillButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
-            addBillButton.heightAnchor.constraint(equalToConstant: 44)
-        ])
+        
+        // Create the UIMenu and append the "Add Trip" action as the last item
+        let tripMenu = UIMenu(title: "Switch Trip", children: tripMenuActions + [addTripAction])
+        
+        // Assign the menu to the currentTripButton
+        mainView.currentTripButton.menu = tripMenu
+        mainView.currentTripButton.showsMenuAsPrimaryAction = true
     }
+
+    @objc func didTapCardRightArrowButton() {
+        let billsViewController = BillsViewController()
+        navigationController?.pushViewController(billsViewController, animated: true)
+    }
+    
     
     @objc func didTapUserButton() {
         let userVC = UserViewController()
@@ -220,11 +135,10 @@ extension MainViewController {
             userVC.logoutDelegate = delegate
         }
         let navigationController = UINavigationController(rootViewController: userVC)
-        navigationController.modalPresentationStyle = .fullScreen
+        navigationController.modalPresentationStyle = .pageSheet
         present(navigationController, animated: true, completion: nil)
     }
 
-    
     @objc func didTapAddTrip() {
         let addTripVC = AddTripViewController()
         addTripVC.delegate = self
@@ -233,6 +147,12 @@ extension MainViewController {
         present(addTripVC, animated: false)
     }
     
+    @objc func didTapSettle() {
+        let settleVC = SettleViewController() // Replace with your custom view controller
+        settleVC.modalPresentationStyle = .pageSheet
+        self.present(settleVC, animated: true, completion: nil)
+    }
+
     @objc func didTapAddBill() {
         let addBillVC = AddBillViewController()
         addBillVC.currentTrip = viewModel.currentTrip
@@ -256,34 +176,17 @@ extension MainViewController {
     }
 
 
-    @objc func showTripDropdown() {
-        let dropdownMenu = UIAlertController(title: "Switch Trip", message: nil, preferredStyle: .actionSheet)
-        
-        for trip in viewModel.trips {
-            dropdownMenu.addAction(UIAlertAction(title: trip.title, style: .default, handler: { [weak self] _ in
-                self?.viewModel.selectTrip(trip)
-            }))
-        }
-        
-        dropdownMenu.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        present(dropdownMenu, animated: true)
-    }
 }
 
 // Delegate for PeopleSliderView
 extension MainViewController: PeopleSliderViewDelegate, PeopleCellDelegate {
     func didRequestRemovePerson(_ person: Person) {
-        print("Called MainViewController didRequestRemovePerson")
         if !viewModel.requestToRemovePerson(person) {
             print("Failed to remove person because they are involved in bills")
         } else {
-//            peopleSliderView.reload()
-            
             print("Person removed successfully")
         }
-        
-        peopleSliderView.hideAllRemoveButtons()
-        
+        mainView.peopleSliderView.hideAllRemoveButtons()
     }
     
     func didSelectPerson(_ person: Person, for trip: Trip?, context: SliderContext) {
@@ -291,8 +194,6 @@ extension MainViewController: PeopleSliderViewDelegate, PeopleCellDelegate {
     }
     
     func didTapAddPerson(for trip: Trip?) {
-        print("Add person tapped")
-        
         guard let trip = trip else { return }
         
         // Show alert to add a person
@@ -335,15 +236,21 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "BillCell", for: indexPath) as! BillTableViewCell
+
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "BillCell", for: indexPath) as? BillTableViewCell else {
+            return UITableViewCell()
+        }
+
         let bill = viewModel.bills[indexPath.row]
         
         // Configure the cell using actual data from the bill
-        cell.configure(billTitle: bill.title ?? "Untitled Bill",
-                       date: formatDate(bill.date),
-                       amount: String(format: "%.2f", bill.amount),
-                       payerName: bill.payer?.name ?? "Unknown",
-                       involversCount: bill.involvers?.count ?? 0)
+        cell.configure(
+            billTitle: bill.title ?? "Untitled Bill",
+            date: formatDate(bill.date),
+            amount: String(format: "%.2f", bill.amount),
+            payerName: bill.payer?.name ?? "Unknown",
+            involversCount: bill.involvers?.count ?? 0
+        )
         return cell
     }
 
@@ -364,7 +271,6 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
             billDetailView.alpha = 1
         }
     }
-
 }
 
 extension MainViewController: AddTripViewControllerDelegate {
@@ -374,7 +280,6 @@ extension MainViewController: AddTripViewControllerDelegate {
 }
 
 extension MainViewController: AddBillViewControllerDelegate {
-    
     func didAddBill(title: String, amount: Double, date: Date, payer: Person, involvers: [Person]) {
         viewModel.addBillToCurrentTrip(title: title, amount: amount, date: date, payer: payer, involvers: involvers)
     }

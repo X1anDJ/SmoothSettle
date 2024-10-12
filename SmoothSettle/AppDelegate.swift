@@ -14,43 +14,67 @@ import GoogleSignIn
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-
     var window: UIWindow?
     let mainViewController = MainViewController()
     let loginViewController = LoginViewController()
-    
+
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions:
-                     [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+                         [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
-        
-        //Google sign-in instance and configuration
+
+        // Google sign-in instance and configuration
         guard let clientID = FirebaseApp.app()?.options.clientID else { return false }
         let config = GIDConfiguration(clientID: clientID)
         GIDSignIn.sharedInstance.configuration = config
-        
+
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
         window?.backgroundColor = .systemBackground
-//        window?.rootViewController = mainViewController
-        
-        
-        
+
         loginViewController.delegate = self
-        
-        let navigationController = UINavigationController(rootViewController: loginViewController)
-        window?.rootViewController = navigationController
-        
+        let loginNavController = UINavigationController(rootViewController: loginViewController)
+
         if Auth.auth().currentUser == nil {
-            window?.rootViewController = navigationController
-            //window?.rootViewController = smsController
+            window?.rootViewController = loginNavController
         } else {
-            //window?.rootViewController = mainViewController
-            window?.rootViewController = mainViewController
+            setupTabBarController()
         }
-        
+
         return true
     }
 
+    // Function to set up the UITabBarController with the main and archive view controllers
+    private func setupTabBarController() {
+        let tabBarController = UITabBarController()
+
+        // MainViewController setup
+        let mainNavController = UINavigationController(rootViewController: mainViewController)
+        mainViewController.tabBarItem = UITabBarItem(title: "Main", image: UIImage(systemName: "house.fill"), tag: 0)
+
+        // Placeholder for ArchiveTripsViewController
+        let archiveTripsViewController = UIViewController() // Replace with ArchiveTripsViewController later
+        archiveTripsViewController.view.backgroundColor = .white
+        archiveTripsViewController.tabBarItem = UITabBarItem(title: "Archive", image: UIImage(systemName: "archivebox.fill"), tag: 1)
+
+        // Add view controllers to the tab bar
+        tabBarController.viewControllers = [mainNavController, archiveTripsViewController]
+
+        // Set the appearance of the tab bar items
+        tabBarController.tabBar.tintColor = Colors.primaryDark // Selected item color
+        tabBarController.tabBar.unselectedItemTintColor = Colors.primaryLight // Unselected item color
+
+        
+        // Set up the shadow for the tab bar
+        tabBarController.tabBar.backgroundColor = .systemBackground
+        tabBarController.tabBar.layer.shadowColor = UIColor.systemGray.cgColor
+        tabBarController.tabBar.layer.shadowOpacity = 0.1
+        tabBarController.tabBar.layer.shadowOffset = CGSize(width: 0, height: -3) // Negative height to apply shadow above the tab bar
+        tabBarController.tabBar.layer.shadowRadius = 1
+        tabBarController.tabBar.layer.masksToBounds = false
+
+        // Set the tab bar controller as the root view controller
+        window?.rootViewController = tabBarController
+    }
 
 }
 
@@ -61,7 +85,7 @@ extension AppDelegate {
             self.window?.makeKeyAndVisible()
             return
         }
-        
+
         window.rootViewController = vc
         window.makeKeyAndVisible()
         UIView.transition(with: window,
@@ -70,8 +94,8 @@ extension AppDelegate {
                           animations: nil,
                           completion: nil)
     }
-    
-    //Google login
+
+    // Google login
     func application(_ app: UIApplication,
                      open url: URL,
                      options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
@@ -81,17 +105,16 @@ extension AppDelegate {
 
 extension AppDelegate: LoginViewControllerDelegate {
     func didLogin() {
-        setRootViewController(mainViewController)
+        setupTabBarController()
     }
 }
-
 
 extension AppDelegate: LogoutDelegate {
     func didLogout() {
         do {
             try Auth.auth().signOut()
-            let navigationController = UINavigationController(rootViewController: loginViewController)
-            setRootViewController(navigationController)
+            let loginNavController = UINavigationController(rootViewController: loginViewController)
+            setRootViewController(loginNavController)
         } catch let signOutError as NSError {
             print("Error signing out: %@", signOutError)
         }

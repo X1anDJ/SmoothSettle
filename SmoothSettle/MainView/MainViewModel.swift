@@ -31,6 +31,7 @@ class MainViewModel: ObservableObject {
     // Load all trips from the repository
     func loadAllTrips() {
         trips = tripRepository.fetchAllTrips()
+        print("Trip count: \(trips.count)")
         if let firstTrip = trips.first {
             selectTrip(firstTrip) // Set the first trip as the default selected trip
         }

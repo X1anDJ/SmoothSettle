@@ -18,8 +18,14 @@ class UserViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
+        
         style()
         layout()
+        
+        
+        let closeButton = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(didTapCloseButton))
+        navigationItem.rightBarButtonItem = closeButton
     }
 }
 
@@ -54,6 +60,11 @@ extension UserViewController {
     @objc func logoutButtonTapped(sender: UIButton) {
         // Log out from Firebase
         logoutDelegate?.didLogout()
+    }
+    
+    @objc func didTapCloseButton() {
+        // Dismiss the presented UserViewController and return to MainViewController
+        dismiss(animated: true, completion: nil)
     }
 
 }
