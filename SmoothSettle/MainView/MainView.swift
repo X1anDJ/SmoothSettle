@@ -145,7 +145,7 @@ class MainView: UIView {
         // Style the Add Bill Button
         addBillButton.translatesAutoresizingMaskIntoConstraints = false
         addBillButton.layer.cornerRadius = 20
-        addBillButton.setTitle(" Add a Bill", for: .normal)
+        addBillButton.setTitle(" Bill", for: .normal)
         addBillButton.setImage(UIImage(systemName: "plus"), for: .normal)
         addBillButton.tintColor = .systemBackground
         addBillButton.setTitleColor(.systemBackground, for: .normal)

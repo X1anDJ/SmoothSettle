@@ -18,7 +18,7 @@ class MainViewController: UIViewController {
         super.viewDidLoad()
         
         setupBindings()
-        viewModel.loadAllTrips()
+        viewModel.loadAllUnsettledTrips()
         
         // Add target for cardRightArrowButton here
         mainView.cardRightArrowButton.addTarget(self, action: #selector(didTapCardRightArrowButton), for: .touchUpInside)
@@ -93,7 +93,8 @@ class MainViewController: UIViewController {
             currentTripText.append(NSAttributedString(attachment: arrowIconAttachment))
             mainView.currentTripButton.setAttributedTitle(currentTripText, for: .normal)
         } else {
-            mainView.currentTripButton.setAttributedTitle(NSAttributedString(string: "No Trip Selected"), for: .normal)
+            
+            mainView.currentTripButton.setAttributedTitle(NSAttributedString(string: "Add a Trip"), for: .normal)
         }
     }
     
@@ -149,7 +150,8 @@ class MainViewController: UIViewController {
     
     @objc func didTapSettle() {
         let settleVC = SettleViewController() // Replace with your custom view controller
-        settleVC.modalPresentationStyle = .pageSheet
+        settleVC.viewModel = self.viewModel
+        settleVC.modalPresentationStyle = .overFullScreen
         self.present(settleVC, animated: true, completion: nil)
     }
 

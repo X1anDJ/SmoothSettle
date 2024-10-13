@@ -69,6 +69,10 @@
 		DC6DE7462CBA5BCF0050F6EF /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE7452CBA5BCF0050F6EF /* MainView.swift */; };
 		DC6DE76D2CBB0D1D0050F6EF /* BillsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE76C2CBB0D1D0050F6EF /* BillsViewController.swift */; };
 		DC6DE76F2CBB27730050F6EF /* SettleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE76E2CBB27730050F6EF /* SettleViewController.swift */; };
+		DC6DE7712CBB47A40050F6EF /* UserCircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE7702CBB47A40050F6EF /* UserCircleView.swift */; };
+		DC6DE7732CBB47BF0050F6EF /* CircleLayoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE7722CBB47BF0050F6EF /* CircleLayoutView.swift */; };
+		DC6DE7752CBB58AF0050F6EF /* TransactionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE7742CBB58AF0050F6EF /* TransactionCell.swift */; };
+		DC6DE7772CBB58C20050F6EF /* TransactionsTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE7762CBB58C20050F6EF /* TransactionsTableView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -131,6 +135,10 @@
 		DC6DE7452CBA5BCF0050F6EF /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		DC6DE76C2CBB0D1D0050F6EF /* BillsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillsViewController.swift; sourceTree = "<group>"; };
 		DC6DE76E2CBB27730050F6EF /* SettleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettleViewController.swift; sourceTree = "<group>"; };
+		DC6DE7702CBB47A40050F6EF /* UserCircleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCircleView.swift; sourceTree = "<group>"; };
+		DC6DE7722CBB47BF0050F6EF /* CircleLayoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleLayoutView.swift; sourceTree = "<group>"; };
+		DC6DE7742CBB58AF0050F6EF /* TransactionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionCell.swift; sourceTree = "<group>"; };
+		DC6DE7762CBB58C20050F6EF /* TransactionsTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsTableView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -218,6 +226,10 @@
 				DC6DE7432CBA530A0050F6EF /* UserViewController.swift */,
 				DC6DE76C2CBB0D1D0050F6EF /* BillsViewController.swift */,
 				DC6DE76E2CBB27730050F6EF /* SettleViewController.swift */,
+				DC6DE7702CBB47A40050F6EF /* UserCircleView.swift */,
+				DC6DE7722CBB47BF0050F6EF /* CircleLayoutView.swift */,
+				DC6DE7742CBB58AF0050F6EF /* TransactionCell.swift */,
+				DC6DE7762CBB58C20050F6EF /* TransactionsTableView.swift */,
 			);
 			path = MainView;
 			sourceTree = "<group>";
@@ -512,6 +524,7 @@
 				DC531AFA2CA1FA530053DC24 /* Bill+CoreDataProperties.swift in Sources */,
 				DC531B112CA247400053DC24 /* AddBillViewController.swift in Sources */,
 				DC4C9EBB2C9FFCCB00ADEA13 /* SmoothSettle.xcdatamodeld in Sources */,
+				DC6DE7732CBB47BF0050F6EF /* CircleLayoutView.swift in Sources */,
 				DC531AFF2CA2014C0053DC24 /* Person+Convenience.swift in Sources */,
 				DC6DE7462CBA5BCF0050F6EF /* MainView.swift in Sources */,
 				DC4C9EE62CA12A7500ADEA13 /* AddTripViewController.swift in Sources */,
@@ -522,6 +535,7 @@
 				DC6DE71E2CB9FC3F0050F6EF /* MethodExtensions.swift in Sources */,
 				DC6DE71F2CB9FC3F0050F6EF /* DummyViewController.swift in Sources */,
 				DC6DE7202CB9FC3F0050F6EF /* LoginView.swift in Sources */,
+				DC6DE7752CBB58AF0050F6EF /* TransactionCell.swift in Sources */,
 				DC6DE7212CB9FC3F0050F6EF /* LoginViewController.swift in Sources */,
 				DC6DE7222CB9FC3F0050F6EF /* AuthenticationButtonsView.swift in Sources */,
 				DC6DE7232CB9FC3F0050F6EF /* DataGlobal.swift in Sources */,
@@ -532,6 +546,7 @@
 				DC6DE7272CB9FC3F0050F6EF /* VerificationCodeViewController.swift in Sources */,
 				DC6DE7282CB9FC3F0050F6EF /* CountryCodeViewController.swift in Sources */,
 				DC6DE7292CB9FC3F0050F6EF /* MainTabBarController.swift in Sources */,
+				DC6DE7772CBB58C20050F6EF /* TransactionsTableView.swift in Sources */,
 				DC6DE72A2CB9FC3F0050F6EF /* ViewExtensions.swift in Sources */,
 				DC6DE76F2CBB27730050F6EF /* SettleViewController.swift in Sources */,
 				DC6DE72B2CB9FC3F0050F6EF /* UITextFieldExtensions.swift in Sources */,
@@ -546,6 +561,7 @@
 				DC6DE7332CB9FC3F0050F6EF /* ProfileViewContainer.swift in Sources */,
 				DC6DE7342CB9FC3F0050F6EF /* DividerView.swift in Sources */,
 				DC6DE7352CB9FC3F0050F6EF /* Utilities.swift in Sources */,
+				DC6DE7712CBB47A40050F6EF /* UserCircleView.swift in Sources */,
 				DC4C9EB52C9FFCCB00ADEA13 /* MainViewController.swift in Sources */,
 				DC4C9EB12C9FFCCB00ADEA13 /* AppDelegate.swift in Sources */,
 				DC531B072CA209920053DC24 /* PeopleSliderView.swift in Sources */,

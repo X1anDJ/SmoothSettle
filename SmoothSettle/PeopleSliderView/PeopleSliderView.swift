@@ -25,7 +25,7 @@ class PeopleSliderView: UIView {
     // People array from the current trip or new trip
     var people: [Person] = [] {
         didSet {
-            print("People array count: \(people.count), calling collectionView.reloadData") // Check the count of people
+//            print("People array count: \(people.count), calling collectionView.reloadData") // Check the count of people
             collectionView.reloadData()
         }
     }
@@ -85,7 +85,7 @@ class PeopleSliderView: UIView {
     }
     
     func reload() {
-        print("Reload the data manually, not through did set. Reloading PeopleSliderView with \(people.count) people")
+//        print("Reload the data manually, not through did set. Reloading PeopleSliderView with \(people.count) people")
         
         //Reload the data manually, not through did set.
         collectionView.reloadData()
@@ -157,11 +157,11 @@ extension PeopleSliderView: UICollectionViewDataSource, UICollectionViewDelegate
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        print("Cell tapped at index \(indexPath.item)")
+//        print("Cell tapped at index \(indexPath.item)")
         
         if indexPath.item == 0 {
             // "plus" button tapped
-            print("plus button tapped")
+//            print("plus button tapped")
             delegate?.didTapAddPerson(for: trip) // Trigger delegate method for adding a new person
         } else if people.count == 0 && indexPath.item == 1 {
             delegate?.didTapAddPerson(for: trip)
@@ -171,7 +171,7 @@ extension PeopleSliderView: UICollectionViewDataSource, UICollectionViewDelegate
             if allowSelection {
                 delegate?.didSelectPerson(person, for: trip, context: context ?? .payer ) // or .involver depending on the slider
                 
-                print("Selection allowed. Selected person: \(person.name ?? "Unknown")")
+//                print("Selection allowed. Selected person: \(person.name ?? "Unknown")")
             }
         }
     }
@@ -184,7 +184,7 @@ extension PeopleSliderView: UICollectionViewDataSource, UICollectionViewDelegate
 
 extension PeopleSliderView: PeopleCellDelegate {
     func didRequestRemovePerson(_ person: Person) {
-        print("Remove requested for person: \(person.name ?? "Unknown")")
+//        print("Remove requested for person: \(person.name ?? "Unknown")")
         delegate?.didRequestRemovePerson(person)
     }
 }

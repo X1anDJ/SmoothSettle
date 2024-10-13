@@ -18,19 +18,19 @@ class MainViewModel: ObservableObject {
     @Published var bills: [Bill] = []             // Bills related to the current trip
     
     // Repository to manage CoreData operations
-    private let tripRepository: TripRepository
+    let tripRepository: TripRepository
     
     // MARK: - Initializer with Dependency Injection
     init(tripRepository: TripRepository = TripRepository()) {
         self.tripRepository = tripRepository
-        loadAllTrips() // Load trips on initialization
+        loadAllUnsettledTrips() // Load trips on initialization
     }
     
     // MARK: - Methods to Load Data
     
     // Load all trips from the repository
-    func loadAllTrips() {
-        trips = tripRepository.fetchAllTrips()
+    func loadAllUnsettledTrips() {
+        trips = tripRepository.fetchUnsettledTrips()
         print("Trip count: \(trips.count)")
         if let firstTrip = trips.first {
             selectTrip(firstTrip) // Set the first trip as the default selected trip
@@ -83,6 +83,19 @@ class MainViewModel: ObservableObject {
         guard let currentTrip = currentTrip else { return }
         currentTrip.settled = isSettled
         tripRepository.saveContext() // Persist changes
+    }
+    
+   
+
+    
+    // Settle the current trip
+    func settleCurrentTrip() {
+        guard let currentTrip = currentTrip else {
+            print("No current trip selected.")
+            return
+        }
+        tripRepository.settleTrip(currentTrip)
+        loadAllUnsettledTrips()
     }
     
     func requestToRemovePerson(_ person: Person) -> Bool {

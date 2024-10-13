@@ -5,77 +5,64 @@
 //  Created by 刘逸飞 on 2024/10/6.
 //
 
-
-// SimplifyDebts class in Swift
+// SimplifyDebts class
 class SimplifyDebts {
     static let OFFSET: Int64 = 1000000000
     var visitedEdges: Set<Int64> = []
-
-    func createGraphForDebts() -> String {
-        let person = ["A", "B", "C", "D"]
-        let n = person.count
-        let solver = Dinics(n: n, person: person)
-        
-        var transactions: [EdgeKey: Int64] = [:]
-        addTransaction(&transactions, from: 0, to: 1, amount: 90)
-        addTransaction(&transactions, from: 1, to: 2, amount: 90)
-        addTransaction(&transactions, from: 2, to: 3, amount: 90)
-        addTransaction(&transactions, from: 3, to: 0, amount: 100)
-        
-        simplifyTransactions(transactions: transactions, solver: solver)
-        
-        print("\nInitial Transactions:")
-        for (key, amount) in transactions {
-            print("\(person[key.from]) owes \(person[key.to]) an amount of \(amount)")
-        }
-        
-        print("Simplifying Debts...")
-        print("--------------------")
-        
-        visitedEdges = []
-        
-        while getNonVisitedEdge(edges: solver.getEdges()) != nil {
-            solver.recompute()
-            let firstEdge = solver.getEdges().first!  // 获取第一个边缘
-            solver.setSource(s: firstEdge.from)
-            solver.setSink(t: firstEdge.to)
-            let residualGraph = solver.getGraph()
-            var newEdges: [Dinics.Edge] = []
+    var transactions: [EdgeKey: Int64] = [:]  // Stores transactions between people (indexed by EdgeKey)
+    var personToIndex: [Person: Int] = [:]
+    
+    // Add a transaction between two people (from payer to involver)
+    func addTransaction(from: Int, to: Int, amount: Int64) {
+        let key = EdgeKey(from: from, to: to)
+        transactions[key] = (transactions[key] ?? 0) + amount  // Accumulate if transaction already exists
+    }
+    
+    // Process a list of bills and add transactions
+    func processBills(bills: [Bill]) {
+        for bill in bills {
+            guard let involversSet = bill.involvers as? Set<Person>, let payer = bill.payer else {
+                continue  // Skip this bill if involvers or payer are not properly set
+            }
             
-            for edges in residualGraph {
-                for edge in edges {
-                    let remainingFlow = (edge.flow < 0) ? edge.capacity : (edge.capacity - edge.flow)
-                    if remainingFlow > 0 {
-                        newEdges.append(edge)
+            // Convert bill amount to cents (Int64) to avoid floating-point issues
+            let amountInCents = Int64(bill.amount * 100)
+            let share = amountInCents / Int64(involversSet.count)  // Split the amount equally among involvers
+
+            // Add transactions from the payer to each involver, excluding the payer
+            for involver in involversSet {
+                if involver != payer {
+                    if let payerIndex = personToIndex[payer], let involverIndex = personToIndex[involver] {
+                        addTransaction(from: payerIndex, to: involverIndex, amount: share)
                     }
                 }
             }
         }
+    }
+
+    // Function to run the debt simplification algorithm
+    func runSimplifyAlgorithm() -> String {
+        let personCount = getUniquePeopleCount()  // Number of unique people involved in the transactions
+        let solver = Dinics(n: personCount)
+        
+        // Simplify the transactions
+        simplifyTransactions(solver: solver)
         
         // Return result for UI display
         return "Debts simplified successfully"
     }
 
-    // Add transaction helper function
-    func addTransaction(_ transactions: inout [EdgeKey: Int64], from: Int, to: Int, amount: Int64) {
-        let key = EdgeKey(from: from, to: to)
-        transactions[key] = amount
-    }
-
-    // Helper function to simplify transactions
-    func simplifyTransactions(transactions: [EdgeKey: Int64], solver: Dinics) {
-        var netAmount = Array(repeating: Int64(0), count: solver.person.count)
-        
+    // Function to simplify transactions using Dinics algorithm
+    private func simplifyTransactions(solver: Dinics) {
         // Calculate net balance for each person
+        var netAmount = Array(repeating: Int64(0), count: solver.getPersonCount())
         for (key, amount) in transactions {
             netAmount[key.from] -= amount
             netAmount[key.to] += amount
         }
         
-        print("Initial debt amounts: ")
-        for (i, amount) in netAmount.enumerated() {
-            print("\(solver.person[i]): \(amount)")
-        }
+        // Clear old transactions to keep only simplified ones
+        transactions.removeAll()
         
         // Pair creditors and debtors to simplify the transactions
         var creditors = [(Int, Int64)]()  // (person index, amount)
@@ -96,7 +83,11 @@ class SimplifyDebts {
             let debtor = debtors[j]
             
             let amount = min(creditor.1, debtor.1)
+            
             print("\(solver.person[debtor.0]) pays \(amount) to \(solver.person[creditor.0])")
+            
+            // Add only the simplified transactions
+            addTransaction(from: debtor.0, to: creditor.0, amount: amount)
             
             creditors[i].1 -= amount
             debtors[j].1 -= amount
@@ -106,26 +97,21 @@ class SimplifyDebts {
         }
     }
 
-    // Get non-visited edge helper function
-    func getNonVisitedEdge(edges: [Dinics.Edge]) -> Int? {
-        for (index, edge) in edges.enumerated() {
-            let edgeHash = Int64(edge.hashValue)
-            if !visitedEdges.contains(edgeHash) {
-                visitedEdges.insert(edgeHash)
-                return index
-            }
-        }
-        return nil
+    // Utility function to get the unique count of people involved in transactions
+    private func getUniquePeopleCount() -> Int {
+        let uniquePeople = Set(transactions.keys.flatMap { [$0.from, $0.to] })
+        return uniquePeople.count
     }
 }
 
-// Define EdgeKey for transactions
+
+// Define EdgeKey to uniquely identify a transaction
 struct EdgeKey: Hashable {
     let from: Int
     let to: Int
 }
 
-// Dinics class skeleton
+// Dinics class skeleton for the flow network logic
 class Dinics {
     class Edge: Hashable {
         let from: Int
@@ -140,7 +126,7 @@ class Dinics {
             self.flow = flow
         }
         
-        // 实现Hashable协议
+        // Implement Hashable protocol
         func hash(into hasher: inout Hasher) {
             hasher.combine(from)
             hasher.combine(to)
@@ -148,38 +134,44 @@ class Dinics {
             hasher.combine(flow)
         }
         
-        // 实现Equatable协议
+        // Implement Equatable protocol
         static func == (lhs: Edge, rhs: Edge) -> Bool {
             return lhs.from == rhs.from && lhs.to == rhs.to && lhs.capacity == rhs.capacity && lhs.flow == rhs.flow
         }
     }
     
-    let person: [String]
-    
-    init(n: Int, person: [String]) {
-        self.person = person
-        // Initialize the Dinics solver
+    let personCount: Int
+    let person: [String]  // Person array (optional for handling names)
+
+    init(n: Int) {
+        self.personCount = n
+        self.person = Array(repeating: "Person", count: n)  // Just placeholders, should be filled with actual names
     }
     
+    // Placeholder functions for Dinics algorithm
     func recompute() {
-        // Recompute the flow
+        // Recompute the flow based on Dinic's algorithm
     }
     
     func getEdges() -> [Edge] {
-        // Return all edges
+        // Return the current edges with flow and capacity
         return []
     }
     
     func getGraph() -> [[Edge]] {
-        // Return residual graph
+        // Return the residual graph of edges
         return []
     }
     
     func setSource(s: Int) {
-        // Set source for the flow network
+        // Set source node for the flow network
     }
     
     func setSink(t: Int) {
-        // Set sink for the flow network
+        // Set sink node for the flow network
+    }
+    
+    func getPersonCount() -> Int {
+        return personCount
     }
 }

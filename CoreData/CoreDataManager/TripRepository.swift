@@ -31,6 +31,33 @@ class TripRepository {
         }
     }
     
+    // Fetch unsettled trips from CoreData
+    func fetchUnsettledTrips() -> [Trip] {
+        let fetchRequest: NSFetchRequest<Trip> = Trip.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "settled == NO")
+        
+        do {
+            return try context.fetch(fetchRequest)
+        } catch {
+            print("Failed to fetch unsettled trips: \(error)")
+            return []
+        }
+    }
+
+    // Fetch settled trips from CoreData
+    func fetchSettledTrips() -> [Trip] {
+        let fetchRequest: NSFetchRequest<Trip> = Trip.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "settled == YES")
+        
+        do {
+            return try context.fetch(fetchRequest)
+        } catch {
+            print("Failed to fetch settled trips: \(error)")
+            return []
+        }
+    }
+    
+    
     // Fetch a specific trip by ID
     func fetchTrip(by id: NSManagedObjectID) -> Trip? {
         return context.object(with: id) as? Trip
@@ -152,6 +179,76 @@ extension TripRepository {
         bill.payer = payer
         bill.removeFromInvolvers(bill.involvers ?? NSSet())
         bill.addToInvolvers(NSSet(array: involvers))
+        saveContext()
+    }
+}
+extension TripRepository {
+    
+    func simplifyTransactions(for trip: Trip) -> [(from: String, to: String, amount: Double)] {
+        guard let peopleSet = trip.people, let billsSet = trip.bills else {
+            return []
+        }
+        
+        let people = peopleSet.allObjects as? [Person] ?? []
+        let bills = billsSet.allObjects as? [Bill] ?? []
+        
+        // Map Person to a unique index for processing
+        let personToIndex = Dictionary(uniqueKeysWithValues: people.enumerated().map { ($1, $0) })
+        
+        // Initialize the SimplifyDebts class
+        let simplifyDebts = SimplifyDebts()
+        
+        // Process each bill
+        for bill in bills {
+            guard let payer = bill.payer, let involversSet = bill.involvers else { continue }
+            let involvers = involversSet.allObjects as? [Person] ?? []
+            
+            // Calculate share per person (assuming equal share)
+            let share = Int64(bill.amount * 100) / Int64(involvers.count)  // Using cents to avoid floating point errors
+            
+            if let payerIndex = personToIndex[payer] {
+                // Add transactions from the payer to each involver
+                for involver in involvers {
+                    if let involverIndex = personToIndex[involver], payer != involver {
+                        simplifyDebts.addTransaction(from: payerIndex, to: involverIndex, amount: share)
+                    }
+                }
+            }
+        }
+        
+        // Run the simplification algorithm
+        let result = simplifyDebts.runSimplifyAlgorithm()
+        
+        // Convert the simplified transactions into readable format
+        var simplifiedTransactions: [(from: String, to: String, amount: Double)] = []
+        for (key, amount) in simplifyDebts.transactions {
+            let fromPerson = people[key.from] // Direct access without optional binding
+            let toPerson = people[key.to]     // Direct access without optional binding
+            let amountInDollars = Double(amount) / 100.0  // Convert cents back to dollars
+
+            if amountInDollars > 0 {
+                simplifiedTransactions.append((from: fromPerson.name ?? "Unknown", to: toPerson.name ?? "Unknown", amount: amountInDollars))
+            }
+        }
+        
+        print("Transcation count: \(simplifiedTransactions.count)")
+        
+        return simplifiedTransactions
+    }
+
+    // Settle a trip and mark it as settled
+    func settleTrip(_ trip: Trip) {
+        // Call the simplification function to process the transactions
+        let simplifiedTransactions = simplifyTransactions(for: trip)
+
+        // Print out simplified transactions (optional, can be removed if not needed)
+        print("\nSimplified Transactions:")
+        for transaction in simplifiedTransactions {
+            print("\(transaction.from) owes \(transaction.to) an amount of \(transaction.amount)")
+        }
+
+        // Mark the trip as settled
+        trip.settled = true
         saveContext()
     }
 }
