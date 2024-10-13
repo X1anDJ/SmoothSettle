@@ -61,7 +61,7 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
         }.sorted { $0.fromName < $1.fromName }
 
         // Debug: Print the loaded sections
-        print("Loaded transactions in sections:", sections)
+//        print("Loaded transactions in sections:", sections)
 
         // Call the completion handler to pass the loaded transactions
         completion(self.sections)

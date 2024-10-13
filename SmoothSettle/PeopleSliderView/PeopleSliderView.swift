@@ -99,7 +99,7 @@ class PeopleSliderView: UIView {
             
             for case let cell as PeopleCell in collectionView.visibleCells {
                 cell.showRemoveButton()
-                print("Long press detected")
+//                print("Long press detected")
             }
             self.tapGesture.isEnabled = true
         }
@@ -111,7 +111,7 @@ class PeopleSliderView: UIView {
     
     func hideAllRemoveButtons() {
         if isRemoveModeActive {
-            print("Tapped outside, hiding remove buttons")
+//            print("Tapped outside, hiding remove buttons")
             for case let cell as PeopleCell in collectionView.visibleCells {
                 cell.hideRemoveButton()
             }

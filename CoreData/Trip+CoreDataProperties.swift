@@ -16,6 +16,7 @@ extension Trip {
         return NSFetchRequest<Trip>(entityName: "Trip")
     }
 
+    @NSManaged public var id: UUID?
     @NSManaged public var date: Date?
     @NSManaged public var settled: Bool
     @NSManaged public var title: String?

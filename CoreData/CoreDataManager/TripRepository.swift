@@ -4,7 +4,6 @@
 //
 //  Created by Dajun Xian on 2024/9/23.
 //
-
 import CoreData
 
 class TripRepository {
@@ -19,7 +18,6 @@ class TripRepository {
     
     // MARK: - Managing Trips
 
-    
     // Fetch all trips from CoreData
     func fetchAllTrips() -> [Trip] {
         let fetchRequest: NSFetchRequest<Trip> = Trip.fetchRequest()
@@ -66,6 +64,7 @@ class TripRepository {
     // Create a new trip with title, people, and date
     func createTrip(title: String, people: [Person], date: Date) -> Trip {
         let trip = Trip(context: context)
+        trip.id = UUID()  // Assign a unique UUID
         trip.title = title
         trip.date = date
         trip.settled = false
@@ -112,6 +111,7 @@ extension TripRepository {
     // Add a person to a trip
     func addPerson(to trip: Trip, name: String, balance: Double = 0.0) -> Person {
         let person = Person(context: context)
+        person.id = UUID()  // Assign a unique UUID
         person.name = name
         person.balance = balance
         trip.addToPeople(person)
@@ -154,6 +154,7 @@ extension TripRepository {
     // Add a bill to a trip
     func addBill(to trip: Trip, title: String, amount: Double, date: Date, payer: Person, involvers: [Person]) -> Bill {
         let bill = Bill(context: context)
+        bill.id = UUID()  // Assign a unique UUID
         bill.title = title
         bill.amount = amount
         bill.payer = payer
@@ -182,6 +183,9 @@ extension TripRepository {
         saveContext()
     }
 }
+
+// MARK: - Simplifying Transactions and Settling Trips
+
 extension TripRepository {
     
     func simplifyTransactions(for trip: Trip) -> [(from: String, to: String, amount: Double)] {
@@ -231,8 +235,6 @@ extension TripRepository {
             }
         }
         
-        print("Transcation count: \(simplifiedTransactions.count)")
-        
         return simplifiedTransactions
     }
 
@@ -240,12 +242,6 @@ extension TripRepository {
     func settleTrip(_ trip: Trip) {
         // Call the simplification function to process the transactions
         let simplifiedTransactions = simplifyTransactions(for: trip)
-
-        // Print out simplified transactions (optional, can be removed if not needed)
-        print("\nSimplified Transactions:")
-        for transaction in simplifiedTransactions {
-            print("\(transaction.from) owes \(transaction.to) an amount of \(transaction.amount)")
-        }
 
         // Mark the trip as settled
         trip.settled = true

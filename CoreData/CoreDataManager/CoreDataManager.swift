@@ -22,6 +22,8 @@ class CoreDataManager {
                 fatalError("Failed to load Core Data stack: \(error)")
             }
         }
+        
+//        resetPersistentStore() // Reset the persistent store for testing
     }
     
     // Managed object context for performing operations
@@ -41,4 +43,19 @@ class CoreDataManager {
             }
         }
     }
+    
+    func resetPersistentStore() {
+        let persistentStoreCoordinator = persistentContainer.persistentStoreCoordinator
+
+        if let storeURL = persistentContainer.persistentStoreDescriptions.first?.url {
+            do {
+                try persistentStoreCoordinator.destroyPersistentStore(at: storeURL, ofType: NSSQLiteStoreType, options: nil)
+                try persistentStoreCoordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: nil)
+                print("Persistent store reset successfully.")
+            } catch {
+                print("Failed to reset persistent store: \(error)")
+            }
+        }
+    }
+
 }

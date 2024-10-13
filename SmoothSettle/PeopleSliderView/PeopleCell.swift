@@ -97,7 +97,7 @@ class PeopleCell: UICollectionViewCell {
         initialsLabel.textColor = .white
         circleView.backgroundColor = Colors.accentYellow
         circleView.layer.borderWidth = 0 // No border for the add button
-        print("Configure add button")
+//        print("Configure add button")
         removePersonButton.isHidden = true
     }
     
@@ -109,7 +109,7 @@ class PeopleCell: UICollectionViewCell {
         circleView.backgroundColor = .white
         circleView.layer.borderColor = UIColor.systemGray5.cgColor
         circleView.layer.borderWidth = 1
-        print("Configure empty button")
+//        print("Configure empty button")
         removePersonButton.isHidden = true
     }
     
@@ -128,21 +128,21 @@ class PeopleCell: UICollectionViewCell {
     
     @objc private func removePerson() {
         if let person = person {
-            print("People cell request remove")
+//            print("People cell request remove")
             delegate?.didRequestRemovePerson(person)
         }
     }
     
     func hideRemoveButton() {
         removePersonButton.isHidden = true
-        print("hide RemoveButton")
+//        print("hide RemoveButton")
     }
     
     func showRemoveButton() {
         if let person = person {
-            print("Person is \(String(describing: person.name))")
+//            print("Person is \(String(describing: person.name))")
             removePersonButton.isHidden = false
-            print("show RemoveButton")
+//            print("show RemoveButton")
         }
     }
 }

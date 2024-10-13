@@ -40,7 +40,7 @@ class SettleViewController: UIViewController {
 
             // Load transactions and pass them to CircleLayoutView via the completion handler
             transactionsTableView.loadTransactions { [weak self] sections in
-                print("Transactions loaded and passed to CircleLayoutView:", sections)
+//                print("Transactions loaded and passed to CircleLayoutView:", sections)
                 self?.circleLayoutView.transactions = sections
             }
         }

@@ -75,8 +75,8 @@ class SimplifyDebts {
                 debtors.append((index, -amount))  // Store as positive amount
             }
         }
-        
-        print("\nSimplified transactions:")
+//        
+//        print("\nSimplified transactions:")
         var i = 0, j = 0
         while i < creditors.count && j < debtors.count {
             let creditor = creditors[i]
@@ -84,7 +84,7 @@ class SimplifyDebts {
             
             let amount = min(creditor.1, debtor.1)
             
-            print("\(solver.person[debtor.0]) pays \(amount) to \(solver.person[creditor.0])")
+//            print("\(solver.person[debtor.0]) pays \(amount) to \(solver.person[creditor.0])")
             
             // Add only the simplified transactions
             addTransaction(from: debtor.0, to: creditor.0, amount: amount)

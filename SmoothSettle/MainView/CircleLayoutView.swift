@@ -132,7 +132,7 @@ class CircleLayoutView: UIView {
 
         // Check if the line should be removable (i.e., no transaction between users)
         if !transactionExistsBetween(from: fromUser, to: toUser) && !transactionExistsBetween(from: toUser, to: fromUser) {
-            print("Line between \(fromUser) and \(toUser) can be removed, no transactions found.")
+//            print("Line between \(fromUser) and \(toUser) can be removed, no transactions found.")
             removableLines.append((line, fromUser, toUser))
         }
 
@@ -170,7 +170,7 @@ class CircleLayoutView: UIView {
     // Disconnect lines that can be removed after the initial animation completes
     private func disconnectRemovableLines() {
         for (line, fromUser, toUser) in removableLines {
-            print("Disconnecting line between \(fromUser) and \(toUser)")
+//            print("Disconnecting line between \(fromUser) and \(toUser)")
             
             // Animate the line removal (fade out and remove from the layer)
             let animation = CABasicAnimation(keyPath: "opacity")

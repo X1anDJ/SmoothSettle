@@ -16,6 +16,7 @@ extension Person {
         return NSFetchRequest<Person>(entityName: "Person")
     }
 
+    @NSManaged public var id: UUID
     @NSManaged public var balance: Double
     @NSManaged public var name: String?
     @NSManaged public var bills: NSSet?

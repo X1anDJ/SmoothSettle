@@ -16,6 +16,7 @@ extension Bill {
         return NSFetchRequest<Bill>(entityName: "Bill")
     }
 
+    @NSManaged public var id: UUID?
     @NSManaged public var amount: Double
     @NSManaged public var date: Date?
     @NSManaged public var title: String?
