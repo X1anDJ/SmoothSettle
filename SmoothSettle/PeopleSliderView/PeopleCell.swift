@@ -4,12 +4,11 @@
 //
 //  Created by Dajun Xian on 2024/9/23.
 //
-
 import Foundation
 import UIKit
 
 protocol PeopleCellDelegate: AnyObject {
-    func didRequestRemovePerson(_ person: Person)
+    func didRequestRemovePerson(_ personId: UUID?)
 }
 
 class PeopleCell: UICollectionViewCell {
@@ -17,10 +16,9 @@ class PeopleCell: UICollectionViewCell {
     private let circleView = UIView()
     private let initialsLabel = UILabel()
     private let removePersonButton = UIButton()
-    //private var longpressed = false
-    
+
     weak var delegate: PeopleCellDelegate?
-    private var person: Person?
+    private var personId: UUID?  // Store the person's UUID instead of the Person object
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -30,7 +28,6 @@ class PeopleCell: UICollectionViewCell {
         circleView.layer.cornerRadius = 30
         circleView.backgroundColor = .systemGray6
         contentView.addSubview(circleView)
-//        setupLongPressGesture()
         
         // RemovePersonButton setup
         removePersonButton.translatesAutoresizingMaskIntoConstraints = false
@@ -52,9 +49,7 @@ class PeopleCell: UICollectionViewCell {
             circleView.heightAnchor.constraint(equalToConstant: 60),
             circleView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             circleView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-//            
-//            removePersonButton.widthAnchor.constraint(equalToConstant: 30),
-//            removePersonButton.heightAnchor.constraint(equalToConstant: 30),
+            
             removePersonButton.centerXAnchor.constraint(equalTo: circleView.centerXAnchor, constant: 30),
             removePersonButton.centerYAnchor.constraint(equalTo: circleView.centerYAnchor, constant: -30),
             
@@ -67,21 +62,20 @@ class PeopleCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
-    // Configure the cell with a person and a flag for whether they're selected
-    func configure(with person: Person, isSelected: Bool) {
-        self.person = person
-        guard let name = person.name else {
-                print("Invalid person in cell")
-                return
-            }
+    // Configure the cell with a person's UUID and initials, and a flag for whether they're selected
+    func configure(with personId: UUID, name: String?, isSelected: Bool) {
+        self.personId = personId
+        guard let name = name else {
+            print("Invalid person in cell")
+            return
+        }
         
-        let initials = person.name?.components(separatedBy: " ").compactMap { $0.first }.map { String($0) }.joined() ?? "?"
+        let initials = name.components(separatedBy: " ").compactMap { $0.first }.map { String($0) }.joined()
         initialsLabel.text = initials
         initialsLabel.textColor = .white
         circleView.backgroundColor = Colors.primaryLight // Set background color for person cells
         
-        // Apply a red border if selected, otherwise no border
+        // Apply a border if selected, otherwise no border
         if isSelected {
             circleView.layer.borderWidth = 2.0
             circleView.layer.borderColor = UIColor.systemBlue.cgColor
@@ -92,57 +86,38 @@ class PeopleCell: UICollectionViewCell {
     
     // Configure the cell as a "plus" button for adding new people
     func configureAsAddButton() {
-        person = nil
+        personId = nil  // No UUID for the add button
         initialsLabel.text = "+"
         initialsLabel.textColor = .white
         circleView.backgroundColor = Colors.accentYellow
         circleView.layer.borderWidth = 0 // No border for the add button
-//        print("Configure add button")
         removePersonButton.isHidden = true
     }
     
-    // Configure a empty button
+    // Configure an empty button
     func configureEmptyButton() {
-        person = nil
+        personId = nil
         initialsLabel.text = ""
         initialsLabel.textColor = .clear
         circleView.backgroundColor = .white
         circleView.layer.borderColor = UIColor.systemGray5.cgColor
         circleView.layer.borderWidth = 1
-//        print("Configure empty button")
         removePersonButton.isHidden = true
     }
     
-//    private func setupLongPressGesture() {
-//        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
-//        longPressGesture.minimumPressDuration = 0.5
-//        circleView.addGestureRecognizer(longPressGesture)
-//    }
-    
-//    @objc private func handleLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
-//        if gestureRecognizer.state == .began {
-//            removePersonButton.isHidden = false
-//            print("Long press detected")
-//        }
-//    }
-    
     @objc private func removePerson() {
-        if let person = person {
-//            print("People cell request remove")
-            delegate?.didRequestRemovePerson(person)
+        if let personId = personId {
+            delegate?.didRequestRemovePerson(personId)  // Pass the person's UUID to the delegate
         }
     }
     
     func hideRemoveButton() {
         removePersonButton.isHidden = true
-//        print("hide RemoveButton")
     }
     
     func showRemoveButton() {
-        if let person = person {
-//            print("Person is \(String(describing: person.name))")
+        if personId != nil {
             removePersonButton.isHidden = false
-//            print("show RemoveButton")
         }
     }
 }

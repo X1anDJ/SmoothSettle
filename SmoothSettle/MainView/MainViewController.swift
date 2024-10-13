@@ -1,3 +1,10 @@
+//
+//  MainViewController.swift
+//  SmoothSettle
+//
+//  Created by Dajun Xian on 2024/10/12.
+//
+
 import UIKit
 import Combine
 
@@ -12,7 +19,6 @@ class MainViewController: UIViewController {
     
     override func loadView() {
         self.view = MainView()
-        
     }
     
     override func viewDidLoad() {
@@ -35,13 +41,8 @@ class MainViewController: UIViewController {
         
         // Set up target-actions for buttons
         mainView.userButton.addTarget(self, action: #selector(didTapUserButton), for: .touchUpInside)
-//        mainView.addTripButton.addTarget(self, action: #selector(didTapAddTrip), for: .touchUpInside)
-        
-        
         mainView.settleButton.addTarget(self, action: #selector(didTapSettle), for: .touchUpInside)
-        
         mainView.addBillButton.addTarget(self, action: #selector(didTapAddBill), for: .touchUpInside)
-//        mainView.currentTripButton.addTarget(self, action: #selector(showTripDropdown), for: .touchUpInside)
         
         setupTripDropdownMenu()
     }
@@ -50,12 +51,14 @@ class MainViewController: UIViewController {
     // Set up bindings between the view model and the UI
     func setupBindings() {
         // Observe current trip changes
-        viewModel.$currentTrip
+        viewModel.$currentTripId
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] trip in
-                self?.updateCurrentTripUI(with: trip)
-                self?.updatePeopleSlider(with: trip?.peopleArray ?? [])
-                self?.mainView.peopleSliderView.trip = trip
+            .sink { [weak self] tripId in
+                if let tripId = tripId, let trip = self?.viewModel.tripRepository.fetchTrip(by: tripId) {
+                    self?.updateCurrentTripUI(with: trip)
+                    self?.updatePeopleSlider(with: trip.peopleArray)
+                    self?.mainView.peopleSliderView.tripId = tripId
+                }
             }
             .store(in: &cancellables)
         
@@ -64,6 +67,7 @@ class MainViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.setupTripDropdownMenu() // Rebuild the UIMenu whenever trips are updated
+                
             }
             .store(in: &cancellables)
         
@@ -72,6 +76,7 @@ class MainViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] people in
                 self?.updatePeopleSlider(with: people)
+                
             }
             .store(in: &cancellables)
         
@@ -83,8 +88,6 @@ class MainViewController: UIViewController {
             }
             .store(in: &cancellables)
     }
-    
-
 
     func updateCurrentTripUI(with trip: Trip?) {
         if let trip = trip {
@@ -94,7 +97,6 @@ class MainViewController: UIViewController {
             currentTripText.append(NSAttributedString(attachment: arrowIconAttachment))
             mainView.currentTripButton.setAttributedTitle(currentTripText, for: .normal)
         } else {
-            
             mainView.currentTripButton.setAttributedTitle(NSAttributedString(string: "Add a Trip"), for: .normal)
         }
     }
@@ -107,7 +109,7 @@ class MainViewController: UIViewController {
         // Create actions for each existing trip
         let tripMenuActions = viewModel.trips.map { trip in
             UIAction(title: trip.title ?? "Unnamed Trip", image: nil) { [weak self] _ in
-                self?.viewModel.selectTrip(trip)
+                self?.viewModel.selectTrip(by: trip.id) // Use UUID to select the trip
             }
         }
         
@@ -115,7 +117,6 @@ class MainViewController: UIViewController {
         let addTripAction = UIAction(title: "Add Trip", image: UIImage(systemName: "plus")) { [weak self] _ in
             self?.didTapAddTrip() // Call the function to add a new trip
         }
-        
         
         // Create the UIMenu and append the "Add Trip" action as the last item
         let tripMenu = UIMenu(title: "Switch Trip", children: tripMenuActions + [addTripAction])
@@ -129,7 +130,6 @@ class MainViewController: UIViewController {
         let billsViewController = BillsViewController()
         navigationController?.pushViewController(billsViewController, animated: true)
     }
-    
     
     @objc func didTapUserButton() {
         let userVC = UserViewController()
@@ -150,18 +150,49 @@ class MainViewController: UIViewController {
     }
     
     @objc func didTapSettle() {
-        let settleVC = SettleViewController() // Replace with your custom view controller
+        let settleVC = SettleViewController()
         settleVC.viewModel = self.viewModel
         settleVC.modalPresentationStyle = .overFullScreen
-        self.present(settleVC, animated: true, completion: nil)
+        
+        // Subscribe to the settleSubject and call reload on settlement
+        settleVC.settleSubject
+            .sink { [weak self] in
+                self?.reloadMainViewController() // Call reload method when settled
+            }
+            .store(in: &cancellables)
+        
+        present(settleVC, animated: true, completion: nil)
+    }
+
+
+    func reloadMainViewController() {
+        // Reload the trip data
+        viewModel.loadAllUnsettledTrips()
+
+        // Fetch and reload the current trip and its people
+        if let currentTripId = viewModel.currentTripId, let currentTrip = viewModel.tripRepository.fetchTrip(by: currentTripId) {
+            updateCurrentTripUI(with: currentTrip)
+            updatePeopleSlider(with: currentTrip.peopleArray)
+        } else {
+            updateCurrentTripUI(with: nil)
+            updatePeopleSlider(with: [])
+        }
+
+        // Reload the UI components
+        mainView.customTableView.reloadData()
     }
 
     @objc func didTapAddBill() {
         let addBillVC = AddBillViewController()
-        addBillVC.currentTrip = viewModel.currentTrip
-        addBillVC.people = viewModel.people
-        addBillVC.delegate = self
-
+        
+        // Pass the current trip ID and people to the AddBillViewController
+        if let currentTripId = viewModel.currentTripId {
+            addBillVC.currentTripId = currentTripId // Pass the trip ID instead of the whole Trip object
+            addBillVC.people = viewModel.people     // You can still pass the people objects if needed
+        }
+        
+        addBillVC.delegate = self // Set the delegate to handle callbacks
+        
         let navController = UINavigationController(rootViewController: addBillVC)
         
         // Configure the sheet presentation
@@ -178,26 +209,40 @@ class MainViewController: UIViewController {
         present(navController, animated: true, completion: nil)
     }
 
-
 }
 
 // Delegate for PeopleSliderView
 extension MainViewController: PeopleSliderViewDelegate, PeopleCellDelegate {
-    func didRequestRemovePerson(_ person: Person) {
-        if !viewModel.requestToRemovePerson(person) {
+    func didRequestRemovePerson(_ personId: UUID?) {
+        // Check if personId is valid, do nothing if it's nil
+        guard let personId = personId else {
+            print("Person ID is nil, no action taken.")
+            return
+        }
+        
+        // Use UUID to remove the person
+        if !viewModel.requestToRemovePerson(by: personId) {
             print("Failed to remove person because they are involved in bills")
         } else {
             print("Person removed successfully")
         }
         mainView.peopleSliderView.hideAllRemoveButtons()
     }
-    
-    func didSelectPerson(_ person: Person, for trip: Trip?, context: SliderContext) {
-        // Add logic to handle person selection if needed
+
+    func didSelectPerson(_ personId: UUID?, for tripId: UUID?, context: SliderContext) {
+        // Check if personId exists, do nothing if it's nil
+        guard let personId = personId else {
+            print("Person ID is nil, no action taken.")
+            return
+        }
+        
+        // Add logic to handle person selection using personId
+        print("Person selected with ID: \(personId) in trip \(tripId?.uuidString ?? "Unknown") with context: \(context)")
     }
+
     
-    func didTapAddPerson(for trip: Trip?) {
-        guard let trip = trip else { return }
+    func didTapAddPerson(for tripId: UUID?) {
+        guard let tripId = tripId else { return }
         
         // Show alert to add a person
         DispatchQueue.main.async {
@@ -212,7 +257,7 @@ extension MainViewController: PeopleSliderViewDelegate, PeopleCellDelegate {
                     errorAlert.addAction(UIAlertAction(title: "OK", style: .default))
                     self?.present(errorAlert, animated: true)
                 } else if let name = alert.textFields?.first?.text {
-                    // Add person to the current trip
+                    // Add person to the current trip using tripId
                     self?.viewModel.addPersonToCurrentTrip(name: name)
                 }
             }))
@@ -276,14 +321,18 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
+// MARK: - AddTripViewControllerDelegate
 extension MainViewController: AddTripViewControllerDelegate {
     func didAddTrip(title: String, people: [Person], date: Date) {
+        // Pass full Person instances, not UUIDs
         viewModel.addNewTrip(title: title, people: people, date: date)
     }
 }
 
+// MARK: - AddBillViewControllerDelegate
 extension MainViewController: AddBillViewControllerDelegate {
-    func didAddBill(title: String, amount: Double, date: Date, payer: Person, involvers: [Person]) {
-        viewModel.addBillToCurrentTrip(title: title, amount: amount, date: date, payer: payer, involvers: involvers)
+    func didAddBill(title: String, amount: Double, date: Date, payerId: UUID, involverIds: [UUID]) {
+        // Use UUID for the payer and involvers
+        viewModel.addBillToCurrentTrip(title: title, amount: amount, date: date, payerId: payerId, involverIds: involverIds)
     }
 }

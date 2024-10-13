@@ -4,7 +4,6 @@
 //
 //  Created by Dajun Xian on 2024/9/22.
 //
-
 import Foundation
 import Combine
 import CoreData
@@ -13,7 +12,7 @@ class MainViewModel: ObservableObject {
     
     // MARK: - Published properties for UI Binding
     @Published var trips: [Trip] = []             // All available trips
-    @Published var currentTrip: Trip?             // Currently selected trip
+    @Published var currentTripId: UUID?           // Currently selected trip's UUID
     @Published var people: [Person] = []          // People involved in the current trip
     @Published var bills: [Bill] = []             // Bills related to the current trip
     
@@ -24,42 +23,42 @@ class MainViewModel: ObservableObject {
     init(tripRepository: TripRepository = TripRepository()) {
         self.tripRepository = tripRepository
         loadAllUnsettledTrips() // Load trips on initialization
-        
     }
     
     // MARK: - Methods to Load Data
     
-    // Load all trips from the repository
+    // Load all unsettled trips from the repository
     func loadAllUnsettledTrips() {
         trips = tripRepository.fetchUnsettledTrips()
-//        print("Trip count: \(trips.count)")
         if let firstTrip = trips.first {
-            selectTrip(firstTrip) // Set the first trip as the default selected trip
+            selectTrip(by: firstTrip.id) // Set the first trip as the default selected trip using UUID
         }
     }
     
-    // Select a trip, fetch its related data (people and bills)
-    func selectTrip(_ trip: Trip) {
-        currentTrip = trip
-        people = tripRepository.fetchPeople(for: trip)
-        bills = tripRepository.fetchBills(for: trip)
+    // Select a trip by its UUID, fetch its related data (people and bills)
+    func selectTrip(by tripId: UUID) {
+        currentTripId = tripId
+        if let trip = tripRepository.fetchTrip(by: tripId) {
+            people = tripRepository.fetchPeople(for: tripId) // Use UUID to fetch people
+            bills = tripRepository.fetchBills(for: tripId)   // Use UUID to fetch bills
+        }
     }
     
     // Add a new trip with title, people, and date
     func addNewTrip(title: String, people: [Person], date: Date) {
         let newTrip = tripRepository.createTrip(title: title, people: people, date: date)
         trips.append(newTrip)
-        selectTrip(newTrip) // Automatically select the new trip
+        selectTrip(by: newTrip.id) // Automatically select the new trip using UUID
     }
     
-    // Delete a trip
-    func deleteTrip(_ trip: Trip) {
-        tripRepository.deleteTrip(trip)
-        trips.removeAll { $0 == trip }
+    // Delete a trip by its UUID
+    func deleteTrip(by tripId: UUID) {
+        tripRepository.deleteTrip(by: tripId)
+        trips.removeAll { $0.id == tripId }  // Remove the trip from the array using UUID
         if let firstTrip = trips.first {
-            selectTrip(firstTrip) // Select the next available trip
+            selectTrip(by: firstTrip.id) // Select the next available trip by UUID
         } else {
-            currentTrip = nil
+            currentTripId = nil
             people = []
             bills = []
         }
@@ -67,50 +66,64 @@ class MainViewModel: ObservableObject {
     
     // Add a new person to the current trip
     func addPersonToCurrentTrip(name: String) {
-        guard let currentTrip = currentTrip else { return }
-        let newPerson = tripRepository.addPerson(to: currentTrip, name: name)
-        people.append(newPerson)
+        guard let currentTripId = currentTripId else { return }
+        if let newPerson = tripRepository.addPerson(to: currentTripId, name: name) {
+            people.append(newPerson)
+        }
     }
     
     // Add a new bill to the current trip
-    func addBillToCurrentTrip(title: String, amount: Double, date: Date, payer: Person, involvers: [Person]) {
-        guard let currentTrip = currentTrip else { return }
-        let newBill = tripRepository.addBill(to: currentTrip, title: title, amount: amount, date: date, payer: payer, involvers: involvers)
-        bills.append(newBill)
+    func addBillToCurrentTrip(title: String, amount: Double, date: Date, payerId: UUID, involverIds: [UUID]) {
+        guard let currentTripId = currentTripId else { return }
+        if let newBill = tripRepository.addBill(to: currentTripId, title: title, amount: amount, date: date, payerId: payerId, involversIds: involverIds) {
+            bills.append(newBill)
+        }
     }
     
     // Update the current trip (e.g., if it's settled)
     func updateTripSettledStatus(isSettled: Bool) {
-        guard let currentTrip = currentTrip else { return }
-        currentTrip.settled = isSettled
+        guard let currentTripId = currentTripId, let trip = tripRepository.fetchTrip(by: currentTripId) else { return }
+        trip.settled = isSettled
         tripRepository.saveContext() // Persist changes
     }
     
-   
-
-    
     // Settle the current trip
     func settleCurrentTrip() {
-        guard let currentTrip = currentTrip else {
+        guard let currentTripId = currentTripId else {
             print("No current trip selected.")
             return
         }
-        tripRepository.settleTrip(currentTrip)
+
+        // Settle the trip using the repository
+        tripRepository.settleTrip(by: currentTripId)
+        
+        // Reset the state before reloading the trips
+        resetState()
+
+        // Reload unsettled trips after settling the current trip
         loadAllUnsettledTrips()
     }
     
-    func requestToRemovePerson(_ person: Person) -> Bool {
-        guard let currentTrip = currentTrip else { return false }
+    // Function to reset state
+    private func resetState() {
+        currentTripId = nil
+        people = []
+        bills = []
+        trips = []
+    }
+    
+    // Request to remove a person from the current trip by UUID
+    func requestToRemovePerson(by personId: UUID) -> Bool {
+        guard let currentTripId = currentTripId else { return false }
         
-        // Call the repository method to remove the person
-        let wasRemoved = tripRepository.removePerson(person, from: currentTrip)
+        // Call the repository method to remove the person using their UUID
+        let wasRemoved = tripRepository.removePerson(by: personId, from: currentTripId)
         
         // If the person was removed, reload the people array
         if wasRemoved {
-            people = tripRepository.fetchPeople(for: currentTrip) // Reload people array
+            people = tripRepository.fetchPeople(for: currentTripId) // Reload people array using UUID
         }
         
         return wasRemoved
     }
-
 }

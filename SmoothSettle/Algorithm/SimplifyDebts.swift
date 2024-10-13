@@ -11,6 +11,11 @@ class SimplifyDebts {
     var visitedEdges: Set<Int64> = []
     var transactions: [EdgeKey: Int64] = [:]  // Stores transactions between people (indexed by EdgeKey)
     var personToIndex: [Person: Int] = [:]
+    let totalPeopleCount: Int
+    
+    init(totalPeopleCount: Int) {
+        self.totalPeopleCount = totalPeopleCount
+    }
     
     // Add a transaction between two people (from payer to involver)
     func addTransaction(from: Int, to: Int, amount: Int64) {
@@ -42,9 +47,11 @@ class SimplifyDebts {
 
     // Function to run the debt simplification algorithm
     func runSimplifyAlgorithm() -> String {
-        let personCount = getUniquePeopleCount()  // Number of unique people involved in the transactions
+//        let personCount = getUniquePeopleCount()  // Number of unique people involved in the transactions
+        let personCount = totalPeopleCount
         let solver = Dinics(n: personCount)
         
+        print("Person count: \(personCount)")
         // Simplify the transactions
         simplifyTransactions(solver: solver)
         
@@ -55,10 +62,12 @@ class SimplifyDebts {
     // Function to simplify transactions using Dinics algorithm
     private func simplifyTransactions(solver: Dinics) {
         // Calculate net balance for each person
-        var netAmount = Array(repeating: Int64(0), count: solver.getPersonCount())
+        var netAmount = Array(repeating: Int64(0), count: totalPeopleCount)
+        print("Net amount: \(netAmount)")
+        print("Transactions: \(transactions)")
         for (key, amount) in transactions {
             netAmount[key.from] -= amount
-            netAmount[key.to] += amount
+            netAmount[key.to] += amount //Thread 1: Fatal error: Index out of range
         }
         
         // Clear old transactions to keep only simplified ones
@@ -97,11 +106,11 @@ class SimplifyDebts {
         }
     }
 
-    // Utility function to get the unique count of people involved in transactions
-    private func getUniquePeopleCount() -> Int {
-        let uniquePeople = Set(transactions.keys.flatMap { [$0.from, $0.to] })
-        return uniquePeople.count
-    }
+//    // Utility function to get the unique count of people involved in transactions
+//    private func getUniquePeopleCount() -> Int {
+//        let uniquePeople = Set(transactions.keys.flatMap { [$0.from, $0.to] })
+//        return uniquePeople.count
+//    }
 }
 
 
@@ -146,6 +155,7 @@ class Dinics {
     init(n: Int) {
         self.personCount = n
         self.person = Array(repeating: "Person", count: n)  // Just placeholders, should be filled with actual names
+        print("Person count: \(personCount)")
     }
     
     // Placeholder functions for Dinics algorithm

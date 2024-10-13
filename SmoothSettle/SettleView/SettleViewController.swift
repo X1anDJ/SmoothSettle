@@ -5,6 +5,7 @@
 //  Created by Dajun Xian on 2024/10/12.
 //
 import UIKit
+import Combine
 
 class SettleViewController: UIViewController {
 
@@ -19,7 +20,9 @@ class SettleViewController: UIViewController {
     // Reference to the MainViewModel
     var viewModel: MainViewModel?
 
-
+    // Add a PassthroughSubject to notify MainViewController
+    var settleSubject = PassthroughSubject<Void, Never>()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -29,19 +32,21 @@ class SettleViewController: UIViewController {
         setupViews()
         setupConstraints()
 
-        // Fetch the people in the trip and pass their full names to the CircleLayoutView
-        if let viewModel = viewModel, let currentTrip = viewModel.currentTrip {
-            let fullNames = currentTrip.peopleArray.compactMap { $0.name }  // Get full names of people
-            circleLayoutView.userNames = fullNames  // Set the full names to the custom view
+        // Fetch the people in the trip and pass their UUIDs to the CircleLayoutView
+        if let viewModel = viewModel, let currentTripId = viewModel.currentTripId {
+            // Fetch the current trip from the repository using the currentTripId
+            if let currentTrip = viewModel.tripRepository.fetchTrip(by: currentTripId) {
+                let userIds = currentTrip.peopleArray.compactMap { $0.id }  // Get UUIDs of people
+                circleLayoutView.userIds = userIds  // Set the UUIDs to the custom view
 
-            // Pass the repository and current trip to the TransactionsTableView
-            transactionsTableView.tripRepository = viewModel.tripRepository
-            transactionsTableView.currentTrip = currentTrip
+                // Pass the repository and current trip to the TransactionsTableView
+                transactionsTableView.tripRepository = viewModel.tripRepository
+                transactionsTableView.currentTrip = currentTripId
 
-            // Load transactions and pass them to CircleLayoutView via the completion handler
-            transactionsTableView.loadTransactions { [weak self] sections in
-//                print("Transactions loaded and passed to CircleLayoutView:", sections)
-                self?.circleLayoutView.transactions = sections
+                // Load transactions and pass them to CircleLayoutView via the completion handler
+                transactionsTableView.loadTransactions { [weak self] sections in
+                    self?.circleLayoutView.transactions = sections
+                }
             }
         }
     }
@@ -135,9 +140,14 @@ class SettleViewController: UIViewController {
         
         // Settle the current trip
         viewModel.settleCurrentTrip()
+        
+        // Notify MainViewController about the trip settlement
+        settleSubject.send(())
+        
+        // Dismiss this view controller
         dismiss(animated: true, completion: nil)
     }
-
+    
     // Action to dismiss the view controller
     @objc func closeButtonTapped() {
         dismiss(animated: true, completion: nil)

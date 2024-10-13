@@ -2,9 +2,8 @@ import UIKit
 
 class CircleLayoutView: UIView {
 
-    // Array of user initials to be displayed in circles
-    //var userInitials: [String] = []
-    var userNames: [String] = []
+    // Array of user IDs (UUIDs) to be displayed in circles
+    var userIds: [UUID] = []
     var transactions: [TransactionsTableView.Section] = [] // Simplified transactions data
     let circleSize: CGFloat = 30
     let connectUserCirclesDuration = 2.0  // First phase: Connecting circles duration
@@ -15,10 +14,10 @@ class CircleLayoutView: UIView {
     private var connectionTimer: Timer?
 
     // Store lines to be animated
-    private var lines: [(CAShapeLayer, String, String)] = []
+    private var lines: [(CAShapeLayer, UUID, UUID)] = []
 
     // Store lines that can be removed
-    private var removableLines: [(CAShapeLayer, String, String)] = []
+    private var removableLines: [(CAShapeLayer, UUID, UUID)] = []
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -55,7 +54,7 @@ class CircleLayoutView: UIView {
         self.subviews.forEach { $0.removeFromSuperview() }
         self.layer.sublayers?.forEach { if $0 is CAShapeLayer { $0.removeFromSuperlayer() } }
 
-        guard userNames.count > 0 else { return }
+        guard userIds.count > 0 else { return }
 
         // Calculate the radius of the invisible circle (1/3 of the view's width)
         let radius = self.bounds.width / 3
@@ -66,10 +65,10 @@ class CircleLayoutView: UIView {
         let startAngle: CGFloat = -CGFloat.pi / 2  // 12 o'clock is -90 degrees
 
         // Calculate the angle between each userCircle based on the number of people
-        let angleIncrement = CGFloat(2 * Double.pi) / CGFloat(userNames.count)
+        let angleIncrement = CGFloat(2 * Double.pi) / CGFloat(userIds.count)
 
         // Loop through each user and create a UserCircleView
-        for (index, _) in userNames.enumerated() {
+        for (index, _) in userIds.enumerated() {
             let angle = startAngle + angleIncrement * CGFloat(index)
             let xPosition = centerX + radius * cos(angle)
             let yPosition = centerY + radius * sin(angle)
@@ -85,7 +84,7 @@ class CircleLayoutView: UIView {
 
     // Connect each user circle to all other user circles (Phase 1) with animation
     private func connectAllCirclesWithLines() {
-        guard userNames.count > 1 else { return }
+        guard userIds.count > 1 else { return }
 
         for (i, circle1) in subviews.enumerated() {
             // Each user only connects to subsequent users, so we start the loop from the next user
@@ -93,17 +92,17 @@ class CircleLayoutView: UIView {
                 let circle2 = subviews[j]
                 drawAnimatedLine(from: offsetPoint(from: circle1.center, to: circle2.center, offset: circleSize / 2),
                                  to: offsetPoint(from: circle2.center, to: circle1.center, offset: circleSize / 2),
-                                 fromUser: userNames[i], toUser: userNames[j])
+                                 fromUserId: userIds[i], toUserId: userIds[j])
             }
         }
     }
 
-    // Check if a transaction exists between two users
-    private func transactionExistsBetween(from fromUser: String, to toUser: String) -> Bool {
+    // Check if a transaction exists between two users using their UUIDs
+    private func transactionExistsBetween(from fromUserId: UUID, to toUserId: UUID) -> Bool {
         for section in transactions {
-            if section.fromName == fromUser {
+            if section.fromId == fromUserId {
                 for transaction in section.transactions {
-                    if transaction.toName == toUser {
+                    if transaction.toId == toUserId {
                         return true
                     }
                 }
@@ -113,7 +112,7 @@ class CircleLayoutView: UIView {
     }
 
     // Draw a line between two points with animation and store the line
-    private func drawAnimatedLine(from startPoint: CGPoint, to endPoint: CGPoint, fromUser: String, toUser: String) {
+    private func drawAnimatedLine(from startPoint: CGPoint, to endPoint: CGPoint, fromUserId: UUID, toUserId: UUID) {
         let line = CAShapeLayer()
         let linePath = UIBezierPath()
         linePath.move(to: startPoint)
@@ -128,12 +127,12 @@ class CircleLayoutView: UIView {
         self.layer.addSublayer(line)
 
         // Store the line with the associated user data
-        lines.append((line, fromUser, toUser))
+        lines.append((line, fromUserId, toUserId))
 
         // Check if the line should be removable (i.e., no transaction between users)
-        if !transactionExistsBetween(from: fromUser, to: toUser) && !transactionExistsBetween(from: toUser, to: fromUser) {
-//            print("Line between \(fromUser) and \(toUser) can be removed, no transactions found.")
-            removableLines.append((line, fromUser, toUser))
+        if !transactionExistsBetween(from: fromUserId, to: toUserId) && !transactionExistsBetween(from: toUserId, to: fromUserId) {
+//            print("Line between \(fromUserId) and \(toUserId) can be removed, no transactions found.")
+            removableLines.append((line, fromUserId, toUserId))
         }
 
         // Animate the stroke end from 0 to 1 over connectUserCirclesDuration (2 seconds)
@@ -169,8 +168,8 @@ class CircleLayoutView: UIView {
 
     // Disconnect lines that can be removed after the initial animation completes
     private func disconnectRemovableLines() {
-        for (line, fromUser, toUser) in removableLines {
-//            print("Disconnecting line between \(fromUser) and \(toUser)")
+        for (line, fromUserId, toUserId) in removableLines {
+//            print("Disconnecting line between \(fromUserId) and \(toUserId)")
             
             // Animate the line removal (fade out and remove from the layer)
             let animation = CABasicAnimation(keyPath: "opacity")

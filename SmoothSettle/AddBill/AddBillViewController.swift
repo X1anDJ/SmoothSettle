@@ -8,8 +8,9 @@ import Foundation
 import UIKit
 
 protocol AddBillViewControllerDelegate: AnyObject {
-    func didAddBill(title: String, amount: Double, date: Date, payer: Person, involvers: [Person])
+    func didAddBill(title: String, amount: Double, date: Date, payerId: UUID, involverIds: [UUID])
 }
+
 
 class AddBillViewController: UIViewController {
     
@@ -30,13 +31,14 @@ class AddBillViewController: UIViewController {
     let payerSectionLabel = UILabel()
     let involversSectionLabel = UILabel()
 
-    var selectedPayer: Person?
-    var selectedInvolvers: [Person] = []
+    // Now store selected payer and involvers by UUID
+    var selectedPayerId: UUID?
+    var selectedInvolverIds: [UUID] = []
 
     // Pass the current trip and people
-    var currentTrip: Trip?
-    var people: [Person] = []
-    
+    var currentTripId: UUID?
+    var people: [Person] = [] // Still using Person to populate the slider
+
     override func viewDidLoad() {
         super.viewDidLoad()
         style()
@@ -91,20 +93,20 @@ class AddBillViewController: UIViewController {
         let totalHeight = billTitleHeight + amountHeight + datePickerHeight + payerSliderHeight + involverSliderHeight + (padding * 6)
         return totalHeight
     }
-    
+
     // Handle confirm button action
     @objc private func didTapConfirmButton() {
         guard let title = billTitleTextField.text, !title.isEmpty,
               let amountText = amountTextField.text, let amount = Double(amountText),
-              let payer = selectedPayer else {
+              let payerId = selectedPayerId else {
             let alert = UIAlertController(title: "Invalid Input", message: "Please fill all the required fields.", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default))
             present(alert, animated: true)
             return
         }
         
-        // Notify the delegate with the new bill data
-        delegate?.didAddBill(title: title, amount: amount, date: datePicker.date, payer: payer, involvers: selectedInvolvers)
+        // Notify the delegate with the new bill data using UUIDs
+        delegate?.didAddBill(title: title, amount: amount, date: datePicker.date, payerId: payerId, involverIds: selectedInvolverIds)
         dismiss(animated: true, completion: nil)
     }
     
@@ -264,33 +266,45 @@ extension AddBillViewController {
 
 // MARK: - PeopleSliderViewDelegate for Payer and Involvers
 extension AddBillViewController: PeopleSliderViewDelegate {
-    func didRequestRemovePerson(_ person: Person) {
-        // Handle removing a person
+    
+
+    
+    func didRequestRemovePerson(_ personId: UUID?) {
+        // Handle removing a person, but this functionality may not be needed here
     }
     
-    func didTapAddPerson(for trip: Trip?) {
-        // Handle adding a person
+    func didTapAddPerson(for tripId: UUID?) {
+        // Handle adding a person, but this functionality may not be needed here
     }
     
-    func didSelectPerson(_ person: Person, for trip: Trip?, context: SliderContext) {
+    func didSelectPerson(_ personId: UUID?, for tripId: UUID?, context: SliderContext) {
+        // Ensure the personId is not nil before proceeding
+        guard let personId = personId else {
+            print("Person ID is nil, no action taken.")
+            return
+        }
+
         switch context {
         case .payer:
-            if selectedPayer == person {
-                selectedPayer = nil
+            // Toggle the selected payer ID
+            if selectedPayerId == personId {
+                selectedPayerId = nil
             } else {
-                selectedPayer = person
+                selectedPayerId = personId
             }
-            payerSliderView.selectedPayer = selectedPayer
+            payerSliderView.selectedPayerId = selectedPayerId
             payerSliderView.reload()
             
         case .involver:
-            if selectedInvolvers.contains(person) {
-                selectedInvolvers.removeAll { $0 == person }
+            // Toggle the selected involvers
+            if selectedInvolverIds.contains(personId) {
+                selectedInvolverIds.removeAll { $0 == personId }
             } else {
-                selectedInvolvers.append(person)
+                selectedInvolverIds.append(personId)
             }
-            involversSliderView.selectedInvolvers = selectedInvolvers
+            involversSliderView.selectedInvolverIds = selectedInvolverIds
             involversSliderView.reload()
         }
     }
+
 }

@@ -5,12 +5,13 @@
 //  Created by Dajun Xian on 2024/10/12.
 //
 import UIKit
+
 class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSource {
 
     // Data structure to hold the grouped transactions
     struct Section {
-        let fromName: String
-        var transactions: [(toName: String, amount: Double)]
+        let fromId: UUID    // Using UUID instead of fromName
+        var transactions: [(toId: UUID, amount: Double)]  // Using UUID for toName
     }
     
     // Array to store grouped and sorted transactions
@@ -19,9 +20,10 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
     // Reference to the TripRepository to get simplified transactions
     var tripRepository: TripRepository?
     
-    var currentTrip: Trip? {
+    var currentTrip: UUID? {
         didSet {
-//            loadTransactions()
+            // Uncomment when you want to trigger the load
+            // loadTransactions()
         }
     }
 
@@ -47,29 +49,39 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
 
     // Load transactions from the repository, passing the loaded sections via the completion handler
     func loadTransactions(completion: @escaping ([Section]) -> Void) {
-        guard let trip = currentTrip, let repository = tripRepository else { return }
+        guard let tripId = currentTrip, let repository = tripRepository else { return }
 
-        // Get the simplified transactions
-        let transactions = repository.simplifyTransactions(for: trip)
+        // Get the simplified transactions based on UUIDs
+        let transactions = repository.simplifyTransactions(for: tripId)
+
+        // Fetch people involved in the trip for easy mapping of UUID to name
+        let people = repository.fetchPeople(for: tripId)
+        let uuidToName = Dictionary(uniqueKeysWithValues: people.map { ($0.id, $0.name ?? "Unknown") })
+
+        // Group transactions by the payer's UUID (fromId)
+        let groupedTransactions = Dictionary(grouping: transactions, by: { $0.fromId })
         
-        // Group and sort transactions by fromName
-        let groupedTransactions = Dictionary(grouping: transactions, by: { $0.from })
-        
-        // Create sections from the grouped transactions and sort them by fromName
-        self.sections = groupedTransactions.map { (fromName, transactions) in
-            Section(fromName: fromName, transactions: transactions.map { (toName: $0.to, amount: $0.amount) }.sorted { $0.toName < $1.toName })
-        }.sorted { $0.fromName < $1.fromName }
+        // Create sections from the grouped transactions using UUIDs
+        self.sections = groupedTransactions.map { (fromId, transactions) in
+            // Map the transactions for each section using UUIDs
+            let sortedTransactions = transactions.map { transaction -> (toId: UUID, amount: Double) in
+                return (toId: transaction.toId, amount: transaction.amount)
+            }.sorted { uuidToName[$0.toId] ?? "Unknown" < uuidToName[$1.toId] ?? "Unknown" }
+            
+            // Return a section object containing the payer's UUID and their transactions
+            return Section(fromId: fromId, transactions: sortedTransactions)
+        }
 
-        // Debug: Print the loaded sections
-//        print("Loaded transactions in sections:", sections)
-
-        // Call the completion handler to pass the loaded transactions
+        // Call the completion handler to pass the loaded transactions (sections with UUIDs)
         completion(self.sections)
 
         // Reload the table view to display the new transactions
         self.reloadData()
     }
-    
+
+
+
+
 
     // Override intrinsicContentSize to dynamically calculate the height
     override var intrinsicContentSize: CGSize {
@@ -90,10 +102,14 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
         let cell = tableView.dequeueReusableCell(withIdentifier: "TransactionCell", for: indexPath) as! TransactionCell
         let transaction = sections[indexPath.section].transactions[indexPath.row]
 
+        // Fetch the toName using the UUID
+        let toPerson = tripRepository?.fetchPerson(by: transaction.toId)
+        let toName = toPerson?.name ?? "Unknown"
+
         // Configure the cell with rounded corners where necessary
         let isFirst = indexPath.row == 0
         let isLast = indexPath.row == sections[indexPath.section].transactions.count - 1
-        cell.configure(toName: transaction.toName, amount: transaction.amount, isFirst: isFirst, isLast: isLast)
+        cell.configure(toName: toName, amount: transaction.amount, isFirst: isFirst, isLast: isLast)
         
         return cell
     }
@@ -103,8 +119,12 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
         let headerView = UIView()
         headerView.backgroundColor = .clear
         
+        // Fetch the fromName using the UUID
+        let fromPerson = tripRepository?.fetchPerson(by: sections[section].fromId)
+        let fromName = fromPerson?.name ?? "Unknown"
+        
         let label = UILabel()
-        label.text = "\(sections[section].fromName) owes"
+        label.text = "\(fromName) owes"
         label.font = UIFont.boldSystemFont(ofSize: 16)
         label.textColor = .darkGray
         label.translatesAutoresizingMaskIntoConstraints = false

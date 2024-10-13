@@ -181,6 +181,7 @@
 				DC6DE71C2CB9FC3F0050F6EF /* Login */,
 				DC531AFB2CA1FA590053DC24 /* CoreData */,
 				DC4C9EE12CA1297500ADEA13 /* MainView */,
+				DC6DE7782CBBB7C10050F6EF /* SettleView */,
 				DC4C9EE42CA12A5F00ADEA13 /* AddTrip */,
 				DC531B0F2CA247150053DC24 /* AddBill */,
 				DC531B052CA2097E0053DC24 /* PeopleSliderView */,
@@ -225,11 +226,6 @@
 				DC531B672CA76D890053DC24 /* BillDetailView.swift */,
 				DC6DE7432CBA530A0050F6EF /* UserViewController.swift */,
 				DC6DE76C2CBB0D1D0050F6EF /* BillsViewController.swift */,
-				DC6DE76E2CBB27730050F6EF /* SettleViewController.swift */,
-				DC6DE7702CBB47A40050F6EF /* UserCircleView.swift */,
-				DC6DE7722CBB47BF0050F6EF /* CircleLayoutView.swift */,
-				DC6DE7742CBB58AF0050F6EF /* TransactionCell.swift */,
-				DC6DE7762CBB58C20050F6EF /* TransactionsTableView.swift */,
 			);
 			path = MainView;
 			sourceTree = "<group>";
@@ -434,6 +430,18 @@
 				DC6DE71B2CB9FC3F0050F6EF /* PhoneLogin */,
 			);
 			path = Login;
+			sourceTree = "<group>";
+		};
+		DC6DE7782CBBB7C10050F6EF /* SettleView */ = {
+			isa = PBXGroup;
+			children = (
+				DC6DE76E2CBB27730050F6EF /* SettleViewController.swift */,
+				DC6DE7702CBB47A40050F6EF /* UserCircleView.swift */,
+				DC6DE7722CBB47BF0050F6EF /* CircleLayoutView.swift */,
+				DC6DE7742CBB58AF0050F6EF /* TransactionCell.swift */,
+				DC6DE7762CBB58C20050F6EF /* TransactionsTableView.swift */,
+			);
+			path = SettleView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

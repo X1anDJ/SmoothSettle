@@ -165,27 +165,37 @@ extension AddTripViewController {
 
 // MARK: - PeopleSliderViewDelegate
 extension AddTripViewController: PeopleSliderViewDelegate {
-    func didRequestRemovePerson(_ person: Person) {
-        // Handle remove a person in add trip selection
+    func didRequestRemovePerson(_ personId: UUID?) {
+        
     }
     
-    func didSelectPerson(_ person: Person, for trip: Trip?, context: SliderContext) {
-        // Handle person selection
+    func didSelectPerson(_ personId: UUID?, for tripId: UUID?, context: SliderContext) {
+        
     }
     
-    func didTapAddPerson(for trip: Trip?) {
+
+
+    func didTapAddPerson(for tripId: UUID?) {
         let alert = UIAlertController(title: "Add Person", message: "Enter the name of the person", preferredStyle: .alert)
         alert.addTextField { textField in
             textField.placeholder = "Person Name"
         }
         alert.addAction(UIAlertAction(title: "Add", style: .default, handler: { [weak self] _ in
             if let name = alert.textFields?.first?.text, !name.isEmpty {
+                // Create a new Person object in the CoreData context
                 let person = Person(context: CoreDataManager.shared.context)
+                person.id = UUID() // Assign a unique UUID if not already present
                 person.name = name
+                
+                // Append the new person to the people list and update the UI
                 self?.people.append(person)
                 self?.peopleSliderView.people = self?.people ?? []
+                
+                // Optionally, save to CoreData
+                try? CoreDataManager.shared.context.save()
             }
         }))
         present(alert, animated: true)
     }
+
 }
