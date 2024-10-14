@@ -179,10 +179,12 @@ extension PeopleSliderView: PeopleCellDelegate {
 
     func didRequestRemovePerson(_ personId: UUID?) {
         // Check if personId is valid, do nothing if it's nil
+        print("Pressed remove")
         guard let personId = personId else {
             return
         }
 
+        
         // Pass the valid personId to the delegate method
         delegate?.didRequestRemovePerson(personId)
     }

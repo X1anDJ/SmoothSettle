@@ -58,6 +58,10 @@ class MainViewController: UIViewController {
                     self?.updateCurrentTripUI(with: trip)
                     self?.updatePeopleSlider(with: trip.peopleArray)
                     self?.mainView.peopleSliderView.tripId = tripId
+                    self?.updateUIElements(isEnabled: true)
+                } else {
+                    self?.updateUIElements(isEnabled: false)
+                    print("updateUIElements(isEnabled: false)")
                 }
             }
             .store(in: &cancellables)
@@ -90,15 +94,25 @@ class MainViewController: UIViewController {
     }
 
     func updateCurrentTripUI(with trip: Trip?) {
-        if let trip = trip {
-            let currentTripText = NSMutableAttributedString(string: trip.title ?? "Unnamed Trip")
-            let arrowIconAttachment = NSTextAttachment()
-            arrowIconAttachment.image = UIImage(systemName: "chevron.down")
-            currentTripText.append(NSAttributedString(attachment: arrowIconAttachment))
-            mainView.currentTripButton.setAttributedTitle(currentTripText, for: .normal)
-        } else {
-            mainView.currentTripButton.setAttributedTitle(NSAttributedString(string: "Add a Trip"), for: .normal)
-        }
+//        if let trip = trip {
+//            let currentTripText = NSMutableAttributedString(string: trip.title ?? "Unnamed Trip")
+//            let arrowIconAttachment = NSTextAttachment()
+//            arrowIconAttachment.image = UIImage(systemName: "chevron.down")
+//            currentTripText.append(NSAttributedString(attachment: arrowIconAttachment))
+//            mainView.currentTripButton.setAttributedTitle(currentTripText, for: .normal)
+//        } else {
+//            let currentTripText = NSMutableAttributedString(string: "Add a Trip")
+//            let arrowIconAttachment = NSTextAttachment()
+//            arrowIconAttachment.image = UIImage(systemName: "chevron.down")
+//            currentTripText.append(NSAttributedString(attachment: arrowIconAttachment))
+//            mainView.currentTripButton.setAttributedTitle(currentTripText, for: .normal)
+//        }
+        
+        let currentTripText = NSMutableAttributedString(string: trip?.title ?? "Add a Trip")
+        let arrowIconAttachment = NSTextAttachment()
+        arrowIconAttachment.image = UIImage(systemName: "chevron.down")
+        currentTripText.append(NSAttributedString(attachment: arrowIconAttachment))
+        mainView.currentTripButton.setAttributedTitle(currentTripText, for: .normal)
     }
     
     func updatePeopleSlider(with people: [Person]) {
@@ -114,7 +128,7 @@ class MainViewController: UIViewController {
         }
         
         // Add a special action for adding a new trip
-        let addTripAction = UIAction(title: "Add Trip", image: UIImage(systemName: "plus")) { [weak self] _ in
+        let addTripAction = UIAction(title: "Add a Trip", image: UIImage(systemName: "plus")) { [weak self] _ in
             self?.didTapAddTrip() // Call the function to add a new trip
         }
         
@@ -181,6 +195,27 @@ class MainViewController: UIViewController {
         // Reload the UI components
         mainView.customTableView.reloadData()
     }
+    
+    func updateUIElements(isEnabled: Bool) {
+        let disabledAlpha: CGFloat = 0.3
+        let enabledAlpha: CGFloat = 1.0
+
+        // Update interactivity and appearance of UI elements
+        mainView.peopleSliderView.isUserInteractionEnabled = isEnabled
+        mainView.cardHeaderView.isUserInteractionEnabled = isEnabled
+        mainView.cardRightArrowButton.isUserInteractionEnabled = isEnabled
+        mainView.customTableView.isUserInteractionEnabled = isEnabled
+        mainView.settleButton.isUserInteractionEnabled = isEnabled
+        mainView.addBillButton.isUserInteractionEnabled = isEnabled
+
+        // Change alpha to visually indicate disabled state
+        mainView.peopleSliderView.alpha = isEnabled ? enabledAlpha : disabledAlpha
+        mainView.cardHeaderView.alpha = isEnabled ? enabledAlpha : disabledAlpha
+        mainView.cardRightArrowButton.alpha = isEnabled ? enabledAlpha : disabledAlpha
+        mainView.customTableView.alpha = isEnabled ? enabledAlpha : disabledAlpha
+        mainView.settleButton.alpha = isEnabled ? enabledAlpha : disabledAlpha
+        mainView.addBillButton.alpha = isEnabled ? enabledAlpha : disabledAlpha
+    }
 
     @objc func didTapAddBill() {
         let addBillVC = AddBillViewController()
@@ -242,7 +277,7 @@ extension MainViewController: PeopleSliderViewDelegate, PeopleCellDelegate {
 
     
     func didTapAddPerson(for tripId: UUID?) {
-        guard let tripId = tripId else { return }
+        guard tripId != nil else { return }
         
         // Show alert to add a person
         DispatchQueue.main.async {

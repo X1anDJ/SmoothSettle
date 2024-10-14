@@ -43,38 +43,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-    // Function to set up the UITabBarController with the main and archive view controllers
-    private func setupTabBarController() {
-        let tabBarController = UITabBarController()
 
-        // MainViewController setup
-        let mainNavController = UINavigationController(rootViewController: mainViewController)
-        mainViewController.tabBarItem = UITabBarItem(title: "Main", image: UIImage(systemName: "house.fill"), tag: 0)
-
-        // Placeholder for ArchiveTripsViewController
-        let archiveTripsViewController = UIViewController() // Replace with ArchiveTripsViewController later
-        archiveTripsViewController.view.backgroundColor = .white
-        archiveTripsViewController.tabBarItem = UITabBarItem(title: "Archive", image: UIImage(systemName: "archivebox.fill"), tag: 1)
-
-        // Add view controllers to the tab bar
-        tabBarController.viewControllers = [mainNavController, archiveTripsViewController]
-
-        // Set the appearance of the tab bar items
-        tabBarController.tabBar.tintColor = Colors.primaryDark // Selected item color
-        tabBarController.tabBar.unselectedItemTintColor = Colors.primaryLight // Unselected item color
-
-        
-        // Set up the shadow for the tab bar
-        tabBarController.tabBar.backgroundColor = .systemBackground
-        tabBarController.tabBar.layer.shadowColor = UIColor.systemGray.cgColor
-        tabBarController.tabBar.layer.shadowOpacity = 0.1
-        tabBarController.tabBar.layer.shadowOffset = CGSize(width: 0, height: -3) // Negative height to apply shadow above the tab bar
-        tabBarController.tabBar.layer.shadowRadius = 1
-        tabBarController.tabBar.layer.masksToBounds = false
-
-        // Set the tab bar controller as the root view controller
-        window?.rootViewController = tabBarController
-    }
 
 }
 
@@ -120,3 +89,39 @@ extension AppDelegate: LogoutDelegate {
         }
     }
 }
+
+extension AppDelegate {
+    // Function to set up the UITabBarController with the main and archive view controllers
+    private func setupTabBarController() {
+        let tabBarController = UITabBarController()
+
+        // MainViewController setup
+        let mainNavController = UINavigationController(rootViewController: mainViewController)
+        mainViewController.tabBarItem = UITabBarItem(title: "Main", image: UIImage(systemName: "house.fill"), tag: 0)
+
+        // Placeholder for ArchiveTripsViewController
+        let archiveTripsViewController = UIViewController() // Replace with ArchiveTripsViewController later
+        archiveTripsViewController.view.backgroundColor = .white
+        archiveTripsViewController.tabBarItem = UITabBarItem(title: "Archive", image: UIImage(systemName: "archivebox.fill"), tag: 1)
+
+        // Add view controllers to the tab bar
+        tabBarController.viewControllers = [mainNavController, archiveTripsViewController]
+
+        // Set the appearance of the tab bar items
+        tabBarController.tabBar.tintColor = Colors.primaryDark // Selected item color
+        tabBarController.tabBar.unselectedItemTintColor = Colors.primaryLight // Unselected item color
+
+        
+        // Set up the shadow for the tab bar
+        tabBarController.tabBar.backgroundColor = .systemBackground
+        tabBarController.tabBar.layer.shadowColor = UIColor.systemGray.cgColor
+        tabBarController.tabBar.layer.shadowOpacity = 0.1
+        tabBarController.tabBar.layer.shadowOffset = CGSize(width: 0, height: -3) // Negative height to apply shadow above the tab bar
+        tabBarController.tabBar.layer.shadowRadius = 1
+        tabBarController.tabBar.layer.masksToBounds = false
+
+        // Set the tab bar controller as the root view controller
+        window?.rootViewController = tabBarController
+    }
+}
+

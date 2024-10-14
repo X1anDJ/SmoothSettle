@@ -58,6 +58,7 @@ class PeopleCell: UICollectionViewCell {
         ])
     }
     
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -120,4 +121,17 @@ class PeopleCell: UICollectionViewCell {
             removePersonButton.isHidden = false
         }
     }
+    
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        // Only perform hit testing for the removePersonButton if it is visible and enabled
+        if !removePersonButton.isHidden && removePersonButton.isEnabled {
+            let buttonPoint = removePersonButton.convert(point, from: self)
+            if removePersonButton.bounds.insetBy(dx: -20, dy: -20).contains(buttonPoint) {
+                return removePersonButton
+            }
+        }
+        return super.hitTest(point, with: event)
+    }
+
+
 }

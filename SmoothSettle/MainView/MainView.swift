@@ -80,7 +80,7 @@ class MainView: UIView {
         currentTripButton.translatesAutoresizingMaskIntoConstraints = false
         let arrowIconAttachment = NSTextAttachment()
         arrowIconAttachment.image = UIImage(systemName: "chevron.down")
-        let currentTripText = NSMutableAttributedString(string: "Select Trip ")
+        let currentTripText = NSMutableAttributedString(string: "Add a Trip")
         currentTripText.append(NSAttributedString(attachment: arrowIconAttachment))
         currentTripButton.setAttributedTitle(currentTripText, for: .normal)
         currentTripButton.titleLabel?.font = UIFont.systemFont(ofSize: 28, weight: .bold)

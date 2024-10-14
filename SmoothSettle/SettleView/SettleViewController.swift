@@ -150,6 +150,7 @@ class SettleViewController: UIViewController {
     
     // Action to dismiss the view controller
     @objc func closeButtonTapped() {
+        print("Close button tapped")
         dismiss(animated: true, completion: nil)
     }
 }

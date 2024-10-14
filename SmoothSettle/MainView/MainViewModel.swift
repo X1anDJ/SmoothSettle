@@ -27,9 +27,11 @@ class MainViewModel: ObservableObject {
     
     // MARK: - Methods to Load Data
     
+
     // Load all unsettled trips from the repository
     func loadAllUnsettledTrips() {
         trips = tripRepository.fetchUnsettledTrips()
+        // Sort it here, fix later
         if let firstTrip = trips.first {
             selectTrip(by: firstTrip.id) // Set the first trip as the default selected trip using UUID
         }
@@ -38,7 +40,7 @@ class MainViewModel: ObservableObject {
     // Select a trip by its UUID, fetch its related data (people and bills)
     func selectTrip(by tripId: UUID) {
         currentTripId = tripId
-        if let trip = tripRepository.fetchTrip(by: tripId) {
+        if tripRepository.fetchTrip(by: tripId) != nil {
             people = tripRepository.fetchPeople(for: tripId) // Use UUID to fetch people
             bills = tripRepository.fetchBills(for: tripId)   // Use UUID to fetch bills
         }
