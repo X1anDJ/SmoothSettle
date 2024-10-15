@@ -65,12 +65,12 @@ class MainView: UIView {
         
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.text = "Current Trip"
-        titleLabel.font = UIFont.preferredFont(forTextStyle: .extraLargeTitle)
+        titleLabel.font = UIFont.systemFont(ofSize: 32, weight: .bold)
         titleLabel.textAlignment = .left
         
         userButton.translatesAutoresizingMaskIntoConstraints = false
         userButton.setImage(UIImage(systemName: "person.circle.fill"), for: .normal)
-        userButton.tintColor = Colors.primaryMedium
+        userButton.tintColor = Colors.primaryDark
         userButton.layer.cornerRadius = 20
         userButton.clipsToBounds = true
         userButton.imageView?.contentMode = .scaleAspectFill
@@ -83,7 +83,7 @@ class MainView: UIView {
         let currentTripText = NSMutableAttributedString(string: "Add a Trip")
         currentTripText.append(NSAttributedString(attachment: arrowIconAttachment))
         currentTripButton.setAttributedTitle(currentTripText, for: .normal)
-        currentTripButton.titleLabel?.font = UIFont.systemFont(ofSize: 28, weight: .bold)
+        currentTripButton.titleLabel?.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         currentTripButton.contentHorizontalAlignment = .left
 
         peopleSliderView.translatesAutoresizingMaskIntoConstraints = false

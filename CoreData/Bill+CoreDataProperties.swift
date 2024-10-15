@@ -8,7 +8,7 @@
 
 import Foundation
 import CoreData
-
+import UIKit
 
 extension Bill {
 
@@ -20,6 +20,7 @@ extension Bill {
     @NSManaged public var amount: Double
     @NSManaged public var date: Date?
     @NSManaged public var title: String?
+    @NSManaged public var imageData: Data? // New attribute
     @NSManaged public var involvers: NSSet?
     @NSManaged public var payer: Person?
     @NSManaged public var trip: Trip?
@@ -28,7 +29,7 @@ extension Bill {
 
 // MARK: Generated accessors for involvers
 extension Bill {
-    
+
     // Computed property to return involvers as an array of Person objects
     var involversArray: [Person] {
         return involvers?.allObjects as? [Person] ?? []
@@ -45,11 +46,9 @@ extension Bill {
 
     @objc(removeInvolvers:)
     @NSManaged public func removeFromInvolvers(_ values: NSSet)
-    
-    
 
 }
 
-extension Bill : Identifiable {
+extension Bill: Identifiable {
 
 }

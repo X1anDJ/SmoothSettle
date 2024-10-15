@@ -7,6 +7,7 @@
 import Foundation
 import Combine
 import CoreData
+import UIKit
 
 class MainViewModel: ObservableObject {
     
@@ -20,7 +21,7 @@ class MainViewModel: ObservableObject {
     let tripRepository: TripRepository
     
     // MARK: - Initializer with Dependency Injection
-    init(tripRepository: TripRepository = TripRepository()) {
+    init(tripRepository: TripRepository = TripRepository.shared) {
         self.tripRepository = tripRepository
         loadAllUnsettledTrips() // Load trips on initialization
     }
@@ -75,9 +76,9 @@ class MainViewModel: ObservableObject {
     }
     
     // Add a new bill to the current trip
-    func addBillToCurrentTrip(title: String, amount: Double, date: Date, payerId: UUID, involverIds: [UUID]) {
+    func addBillToCurrentTrip(title: String, amount: Double, date: Date, payerId: UUID, involverIds: [UUID], image: UIImage?) {
         guard let currentTripId = currentTripId else { return }
-        if let newBill = tripRepository.addBill(to: currentTripId, title: title, amount: amount, date: date, payerId: payerId, involversIds: involverIds) {
+        if let newBill = tripRepository.addBill(to: currentTripId, title: title, amount: amount, date: date, payerId: payerId, involversIds: involverIds, image: image) {
             bills.append(newBill)
         }
     }

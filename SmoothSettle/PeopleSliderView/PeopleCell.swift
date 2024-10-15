@@ -90,7 +90,7 @@ class PeopleCell: UICollectionViewCell {
         personId = nil  // No UUID for the add button
         initialsLabel.text = "+"
         initialsLabel.textColor = .white
-        circleView.backgroundColor = Colors.accentYellow
+        circleView.backgroundColor = Colors.primaryMedium
         circleView.layer.borderWidth = 0 // No border for the add button
         removePersonButton.isHidden = true
     }

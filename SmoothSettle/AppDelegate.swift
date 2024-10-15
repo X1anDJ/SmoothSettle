@@ -89,6 +89,7 @@ extension AppDelegate: LogoutDelegate {
         }
     }
 }
+import UIKit
 
 extension AppDelegate {
     // Function to set up the UITabBarController with the main and archive view controllers
@@ -96,22 +97,22 @@ extension AppDelegate {
         let tabBarController = UITabBarController()
 
         // MainViewController setup
+        let mainViewController = MainViewController()
         let mainNavController = UINavigationController(rootViewController: mainViewController)
         mainViewController.tabBarItem = UITabBarItem(title: "Main", image: UIImage(systemName: "house.fill"), tag: 0)
 
-        // Placeholder for ArchiveTripsViewController
-        let archiveTripsViewController = UIViewController() // Replace with ArchiveTripsViewController later
-        archiveTripsViewController.view.backgroundColor = .white
-        archiveTripsViewController.tabBarItem = UITabBarItem(title: "Archive", image: UIImage(systemName: "archivebox.fill"), tag: 1)
+        // ArchiveViewController setup
+        let archiveViewController = ArchiveViewController()
+        let archiveNavController = UINavigationController(rootViewController: archiveViewController)
+        archiveViewController.tabBarItem = UITabBarItem(title: "Archive", image: UIImage(systemName: "archivebox.fill"), tag: 1)
 
         // Add view controllers to the tab bar
-        tabBarController.viewControllers = [mainNavController, archiveTripsViewController]
+        tabBarController.viewControllers = [mainNavController, archiveNavController]
 
         // Set the appearance of the tab bar items
         tabBarController.tabBar.tintColor = Colors.primaryDark // Selected item color
         tabBarController.tabBar.unselectedItemTintColor = Colors.primaryLight // Unselected item color
 
-        
         // Set up the shadow for the tab bar
         tabBarController.tabBar.backgroundColor = .systemBackground
         tabBarController.tabBar.layer.shadowColor = UIColor.systemGray.cgColor
@@ -122,6 +123,6 @@ extension AppDelegate {
 
         // Set the tab bar controller as the root view controller
         window?.rootViewController = tabBarController
+        window?.makeKeyAndVisible()
     }
 }
-

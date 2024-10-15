@@ -23,7 +23,7 @@ class CoreDataManager {
             }
         }
         
-        //resetPersistentStore() // Reset the persistent store for testing
+//        resetPersistentStore() // Reset for testing
     }
     
     // Managed object context for performing operations

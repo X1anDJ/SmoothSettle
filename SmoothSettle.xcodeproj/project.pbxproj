@@ -73,6 +73,16 @@
 		DC6DE7732CBB47BF0050F6EF /* CircleLayoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE7722CBB47BF0050F6EF /* CircleLayoutView.swift */; };
 		DC6DE7752CBB58AF0050F6EF /* TransactionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE7742CBB58AF0050F6EF /* TransactionCell.swift */; };
 		DC6DE7772CBB58C20050F6EF /* TransactionsTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE7762CBB58C20050F6EF /* TransactionsTableView.swift */; };
+		DC6DE77A2CBD09240050F6EF /* AddBillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE7792CBD09240050F6EF /* AddBillView.swift */; };
+		DC6DE77D2CBD12030050F6EF /* BillDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE77C2CBD12030050F6EF /* BillDetailViewController.swift */; };
+		DC6DE77F2CBD12560050F6EF /* PhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE77E2CBD12560050F6EF /* PhotoViewController.swift */; };
+		DC6DE7812CBD14EE0050F6EF /* BillDetailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE7802CBD14EE0050F6EF /* BillDetailTableViewCell.swift */; };
+		DC6DE7832CBD190D0050F6EF /* BillDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE7822CBD190D0050F6EF /* BillDetailViewModel.swift */; };
+		DC6DE7862CBE045F0050F6EF /* CustomCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE7852CBE045F0050F6EF /* CustomCardView.swift */; };
+		DC6DE7892CBE0AFB0050F6EF /* ArchiveViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE7882CBE0AFB0050F6EF /* ArchiveViewModel.swift */; };
+		DC6DE78B2CBE0B100050F6EF /* ArchiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE78A2CBE0B100050F6EF /* ArchiveViewController.swift */; };
+		DC6DE78D2CBE0B600050F6EF /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE78C2CBE0B600050F6EF /* CardView.swift */; };
+		DC6DE78F2CBE0B830050F6EF /* ArchiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE78E2CBE0B830050F6EF /* ArchiveView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -139,6 +149,16 @@
 		DC6DE7722CBB47BF0050F6EF /* CircleLayoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleLayoutView.swift; sourceTree = "<group>"; };
 		DC6DE7742CBB58AF0050F6EF /* TransactionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionCell.swift; sourceTree = "<group>"; };
 		DC6DE7762CBB58C20050F6EF /* TransactionsTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsTableView.swift; sourceTree = "<group>"; };
+		DC6DE7792CBD09240050F6EF /* AddBillView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBillView.swift; sourceTree = "<group>"; };
+		DC6DE77C2CBD12030050F6EF /* BillDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillDetailViewController.swift; sourceTree = "<group>"; };
+		DC6DE77E2CBD12560050F6EF /* PhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewController.swift; sourceTree = "<group>"; };
+		DC6DE7802CBD14EE0050F6EF /* BillDetailTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillDetailTableViewCell.swift; sourceTree = "<group>"; };
+		DC6DE7822CBD190D0050F6EF /* BillDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillDetailViewModel.swift; sourceTree = "<group>"; };
+		DC6DE7852CBE045F0050F6EF /* CustomCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCardView.swift; sourceTree = "<group>"; };
+		DC6DE7882CBE0AFB0050F6EF /* ArchiveViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveViewModel.swift; sourceTree = "<group>"; };
+		DC6DE78A2CBE0B100050F6EF /* ArchiveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveViewController.swift; sourceTree = "<group>"; };
+		DC6DE78C2CBE0B600050F6EF /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
+		DC6DE78E2CBE0B830050F6EF /* ArchiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -181,10 +201,9 @@
 				DC6DE71C2CB9FC3F0050F6EF /* Login */,
 				DC531AFB2CA1FA590053DC24 /* CoreData */,
 				DC4C9EE12CA1297500ADEA13 /* MainView */,
-				DC6DE7782CBBB7C10050F6EF /* SettleView */,
-				DC4C9EE42CA12A5F00ADEA13 /* AddTrip */,
-				DC531B0F2CA247150053DC24 /* AddBill */,
+				DC6DE7872CBE0AE90050F6EF /* ArchiveView */,
 				DC531B052CA2097E0053DC24 /* PeopleSliderView */,
+				DC6DE7842CBE032A0050F6EF /* ShadowContainerView */,
 				DC4C9EDC2CA126C000ADEA13 /* Extension+Util */,
 				DC4C9EC72CA0BBE900ADEA13 /* Algorithm */,
 				DC4C9EB02C9FFCCB00ADEA13 /* AppDelegate.swift */,
@@ -219,6 +238,10 @@
 		DC4C9EE12CA1297500ADEA13 /* MainView */ = {
 			isa = PBXGroup;
 			children = (
+				DC6DE7782CBBB7C10050F6EF /* SettleView */,
+				DC4C9EE42CA12A5F00ADEA13 /* AddTrip */,
+				DC531B0F2CA247150053DC24 /* AddBill */,
+				DC6DE77B2CBD11EF0050F6EF /* BillDetail */,
 				DC4C9EB42C9FFCCB00ADEA13 /* MainViewController.swift */,
 				DC6DE7452CBA5BCF0050F6EF /* MainView.swift */,
 				DC4C9EE22CA1298100ADEA13 /* MainViewModel.swift */,
@@ -277,6 +300,7 @@
 			isa = PBXGroup;
 			children = (
 				DC531B102CA247400053DC24 /* AddBillViewController.swift */,
+				DC6DE7792CBD09240050F6EF /* AddBillView.swift */,
 			);
 			path = AddBill;
 			sourceTree = "<group>";
@@ -444,6 +468,36 @@
 			path = SettleView;
 			sourceTree = "<group>";
 		};
+		DC6DE77B2CBD11EF0050F6EF /* BillDetail */ = {
+			isa = PBXGroup;
+			children = (
+				DC6DE77C2CBD12030050F6EF /* BillDetailViewController.swift */,
+				DC6DE77E2CBD12560050F6EF /* PhotoViewController.swift */,
+				DC6DE7802CBD14EE0050F6EF /* BillDetailTableViewCell.swift */,
+				DC6DE7822CBD190D0050F6EF /* BillDetailViewModel.swift */,
+			);
+			path = BillDetail;
+			sourceTree = "<group>";
+		};
+		DC6DE7842CBE032A0050F6EF /* ShadowContainerView */ = {
+			isa = PBXGroup;
+			children = (
+				DC6DE7852CBE045F0050F6EF /* CustomCardView.swift */,
+			);
+			path = ShadowContainerView;
+			sourceTree = "<group>";
+		};
+		DC6DE7872CBE0AE90050F6EF /* ArchiveView */ = {
+			isa = PBXGroup;
+			children = (
+				DC6DE7882CBE0AFB0050F6EF /* ArchiveViewModel.swift */,
+				DC6DE78A2CBE0B100050F6EF /* ArchiveViewController.swift */,
+				DC6DE78C2CBE0B600050F6EF /* CardView.swift */,
+				DC6DE78E2CBE0B830050F6EF /* ArchiveView.swift */,
+			);
+			path = ArchiveView;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -525,6 +579,7 @@
 				DC531B022CA201C00053DC24 /* TripRepository.swift in Sources */,
 				DC4C9EDE2CA126D800ADEA13 /* UIColor+Extension.swift in Sources */,
 				DC531B0A2CA22AED0053DC24 /* BillTableViewCell.swift in Sources */,
+				DC6DE77F2CBD12560050F6EF /* PhotoViewController.swift in Sources */,
 				DC531AF52CA1FA530053DC24 /* Person+CoreDataClass.swift in Sources */,
 				DC4C9EE02CA1270500ADEA13 /* Colors.swift in Sources */,
 				DC531B682CA76D890053DC24 /* BillDetailView.swift in Sources */,
@@ -532,11 +587,13 @@
 				DC531AFA2CA1FA530053DC24 /* Bill+CoreDataProperties.swift in Sources */,
 				DC531B112CA247400053DC24 /* AddBillViewController.swift in Sources */,
 				DC4C9EBB2C9FFCCB00ADEA13 /* SmoothSettle.xcdatamodeld in Sources */,
+				DC6DE7862CBE045F0050F6EF /* CustomCardView.swift in Sources */,
 				DC6DE7732CBB47BF0050F6EF /* CircleLayoutView.swift in Sources */,
 				DC531AFF2CA2014C0053DC24 /* Person+Convenience.swift in Sources */,
 				DC6DE7462CBA5BCF0050F6EF /* MainView.swift in Sources */,
 				DC4C9EE62CA12A7500ADEA13 /* AddTripViewController.swift in Sources */,
 				DC531AF72CA1FA530053DC24 /* Trip+CoreDataClass.swift in Sources */,
+				DC6DE78F2CBE0B830050F6EF /* ArchiveView.swift in Sources */,
 				DC531AFD2CA201350053DC24 /* Trip+Convenience.swift in Sources */,
 				DC531AF62CA1FA530053DC24 /* Person+CoreDataProperties.swift in Sources */,
 				DC6DE71D2CB9FC3F0050F6EF /* PhoneNumberController.swift in Sources */,
@@ -544,6 +601,7 @@
 				DC6DE71F2CB9FC3F0050F6EF /* DummyViewController.swift in Sources */,
 				DC6DE7202CB9FC3F0050F6EF /* LoginView.swift in Sources */,
 				DC6DE7752CBB58AF0050F6EF /* TransactionCell.swift in Sources */,
+				DC6DE77D2CBD12030050F6EF /* BillDetailViewController.swift in Sources */,
 				DC6DE7212CB9FC3F0050F6EF /* LoginViewController.swift in Sources */,
 				DC6DE7222CB9FC3F0050F6EF /* AuthenticationButtonsView.swift in Sources */,
 				DC6DE7232CB9FC3F0050F6EF /* DataGlobal.swift in Sources */,
@@ -553,13 +611,16 @@
 				DC6DE7262CB9FC3F0050F6EF /* PhoneNumberViewController.swift in Sources */,
 				DC6DE7272CB9FC3F0050F6EF /* VerificationCodeViewController.swift in Sources */,
 				DC6DE7282CB9FC3F0050F6EF /* CountryCodeViewController.swift in Sources */,
+				DC6DE77A2CBD09240050F6EF /* AddBillView.swift in Sources */,
 				DC6DE7292CB9FC3F0050F6EF /* MainTabBarController.swift in Sources */,
 				DC6DE7772CBB58C20050F6EF /* TransactionsTableView.swift in Sources */,
 				DC6DE72A2CB9FC3F0050F6EF /* ViewExtensions.swift in Sources */,
 				DC6DE76F2CBB27730050F6EF /* SettleViewController.swift in Sources */,
 				DC6DE72B2CB9FC3F0050F6EF /* UITextFieldExtensions.swift in Sources */,
 				DC6DE72C2CB9FC3F0050F6EF /* PhoneViewController.swift in Sources */,
+				DC6DE7832CBD190D0050F6EF /* BillDetailViewModel.swift in Sources */,
 				DC6DE72D2CB9FC3F0050F6EF /* TableViewCellExtensions.swift in Sources */,
+				DC6DE7892CBE0AFB0050F6EF /* ArchiveViewModel.swift in Sources */,
 				DC6DE72E2CB9FC3F0050F6EF /* Country.swift in Sources */,
 				DC6DE7442CBA530A0050F6EF /* UserViewController.swift in Sources */,
 				DC6DE72F2CB9FC3F0050F6EF /* VerificationController.swift in Sources */,
@@ -569,11 +630,14 @@
 				DC6DE7332CB9FC3F0050F6EF /* ProfileViewContainer.swift in Sources */,
 				DC6DE7342CB9FC3F0050F6EF /* DividerView.swift in Sources */,
 				DC6DE7352CB9FC3F0050F6EF /* Utilities.swift in Sources */,
+				DC6DE78B2CBE0B100050F6EF /* ArchiveViewController.swift in Sources */,
 				DC6DE7712CBB47A40050F6EF /* UserCircleView.swift in Sources */,
 				DC4C9EB52C9FFCCB00ADEA13 /* MainViewController.swift in Sources */,
 				DC4C9EB12C9FFCCB00ADEA13 /* AppDelegate.swift in Sources */,
+				DC6DE78D2CBE0B600050F6EF /* CardView.swift in Sources */,
 				DC531B072CA209920053DC24 /* PeopleSliderView.swift in Sources */,
 				DC6DE6E72CB9F0F90050F6EF /* SimplifyDebts.swift in Sources */,
+				DC6DE7812CBD14EE0050F6EF /* BillDetailTableViewCell.swift in Sources */,
 				DC531B042CA204AC0053DC24 /* CoreDataManager.swift in Sources */,
 				DC4C9EE32CA1298100ADEA13 /* MainViewModel.swift in Sources */,
 			);
@@ -727,6 +791,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -755,6 +820,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

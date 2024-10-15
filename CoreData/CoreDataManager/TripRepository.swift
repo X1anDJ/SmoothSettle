@@ -1,13 +1,27 @@
 import CoreData
+import Combine
+import UIKit
 
 class TripRepository {
+    // MARK: - Singleton Instance
+    static let shared = TripRepository()
     
     // CoreData managed object context
     private let context: NSManagedObjectContext
     
-    // Dependency injection to pass the managed object context, with a default to CoreDataManager's context
-    init(context: NSManagedObjectContext = CoreDataManager.shared.context) {
+    // Combine Publisher for settled trips
+    private var settledTripsSubject = CurrentValueSubject<[Trip], Never>([])
+
+    // Dependency injection to pass the managed object context
+    private init(context: NSManagedObjectContext = CoreDataManager.shared.context) {
         self.context = context
+        loadSettledTrips()  // Load settled trips when the repository is initialized
+    }
+    
+    // MARK: - Combine Publisher
+
+    var settledTripsPublisher: AnyPublisher<[Trip], Never> {
+        settledTripsSubject.eraseToAnyPublisher()  // Expose as read-only publisher
     }
     
     // MARK: - Managing Trips
@@ -42,12 +56,21 @@ class TripRepository {
         fetchRequest.predicate = NSPredicate(format: "settled == YES")
         
         do {
-            return try context.fetch(fetchRequest)
+            let trips = try context.fetch(fetchRequest)
+            settledTripsSubject.send(trips)  // Publish changes
+            print("Fetch settled trips from CoreData")
+            return trips
         } catch {
             print("Failed to fetch settled trips: \(error)")
             return []
         }
     }
+    
+    // Load settled trips initially
+    private func loadSettledTrips() {
+        _ = fetchSettledTrips()  // Load trips into the subject when initialized
+    }
+    
     
     // Fetch a specific trip by UUID
     func fetchTrip(by id: UUID) -> Trip? {
@@ -73,6 +96,7 @@ class TripRepository {
         trip.addToPeople(NSSet(array: people))
         
         saveContext()
+        
         return trip
     }
     
@@ -180,6 +204,23 @@ extension TripRepository {
 // MARK: - Managing Bills
 
 extension TripRepository {
+
+    // Update a bill's image by UUID
+    func changeBillImage(billId: UUID, image: UIImage?) {
+        guard let bill = fetchBill(by: billId) else {
+            print("Bill not found")
+            return
+        }
+        
+        // Update image data
+        if let image = image {
+            bill.imageData = image.jpegData(compressionQuality: 0.8)
+        } else {
+            bill.imageData = nil
+        }
+        
+        saveContext()
+    }
     
     // Fetch a bill by UUID
     func fetchBill(by id: UUID) -> Bill? {
@@ -192,16 +233,16 @@ extension TripRepository {
             return nil
         }
     }
-    
+
     // Add a bill to a trip
-    func addBill(to tripId: UUID, title: String, amount: Double, date: Date, payerId: UUID, involversIds: [UUID]) -> Bill? {
+    func addBill(to tripId: UUID, title: String, amount: Double, date: Date, payerId: UUID, involversIds: [UUID], image: UIImage?) -> Bill? {
         guard let trip = fetchTrip(by: tripId),
               let payer = fetchPerson(by: payerId),
               !involversIds.isEmpty else {
             print("Trip or Payer not found, or no involvers specified")
             return nil
         }
-        
+
         let bill = Bill(context: context)
         bill.id = UUID()  // Assign a unique UUID
         bill.title = title
@@ -209,7 +250,12 @@ extension TripRepository {
         bill.payer = payer
         bill.trip = trip
         bill.date = date
-        
+
+        // Handle image data
+        if let image = image {
+            bill.imageData = image.jpegData(compressionQuality: 0.8) // Adjust compression quality as needed
+        }
+
         // Fetch involvers by their IDs and add them to the bill
         let involvers = involversIds.compactMap { fetchPerson(by: $0) }
         bill.addToInvolvers(NSSet(array: involvers))
@@ -225,31 +271,41 @@ extension TripRepository {
             print("Trip or Bill not found")
             return
         }
-        
+
         trip.removeFromBills(bill)
         context.delete(bill)
         saveContext()
     }
-    
+
     // Update a bill by UUID
-    func updateBill(by billId: UUID, title: String, amount: Double, payerId: UUID, involversIds: [UUID]) {
+    func updateBill(by billId: UUID, title: String, amount: Double, date: Date, payerId: UUID, involversIds: [UUID], image: UIImage?) {
         guard let bill = fetchBill(by: billId),
               let payer = fetchPerson(by: payerId) else {
             print("Bill or Payer not found")
             return
         }
-        
+
         bill.title = title
         bill.amount = amount
+        bill.date = date
         bill.payer = payer
+
+        // Handle image data
+        if let image = image {
+            bill.imageData = image.jpegData(compressionQuality: 0.8)
+        } else {
+            bill.imageData = nil
+        }
+
         bill.removeFromInvolvers(bill.involvers ?? NSSet())
-        
+
         // Fetch involvers by their IDs and add them to the bill
         let involvers = involversIds.compactMap { fetchPerson(by: $0) }
         bill.addToInvolvers(NSSet(array: involvers))
         saveContext()
     }
 }
+
 
 // MARK: - Simplifying Transactions and Settling Trips
 
@@ -314,9 +370,13 @@ extension TripRepository {
         // Call the simplification function to process the transactions
         let simplifiedTransactions = simplifyTransactions(for: trip.id)
         
-        
         // Mark the trip as settled
         trip.settled = true
         saveContext()
+        
+        print("Settlements for Trip: \(trip.title ?? "")")
+        // Update the settled trips publisher
+        _ = fetchSettledTrips()
     }
+
 }

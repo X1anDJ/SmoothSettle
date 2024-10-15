@@ -61,7 +61,7 @@ class MainViewController: UIViewController {
                     self?.updateUIElements(isEnabled: true)
                 } else {
                     self?.updateUIElements(isEnabled: false)
-                    print("updateUIElements(isEnabled: false)")
+//                    print("updateUIElements(isEnabled: false)")
                 }
             }
             .store(in: &cancellables)
@@ -182,7 +182,7 @@ class MainViewController: UIViewController {
     func reloadMainViewController() {
         // Reload the trip data
         viewModel.loadAllUnsettledTrips()
-
+        
         // Fetch and reload the current trip and its people
         if let currentTripId = viewModel.currentTripId, let currentTrip = viewModel.tripRepository.fetchTrip(by: currentTripId) {
             updateCurrentTripUI(with: currentTrip)
@@ -340,20 +340,14 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        // Create and configure the BillDetailView
-        let billDetailView = BillDetailView(frame: CGRect(x: 0, y: 0, width: 300, height: 400))
-        billDetailView.center = self.view.center
-        billDetailView.configure(with: viewModel.bills[indexPath.row])
-        
-        // Add it to the current view
-        self.view.addSubview(billDetailView)
-        
-        // Animate its appearance
-        billDetailView.alpha = 0
-        UIView.animate(withDuration: 0.3) {
-            billDetailView.alpha = 1
-        }
+        let billDetailVC = BillDetailViewController()
+        let selectedBill = viewModel.bills[indexPath.row]
+        let billDetailViewModel = BillDetailViewModel(tripRepository: viewModel.tripRepository, bill: selectedBill)
+        billDetailVC.viewModel = billDetailViewModel
+        navigationController?.pushViewController(billDetailVC, animated: true)
+
     }
+
 }
 
 // MARK: - AddTripViewControllerDelegate
@@ -366,8 +360,13 @@ extension MainViewController: AddTripViewControllerDelegate {
 
 // MARK: - AddBillViewControllerDelegate
 extension MainViewController: AddBillViewControllerDelegate {
-    func didAddBill(title: String, amount: Double, date: Date, payerId: UUID, involverIds: [UUID]) {
+    func didAddBill(title: String, amount: Double, date: Date, payerId: UUID, involverIds: [UUID], image: UIImage?) {
         // Use UUID for the payer and involvers
-        viewModel.addBillToCurrentTrip(title: title, amount: amount, date: date, payerId: payerId, involverIds: involverIds)
+        viewModel.addBillToCurrentTrip(title: title, amount: amount, date: date, payerId: payerId, involverIds: involverIds, image: image)
     }
+    
+//    func didAddBill(title: String, amount: Double, date: Date, payerId: UUID, involverIds: [UUID]) {
+//        // Use UUID for the payer and involvers
+//        viewModel.addBillToCurrentTrip(title: title, amount: amount, date: date, payerId: payerId, involverIds: involverIds)
+//    }
 }
