@@ -25,7 +25,7 @@ class PeopleCell: UICollectionViewCell {
         
         // Circle view setup
         circleView.translatesAutoresizingMaskIntoConstraints = false
-        circleView.layer.cornerRadius = 30
+        circleView.layer.cornerRadius = (self.frame.height - 20) / 2
         circleView.backgroundColor = .systemGray6
         contentView.addSubview(circleView)
         
@@ -45,13 +45,18 @@ class PeopleCell: UICollectionViewCell {
         
         // Add layout constraints for circle and initials
         NSLayoutConstraint.activate([
-            circleView.widthAnchor.constraint(equalToConstant: 60),
-            circleView.heightAnchor.constraint(equalToConstant: 60),
+            circleView.widthAnchor.constraint(equalTo: contentView.heightAnchor, constant: -20),
+            circleView.heightAnchor.constraint(equalTo: circleView.widthAnchor),
             circleView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             circleView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             
-            removePersonButton.centerXAnchor.constraint(equalTo: circleView.centerXAnchor, constant: 30),
-            removePersonButton.centerYAnchor.constraint(equalTo: circleView.centerYAnchor, constant: -30),
+//            removePersonButton.centerXAnchor.constraint(equalTo: circleView.centerXAnchor, constant: 30),
+//            removePersonButton.centerYAnchor.constraint(equalTo: circleView.centerYAnchor, constant: -30),
+            
+            removePersonButton.topAnchor.constraint(equalTo: contentView.topAnchor),
+            removePersonButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            removePersonButton.widthAnchor.constraint(equalToConstant: 20),
+            removePersonButton.heightAnchor.constraint(equalToConstant: 20),
             
             initialsLabel.centerXAnchor.constraint(equalTo: circleView.centerXAnchor),
             initialsLabel.centerYAnchor.constraint(equalTo: circleView.centerYAnchor)
@@ -117,6 +122,7 @@ class PeopleCell: UICollectionViewCell {
     }
     
     func showRemoveButton() {
+        print("people cell remove detected")
         if personId != nil {
             removePersonButton.isHidden = false
         }

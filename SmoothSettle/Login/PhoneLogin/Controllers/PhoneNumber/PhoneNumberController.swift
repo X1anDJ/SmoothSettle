@@ -4,7 +4,7 @@ class PhoneNumberController: PhoneNumberViewController {
     
     override func configurePhoneNumberContainerView() {
         super.configurePhoneNumberContainerView()
-        print("        super.configurePhoneNumberContainerView()")
+//        print("        super.configurePhoneNumberContainerView()")
         
         phoneNumberViewContainer.instructions.text = "Enter your phone number to login"
         phoneNumberViewContainer.terms.text = "Sign in with phone number indicates you agree to our Terms of Service and Privacy Policy"

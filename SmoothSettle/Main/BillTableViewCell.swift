@@ -40,7 +40,7 @@ class BillTableViewCell: UITableViewCell {
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         
         // Payer Circle and Initials Label
-        payerCircleView.backgroundColor = Colors.primaryMedium
+        payerCircleView.backgroundColor = Colors.primaryThin
         payerCircleView.translatesAutoresizingMaskIntoConstraints = false
         
         payerInitialsLabel.font = UIFont.systemFont(ofSize: 14, weight: .bold)
@@ -54,7 +54,7 @@ class BillTableViewCell: UITableViewCell {
         paidLabel.text = "Paid for"
         paidLabel.textAlignment = .center
         paidLabel.font = UIFont.systemFont(ofSize: 14)
-        paidLabel.textColor = .black
+        paidLabel.textColor = .darkGray
         paidLabel.translatesAutoresizingMaskIntoConstraints = false
         
         // Involvers Circle Container View
@@ -147,7 +147,7 @@ class BillTableViewCell: UITableViewCell {
         involversCircleContainerView.subviews.forEach { $0.removeFromSuperview() }
         
         let spacing: CGFloat = 4.0
-        let fixedCircleCountThreshold = 6  // Set your desired threshold here
+        let fixedCircleCountThreshold = 6
         
         // Calculate available width for involvers
         let leftFixedWidths: CGFloat = 16 + 30 + 8 + 60 + 8  // Left margin, payerCircleView, spacing, paidLabel, spacing
@@ -161,7 +161,7 @@ class BillTableViewCell: UITableViewCell {
         
         // Minimum and maximum circle widths
         let minCircleWidth: CGFloat = 1.0
-        let maxCircleWidth: CGFloat = 16.0
+        let maxCircleWidth: CGFloat = 12.0
         
         var circleWidth: CGFloat
         
@@ -187,7 +187,7 @@ class BillTableViewCell: UITableViewCell {
         var previousCircle: UIView? = nil
         for _ in 0..<storedInvolversCount {
             let circleView = UIView()
-            circleView.backgroundColor = Colors.accentOrange
+            circleView.backgroundColor = Colors.primaryLight
             circleView.translatesAutoresizingMaskIntoConstraints = false
             circleView.layer.cornerRadius = circleWidth / 2
             circleView.layer.masksToBounds = true

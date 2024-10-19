@@ -45,8 +45,8 @@ class PeopleSliderView: UIView {
     override init(frame: CGRect) {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.minimumInteritemSpacing = 10
-        layout.minimumLineSpacing = 10
+        layout.minimumInteritemSpacing = 0
+        
         
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -149,6 +149,7 @@ extension PeopleSliderView: UICollectionViewDataSource, UICollectionViewDelegate
         return cell
     }
 
+    
 
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -168,10 +169,16 @@ extension PeopleSliderView: UICollectionViewDataSource, UICollectionViewDelegate
             }
         }
     }
+    
 
-    // Layout for the circular cells (60x60 size)
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 60, height: 60)
+        let cellHeight = self.bounds.height
+        return CGSize(width: cellHeight, height: cellHeight)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return -8
     }
 }
 

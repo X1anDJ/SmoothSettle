@@ -109,7 +109,40 @@ class ArchiveView: UIView {
         ])
     }
     
+    // Method to add a year label to the stack view
+    func addYearLabel(_ year: Int) {
+        let yearLabel = UILabel()
+        yearLabel.translatesAutoresizingMaskIntoConstraints = false
+        yearLabel.text = "\(year)"
+        yearLabel.font = UIFont.boldSystemFont(ofSize: 24)
+        yearLabel.textColor = .darkGray
+        stackView.addArrangedSubview(yearLabel)
+    }
+    
     // Method to add CardViews to the stack view
+    func addCardViews(forTrips tripsByYear: [Int: [Trip]]) {
+        clearCards()  // Clear the stack view first
+
+        if tripsByYear.isEmpty {
+            showEmptyState(true)
+        } else {
+            showEmptyState(false)
+            // Iterate through each year and its trips
+            for (year, trips) in tripsByYear.sorted(by: { $0.key > $1.key }) {
+                // Add a year label
+                addYearLabel(year)
+                
+                // Add a CardView for each trip in that year
+                for trip in trips {
+                    let cardView = CardView()
+                    cardView.configure(with: trip)
+                    addCardView(cardView)
+                }
+            }
+        }
+    }
+    
+    // Method to add a CardView to the stack view
     func addCardView(_ cardView: UIView) {
         stackView.addArrangedSubview(cardView)
     }

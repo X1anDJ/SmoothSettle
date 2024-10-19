@@ -30,7 +30,6 @@
 		DC531B0A2CA22AED0053DC24 /* BillTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC531B092CA22AED0053DC24 /* BillTableViewCell.swift */; };
 		DC531B112CA247400053DC24 /* AddBillViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC531B102CA247400053DC24 /* AddBillViewController.swift */; };
 		DC531B132CA24FF40053DC24 /* PeopleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC531B122CA24FF40053DC24 /* PeopleCell.swift */; };
-		DC531B682CA76D890053DC24 /* BillDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC531B672CA76D890053DC24 /* BillDetailView.swift */; };
 		DC6DE6E72CB9F0F90050F6EF /* SimplifyDebts.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE6E62CB9F0F90050F6EF /* SimplifyDebts.swift */; };
 		DC6DE6ED2CB9F5300050F6EF /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = DC6DE6EC2CB9F5300050F6EF /* FirebaseAuth */; };
 		DC6DE6EF2CB9F5300050F6EF /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = DC6DE6EE2CB9F5300050F6EF /* FirebaseCore */; };
@@ -111,7 +110,6 @@
 		DC531B092CA22AED0053DC24 /* BillTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillTableViewCell.swift; sourceTree = "<group>"; };
 		DC531B102CA247400053DC24 /* AddBillViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBillViewController.swift; sourceTree = "<group>"; };
 		DC531B122CA24FF40053DC24 /* PeopleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleCell.swift; sourceTree = "<group>"; };
-		DC531B672CA76D890053DC24 /* BillDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillDetailView.swift; sourceTree = "<group>"; };
 		DC6DE6E62CB9F0F90050F6EF /* SimplifyDebts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplifyDebts.swift; sourceTree = "<group>"; };
 		DC6DE6F42CB9F7E70050F6EF /* SmoothSettle.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SmoothSettle.entitlements; sourceTree = "<group>"; };
 		DC6DE6F52CB9FC3F0050F6EF /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -200,9 +198,8 @@
 			children = (
 				DC6DE71C2CB9FC3F0050F6EF /* Login */,
 				DC531AFB2CA1FA590053DC24 /* CoreData */,
-				DC4C9EE12CA1297500ADEA13 /* MainView */,
-				DC6DE7872CBE0AE90050F6EF /* ArchiveView */,
-				DC531B052CA2097E0053DC24 /* PeopleSliderView */,
+				DC4C9EE12CA1297500ADEA13 /* Main */,
+				DC6DE7872CBE0AE90050F6EF /* Archive */,
 				DC6DE7842CBE032A0050F6EF /* ShadowContainerView */,
 				DC4C9EDC2CA126C000ADEA13 /* Extension+Util */,
 				DC4C9EC72CA0BBE900ADEA13 /* Algorithm */,
@@ -235,22 +232,22 @@
 			path = "Extension+Util";
 			sourceTree = "<group>";
 		};
-		DC4C9EE12CA1297500ADEA13 /* MainView */ = {
+		DC4C9EE12CA1297500ADEA13 /* Main */ = {
 			isa = PBXGroup;
 			children = (
-				DC6DE7782CBBB7C10050F6EF /* SettleView */,
+				DC7FAA1E2CC1EFEB004593E4 /* User */,
+				DC6DE7782CBBB7C10050F6EF /* Settle */,
 				DC4C9EE42CA12A5F00ADEA13 /* AddTrip */,
 				DC531B0F2CA247150053DC24 /* AddBill */,
 				DC6DE77B2CBD11EF0050F6EF /* BillDetail */,
+				DC7FAA1F2CC1F024004593E4 /* Bills */,
+				DC531B052CA2097E0053DC24 /* PeopleSlider */,
 				DC4C9EB42C9FFCCB00ADEA13 /* MainViewController.swift */,
+				DC531B092CA22AED0053DC24 /* BillTableViewCell.swift */,
 				DC6DE7452CBA5BCF0050F6EF /* MainView.swift */,
 				DC4C9EE22CA1298100ADEA13 /* MainViewModel.swift */,
-				DC531B092CA22AED0053DC24 /* BillTableViewCell.swift */,
-				DC531B672CA76D890053DC24 /* BillDetailView.swift */,
-				DC6DE7432CBA530A0050F6EF /* UserViewController.swift */,
-				DC6DE76C2CBB0D1D0050F6EF /* BillsViewController.swift */,
 			);
-			path = MainView;
+			path = Main;
 			sourceTree = "<group>";
 		};
 		DC4C9EE42CA12A5F00ADEA13 /* AddTrip */ = {
@@ -287,13 +284,13 @@
 			path = CoreDataManager;
 			sourceTree = "<group>";
 		};
-		DC531B052CA2097E0053DC24 /* PeopleSliderView */ = {
+		DC531B052CA2097E0053DC24 /* PeopleSlider */ = {
 			isa = PBXGroup;
 			children = (
 				DC531B062CA209920053DC24 /* PeopleSliderView.swift */,
 				DC531B122CA24FF40053DC24 /* PeopleCell.swift */,
 			);
-			path = PeopleSliderView;
+			path = PeopleSlider;
 			sourceTree = "<group>";
 		};
 		DC531B0F2CA247150053DC24 /* AddBill */ = {
@@ -456,7 +453,7 @@
 			path = Login;
 			sourceTree = "<group>";
 		};
-		DC6DE7782CBBB7C10050F6EF /* SettleView */ = {
+		DC6DE7782CBBB7C10050F6EF /* Settle */ = {
 			isa = PBXGroup;
 			children = (
 				DC6DE76E2CBB27730050F6EF /* SettleViewController.swift */,
@@ -465,16 +462,16 @@
 				DC6DE7742CBB58AF0050F6EF /* TransactionCell.swift */,
 				DC6DE7762CBB58C20050F6EF /* TransactionsTableView.swift */,
 			);
-			path = SettleView;
+			path = Settle;
 			sourceTree = "<group>";
 		};
 		DC6DE77B2CBD11EF0050F6EF /* BillDetail */ = {
 			isa = PBXGroup;
 			children = (
+				DC6DE7822CBD190D0050F6EF /* BillDetailViewModel.swift */,
 				DC6DE77C2CBD12030050F6EF /* BillDetailViewController.swift */,
 				DC6DE77E2CBD12560050F6EF /* PhotoViewController.swift */,
 				DC6DE7802CBD14EE0050F6EF /* BillDetailTableViewCell.swift */,
-				DC6DE7822CBD190D0050F6EF /* BillDetailViewModel.swift */,
 			);
 			path = BillDetail;
 			sourceTree = "<group>";
@@ -487,7 +484,7 @@
 			path = ShadowContainerView;
 			sourceTree = "<group>";
 		};
-		DC6DE7872CBE0AE90050F6EF /* ArchiveView */ = {
+		DC6DE7872CBE0AE90050F6EF /* Archive */ = {
 			isa = PBXGroup;
 			children = (
 				DC6DE7882CBE0AFB0050F6EF /* ArchiveViewModel.swift */,
@@ -495,7 +492,23 @@
 				DC6DE78C2CBE0B600050F6EF /* CardView.swift */,
 				DC6DE78E2CBE0B830050F6EF /* ArchiveView.swift */,
 			);
-			path = ArchiveView;
+			path = Archive;
+			sourceTree = "<group>";
+		};
+		DC7FAA1E2CC1EFEB004593E4 /* User */ = {
+			isa = PBXGroup;
+			children = (
+				DC6DE7432CBA530A0050F6EF /* UserViewController.swift */,
+			);
+			path = User;
+			sourceTree = "<group>";
+		};
+		DC7FAA1F2CC1F024004593E4 /* Bills */ = {
+			isa = PBXGroup;
+			children = (
+				DC6DE76C2CBB0D1D0050F6EF /* BillsViewController.swift */,
+			);
+			path = Bills;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -582,7 +595,6 @@
 				DC6DE77F2CBD12560050F6EF /* PhotoViewController.swift in Sources */,
 				DC531AF52CA1FA530053DC24 /* Person+CoreDataClass.swift in Sources */,
 				DC4C9EE02CA1270500ADEA13 /* Colors.swift in Sources */,
-				DC531B682CA76D890053DC24 /* BillDetailView.swift in Sources */,
 				DC531B132CA24FF40053DC24 /* PeopleCell.swift in Sources */,
 				DC531AFA2CA1FA530053DC24 /* Bill+CoreDataProperties.swift in Sources */,
 				DC531B112CA247400053DC24 /* AddBillViewController.swift in Sources */,

@@ -83,6 +83,16 @@ class MainViewModel: ObservableObject {
         }
     }
     
+    func deleteBill(by billId: UUID) {
+        guard let currentTripId = currentTripId else { return }
+        
+        // Call the repository method to delete the bill
+        tripRepository.removeBill(by: billId, from: currentTripId)
+        
+        // Remove the bill from the local array
+        bills = tripRepository.fetchBills(for: currentTripId)
+    }
+    
     // Update the current trip (e.g., if it's settled)
     func updateTripSettledStatus(isSettled: Bool) {
         guard let currentTripId = currentTripId, let trip = tripRepository.fetchTrip(by: currentTripId) else { return }

@@ -71,7 +71,6 @@ class MainViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.setupTripDropdownMenu() // Rebuild the UIMenu whenever trips are updated
-                
             }
             .store(in: &cancellables)
         
@@ -89,6 +88,7 @@ class MainViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.mainView.customTableView.reloadData()
+                self?.updateTotalAmount(with: self?.viewModel.bills)
             }
             .store(in: &cancellables)
     }
@@ -119,6 +119,11 @@ class MainViewController: UIViewController {
         mainView.peopleSliderView.people = people
     }
     
+    func updateTotalAmount(with bills: [Bill]?) {
+        let totalAmount = bills?.reduce(0, { $0 + $1.amount }) ?? 0
+        mainView.totalAmountLabel.text = "$\(String(format: "%.2f", totalAmount))"
+    }
+    
     func setupTripDropdownMenu() {
         // Create actions for each existing trip
         let tripMenuActions = viewModel.trips.map { trip in
@@ -141,9 +146,10 @@ class MainViewController: UIViewController {
     }
 
     @objc func didTapCardRightArrowButton() {
-        let billsViewController = BillsViewController()
+        let billsViewController = BillsViewController(viewModel: viewModel)
         navigationController?.pushViewController(billsViewController, animated: true)
     }
+
     
     @objc func didTapUserButton() {
         let userVC = UserViewController()
@@ -210,11 +216,12 @@ class MainViewController: UIViewController {
 
         // Change alpha to visually indicate disabled state
         mainView.peopleSliderView.alpha = isEnabled ? enabledAlpha : disabledAlpha
-        mainView.cardHeaderView.alpha = isEnabled ? enabledAlpha : disabledAlpha
-        mainView.cardRightArrowButton.alpha = isEnabled ? enabledAlpha : disabledAlpha
-        mainView.customTableView.alpha = isEnabled ? enabledAlpha : disabledAlpha
+        mainView.shadowContainerView.alpha = isEnabled ? enabledAlpha : disabledAlpha
+//        mainView.cardRightArrowButton.alpha = isEnabled ? enabledAlpha : disabledAlpha
+//        mainView.customTableView.alpha = isEnabled ? enabledAlpha : disabledAlpha
         mainView.settleButton.alpha = isEnabled ? enabledAlpha : disabledAlpha
         mainView.addBillButton.alpha = isEnabled ? enabledAlpha : disabledAlpha
+        
     }
 
     @objc func didTapAddBill() {
@@ -347,7 +354,21 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         navigationController?.pushViewController(billDetailVC, animated: true)
 
     }
+    
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return .delete
+    }
 
+    // Handle the deletion when the user swipes and taps "Delete"
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let bill = viewModel.bills[indexPath.row]
+            viewModel.deleteBill(by: bill.id)
+            
+            // Remove the row from the table view with animation
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+        }
+    }
 }
 
 // MARK: - AddTripViewControllerDelegate

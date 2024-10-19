@@ -67,7 +67,7 @@ class PhoneNumberViewController: UIViewController {
         if !isVerificationSent {
             sendSMSConfirmation()
         } else {
-            print("verification has already been sent once")
+//            print("verification has already been sent once")
         }
     }
     
@@ -82,7 +82,7 @@ class PhoneNumberViewController: UIViewController {
             }
             
         }
-        print("tappped sms confirmation - phone number controller")
+//        print("tappped sms confirmation - phone number controller")
     }
 }
 

@@ -73,11 +73,11 @@ class SettleViewController: UIViewController {
 
         // Settle Button
         settleButton.translatesAutoresizingMaskIntoConstraints = false
-        settleButton.setTitle("Settle", for: .normal)
+        settleButton.setTitle("Archive", for: .normal)
         settleButton.setTitleColor(.white, for: .normal)
         settleButton.backgroundColor = Colors.primaryDark
         settleButton.layer.cornerRadius = 16
-        settleButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        settleButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         settleButton.addTarget(self, action: #selector(didTapSettleTrip), for: .touchUpInside)
         contentView.addSubview(settleButton)
 
@@ -85,7 +85,7 @@ class SettleViewController: UIViewController {
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         closeButton.setTitle("Close", for: .normal)
         closeButton.setTitleColor(Colors.primaryDark, for: .normal)
-        closeButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        closeButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         closeButton.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
         contentView.addSubview(closeButton)
     }
