@@ -1,3 +1,6 @@
+
+// MARK: - UserCircleView Implementation
+
 //
 //  UserCircleView.swift
 //  SmoothSettle
@@ -5,38 +8,83 @@
 //  Created by Dajun Xian on 2024/10/12.
 //
 
-import Foundation
 import UIKit
 
 class UserCircleView: UIView {
-
+    
     enum CircleStyle {
         case style1  // Frame with border
         case style2  // Full background color
     }
-
+    
+    // MARK: - Properties
+    
+    /// Container view to handle shadows
+    let shadowContainerView = UIView()
+    
+    /// Inner circle view that displays the circle
+    let innerCircleView = UIView()
+    
+    // MARK: - Initializers
+    
     init(style: CircleStyle, frame: CGRect) {
         super.init(frame: frame)
-        setupView(style: style)
+        setupViews(style: style)
     }
     
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: coder)
+        setupViews(style: .style1)  // Default style
     }
-
-    private func setupView(style: CircleStyle) {
+    
+    // MARK: - Setup Methods
+    
+    /// Configures the views and their properties
+    private func setupViews(style: CircleStyle) {
+        // Configure Shadow Container View
+        shadowContainerView.frame = bounds
+        shadowContainerView.backgroundColor = .clear
+        shadowContainerView.layer.cornerRadius = bounds.width / 2
+        shadowContainerView.layer.masksToBounds = false  // Allow shadows to be visible
+        addSubview(shadowContainerView)
+        
+        // Configure Inner Circle View
+        innerCircleView.frame = bounds
+        innerCircleView.layer.cornerRadius = bounds.width / 2
+        innerCircleView.layer.masksToBounds = true  // Clip to bounds for circular shape
+        
         // Customize the appearance based on the style
         switch style {
         case .style1:
-            self.layer.borderWidth = 2
-            self.layer.borderColor = Colors.accentOrange.cgColor
-            self.backgroundColor = Colors.primaryThin
+            innerCircleView.layer.borderWidth = 2
+            innerCircleView.layer.borderColor = Colors.accentOrange.cgColor
+            innerCircleView.backgroundColor = Colors.primaryThin
         case .style2:
-            self.backgroundColor = Colors.accentOrange
+            innerCircleView.backgroundColor = Colors.accentOrange
         }
         
-        // Round the view to make it a circle
-        self.layer.cornerRadius = self.bounds.width / 2
-        self.layer.masksToBounds = true
+        shadowContainerView.addSubview(innerCircleView)
+        
+        // Static Shadow Configuration for Testing (Optional)
+        /*
+        shadowContainerView.layer.shadowColor = Colors.accentOrange.cgColor
+        shadowContainerView.layer.shadowOpacity = 0.8
+        shadowContainerView.layer.shadowRadius = 5.0
+        shadowContainerView.layer.shadowOffset = CGSize(width: 0, height: 0)
+        shadowContainerView.layer.shadowPath = UIBezierPath(ovalIn: shadowContainerView.bounds).cgPath
+        */
+    }
+    
+    // MARK: - Layout
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        shadowContainerView.frame = bounds
+        innerCircleView.frame = bounds
+        shadowContainerView.layer.cornerRadius = bounds.width / 2
+        innerCircleView.layer.cornerRadius = bounds.width / 2
+        
+        // Set the shadow path to match the circular shape
+        shadowContainerView.layer.shadowPath = UIBezierPath(ovalIn: shadowContainerView.bounds).cgPath
     }
 }
