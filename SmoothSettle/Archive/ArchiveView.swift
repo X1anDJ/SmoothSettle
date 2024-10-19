@@ -92,7 +92,7 @@ class ArchiveView: UIView {
             scrollView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 32),
             scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
             
             // Content View Constraints
             contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),

@@ -12,10 +12,10 @@ class CircleLayoutView: UIView {
     // MARK: - Animation Properties
     
     /// Duration for connecting circles animation (Phase 1)
-    private let connectUserCirclesDuration: TimeInterval = 1.5
+    private let connectUserCirclesDuration: TimeInterval = 1.0
     
     /// Duration for opacity and shadow animation (Phase 2)
-    private let opacityShadowAnimationDuration: TimeInterval = 2.0
+    private let opacityShadowAnimationDuration: TimeInterval = 2.5
     
     /// Duration for line fade-out animation (Phase 3)
     private let fadeOutDuration: TimeInterval = 0.5
@@ -24,10 +24,10 @@ class CircleLayoutView: UIView {
     private let rotationDuration: TimeInterval = 28.0
     
     /// Shadow properties
-    private let shadowRadius: CGFloat = 4.0
-    private let shadowOpacity: Float = 0.8
+    private let shadowRadius: CGFloat = 7.0
+    private let shadowOpacity: Float = 0.95
     private let shadowColor: UIColor = Colors.accentOrange
-    private let circleOpacity: Float = 0.8
+    private let circleOpacity: Float = 0.2
     
     /// Line properties
     private let lineColor: CGColor = Colors.accentOrange.cgColor

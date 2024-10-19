@@ -10,7 +10,7 @@ import Foundation
 class ArchiveViewModel {
     
     // MARK: - Properties
-    private let tripRepository: TripRepository
+    let tripRepository: TripRepository
     private var cancellables = Set<AnyCancellable>()
     
     // Published settled trips

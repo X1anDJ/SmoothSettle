@@ -46,6 +46,11 @@ class AddBillViewController: UIViewController,
         setup()
         setupActions()
         
+        //MARK: recognizing the taps on the app screen, not the keyboard...
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(hideKeyboardOnTap))
+        tapRecognizer.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapRecognizer)
+        
         if #available(iOS 15.0, *) {
             self.modalPresentationStyle = .pageSheet
             let requiredHeight = calculateRequiredHeight()
@@ -69,21 +74,31 @@ class AddBillViewController: UIViewController,
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        // Set delegates for the slider views
         addBillView.involversSliderView.delegate = self
         addBillView.payerSliderView.delegate = self
+        
+        // Allow selection in both slider views
         addBillView.payerSliderView.allowSelection = true
         addBillView.involversSliderView.allowSelection = true
         
+        // Set the context for each slider view
         addBillView.payerSliderView.context = .payer
         addBillView.involversSliderView.context = .involver
         
+        // Assign the people data to both slider views
         addBillView.payerSliderView.people = people
         addBillView.involversSliderView.people = people
         
-        // Reload the sliders to reflect any data changes
+        // **Select all involvers by default**
+        selectedInvolverIds = people.map { $0.id } // Populate with all UUIDs
+        addBillView.involversSliderView.selectedInvolverIds = selectedInvolverIds
+        
+        // Reload the sliders to reflect the updated selections
         addBillView.payerSliderView.reload()
         addBillView.involversSliderView.reload()
     }
+
     
     private func setup() {
         // Setup Navigation Bar (transparent)
@@ -173,6 +188,11 @@ class AddBillViewController: UIViewController,
     
     @objc private func didTapCancelButton() {
         dismiss(animated: true, completion: nil)
+    }
+    // MARK: - removing the keyboard from screen...
+    @objc func hideKeyboardOnTap(){
+        
+        view.endEditing(true)
     }
     
     // MARK: - Camera Button Actions

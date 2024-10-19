@@ -32,7 +32,7 @@ class PeopleCell: UICollectionViewCell {
         // RemovePersonButton setup
         removePersonButton.translatesAutoresizingMaskIntoConstraints = false
         removePersonButton.setImage(UIImage(systemName: "minus.circle.fill"), for: .normal)
-        removePersonButton.tintColor = UIColor.red
+        removePersonButton.tintColor = UIColor.systemGray3
         removePersonButton.addTarget(self, action: #selector(removePerson), for: .touchUpInside)
         removePersonButton.isHidden = true
         
@@ -83,8 +83,8 @@ class PeopleCell: UICollectionViewCell {
         
         // Apply a border if selected, otherwise no border
         if isSelected {
-            circleView.layer.borderWidth = 2.0
-            circleView.layer.borderColor = UIColor.systemBlue.cgColor
+            circleView.layer.borderWidth = 3.0
+            circleView.layer.borderColor = Colors.accentOrange.cgColor
         } else {
             circleView.layer.borderWidth = 0
         }

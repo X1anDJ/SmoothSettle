@@ -78,6 +78,8 @@ extension AppDelegate: LoginViewControllerDelegate {
     }
 }
 
+
+
 extension AppDelegate: LogoutDelegate {
     func didLogout() {
         do {
@@ -89,6 +91,7 @@ extension AppDelegate: LogoutDelegate {
         }
     }
 }
+
 import UIKit
 
 extension AppDelegate {

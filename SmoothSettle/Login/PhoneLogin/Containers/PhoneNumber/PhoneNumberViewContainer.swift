@@ -52,7 +52,7 @@ class PhoneNumberViewContainer: UIView {
         selectCountry.layer.cornerRadius = 25
        // selectCountry.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10.0, bottom: 0.0, right: 10.0)
         selectCountry.titleLabel?.font = UIFont.systemFont(ofSize: 20)
-        selectCountry.addTarget(self, action: #selector(PhoneNumberController.openCountryCodesList), for: .touchUpInside)
+        selectCountry.addTarget(self, action: #selector(PhoneNumberViewController.openCountryCodesList), for: .touchUpInside)
         
         return selectCountry
     }()
@@ -77,7 +77,7 @@ class PhoneNumberViewContainer: UIView {
         phoneNumber.keyboardType = .numberPad
         phoneNumber.keyboardAppearance = ThemeManager.currentTheme().keyboardAppearance
         phoneNumber.textColor = ThemeManager.currentTheme().mainTitleColor
-        phoneNumber.addTarget(self, action: #selector(PhoneNumberController.textFieldDidChange(_:)), for: .editingChanged)
+        phoneNumber.addTarget(self, action: #selector(PhoneNumberViewController.textFieldDidChange(_:)), for: .editingChanged)
         
         return phoneNumber
     }()

@@ -1,6 +1,8 @@
 import UIKit
 import FirebaseAuth
 
+
+
 class VerificationCodeViewController: UIViewController, UITextFieldDelegate {
     
     let verificationContainerView = VerificationViewContainer()
@@ -123,25 +125,25 @@ class VerificationCodeViewController: UIViewController, UITextFieldDelegate {
 
     
     func authenticate() {
-        //verificationContainerView.verificationCode.resignFirstResponder()
-        if currentReachabilityStatus == .notReachable {
-            basicErrorAlertWith(title: "No internet connection", message: noInternetError, controller: self)
-            return
-        }
-        
-        //let verificationCode = verificationContainerView.verificationCode.text!
-        let verificationCode = verificationContainerView.fullVerificationCode
-        AuthManager.shared.verifyCode(smsCode: verificationCode ) { [weak self] success in
-            guard success else { return }
-            // Phone log-in sucess!
-            DispatchQueue.main.async {
-                let vc = MainViewController()
-                vc.modalPresentationStyle = .fullScreen
-                self?.present(vc, animated: true)
-            }
-            
-        }
-        
+//        //verificationContainerView.verificationCode.resignFirstResponder()
+//        if currentReachabilityStatus == .notReachable {
+//            basicErrorAlertWith(title: "No internet connection", message: noInternetError, controller: self)
+//            return
+//        }
+//        
+//        //let verificationCode = verificationContainerView.verificationCode.text!
+//        let verificationCode = verificationContainerView.fullVerificationCode
+//        AuthManager.shared.verifyCode(smsCode: verificationCode ) { [weak self] success in
+//            guard success else { return }
+//            // Phone log-in sucess!
+//            DispatchQueue.main.async {
+//                let vc = MainViewController()
+//                vc.modalPresentationStyle = .fullScreen
+//                self?.present(vc, animated: true)
+//            }
+//            
+//        }
+//        
     }
     
     func backPhoneNumber() {

@@ -183,6 +183,8 @@ extension TripRepository {
             return false
         }
 
+        print("Removing person \(person.name ?? "Unnamed") from trip \(trip.title ?? "Unnamed")")
+        
         // Check if the person is involved in any bill
         for bill in trip.billsArray {
             if bill.payer == person || bill.involversArray.contains(person) {

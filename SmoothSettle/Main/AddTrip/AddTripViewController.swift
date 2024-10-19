@@ -35,6 +35,11 @@ class AddTripViewController: UIViewController {
         style()
         layout()
         
+        //MARK: recognizing the taps on the app screen, not the keyboard...
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(hideKeyboardOnTap))
+        tapRecognizer.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapRecognizer)
+        
         // Setting the presentation style to pageSheet
         if #available(iOS 15.0, *) {
             self.modalPresentationStyle = .pageSheet
@@ -161,7 +166,16 @@ extension AddTripViewController {
             datePicker.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
     }
+    
+    //MARK: Hide Keyboard...
+    @objc func hideKeyboardOnTap(){
+        //MARK: removing the keyboard from screen...
+        view.endEditing(true)
+    }
+
 }
+
+
 
 // MARK: - PeopleSliderViewDelegate
 extension AddTripViewController: PeopleSliderViewDelegate {

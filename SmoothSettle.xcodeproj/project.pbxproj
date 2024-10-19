@@ -35,7 +35,6 @@
 		DC6DE6EF2CB9F5300050F6EF /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = DC6DE6EE2CB9F5300050F6EF /* FirebaseCore */; };
 		DC6DE6F12CB9F5300050F6EF /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = DC6DE6F02CB9F5300050F6EF /* FirebaseDatabase */; };
 		DC6DE6F32CB9F5300050F6EF /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = DC6DE6F22CB9F5300050F6EF /* FirebaseFirestore */; };
-		DC6DE71D2CB9FC3F0050F6EF /* PhoneNumberController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE7022CB9FC3F0050F6EF /* PhoneNumberController.swift */; };
 		DC6DE71E2CB9FC3F0050F6EF /* MethodExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE7112CB9FC3F0050F6EF /* MethodExtensions.swift */; };
 		DC6DE71F2CB9FC3F0050F6EF /* DummyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE6F72CB9FC3F0050F6EF /* DummyViewController.swift */; };
 		DC6DE7202CB9FC3F0050F6EF /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE6F62CB9FC3F0050F6EF /* LoginView.swift */; };
@@ -82,6 +81,8 @@
 		DC6DE78B2CBE0B100050F6EF /* ArchiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE78A2CBE0B100050F6EF /* ArchiveViewController.swift */; };
 		DC6DE78D2CBE0B600050F6EF /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE78C2CBE0B600050F6EF /* CardView.swift */; };
 		DC6DE78F2CBE0B830050F6EF /* ArchiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE78E2CBE0B830050F6EF /* ArchiveView.swift */; };
+		DC7FAA212CC3971E004593E4 /* ArchiveTripController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC7FAA202CC3971E004593E4 /* ArchiveTripController.swift */; };
+		DC7FAA482CC46009004593E4 /* UserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC7FAA472CC46009004593E4 /* UserProfileViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -120,7 +121,6 @@
 		DC6DE6FB2CB9FC3F0050F6EF /* PhoneNumberViewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneNumberViewContainer.swift; sourceTree = "<group>"; };
 		DC6DE6FD2CB9FC3F0050F6EF /* VerificationViewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationViewContainer.swift; sourceTree = "<group>"; };
 		DC6DE6FF2CB9FC3F0050F6EF /* ProfileViewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewContainer.swift; sourceTree = "<group>"; };
-		DC6DE7022CB9FC3F0050F6EF /* PhoneNumberController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneNumberController.swift; sourceTree = "<group>"; };
 		DC6DE7032CB9FC3F0050F6EF /* PhoneNumberViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneNumberViewController.swift; sourceTree = "<group>"; };
 		DC6DE7052CB9FC3F0050F6EF /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		DC6DE7062CB9FC3F0050F6EF /* VerificationCodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationCodeViewController.swift; sourceTree = "<group>"; };
@@ -157,6 +157,8 @@
 		DC6DE78A2CBE0B100050F6EF /* ArchiveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveViewController.swift; sourceTree = "<group>"; };
 		DC6DE78C2CBE0B600050F6EF /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		DC6DE78E2CBE0B830050F6EF /* ArchiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveView.swift; sourceTree = "<group>"; };
+		DC7FAA202CC3971E004593E4 /* ArchiveTripController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveTripController.swift; sourceTree = "<group>"; };
+		DC7FAA472CC46009004593E4 /* UserProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -358,7 +360,6 @@
 		DC6DE7042CB9FC3F0050F6EF /* PhoneNumber */ = {
 			isa = PBXGroup;
 			children = (
-				DC6DE7022CB9FC3F0050F6EF /* PhoneNumberController.swift */,
 				DC6DE7032CB9FC3F0050F6EF /* PhoneNumberViewController.swift */,
 			);
 			path = PhoneNumber;
@@ -491,6 +492,7 @@
 				DC6DE78A2CBE0B100050F6EF /* ArchiveViewController.swift */,
 				DC6DE78C2CBE0B600050F6EF /* CardView.swift */,
 				DC6DE78E2CBE0B830050F6EF /* ArchiveView.swift */,
+				DC7FAA202CC3971E004593E4 /* ArchiveTripController.swift */,
 			);
 			path = Archive;
 			sourceTree = "<group>";
@@ -499,6 +501,7 @@
 			isa = PBXGroup;
 			children = (
 				DC6DE7432CBA530A0050F6EF /* UserViewController.swift */,
+				DC7FAA472CC46009004593E4 /* UserProfileViewController.swift */,
 			);
 			path = User;
 			sourceTree = "<group>";
@@ -600,6 +603,7 @@
 				DC531B112CA247400053DC24 /* AddBillViewController.swift in Sources */,
 				DC4C9EBB2C9FFCCB00ADEA13 /* SmoothSettle.xcdatamodeld in Sources */,
 				DC6DE7862CBE045F0050F6EF /* CustomCardView.swift in Sources */,
+				DC7FAA212CC3971E004593E4 /* ArchiveTripController.swift in Sources */,
 				DC6DE7732CBB47BF0050F6EF /* CircleLayoutView.swift in Sources */,
 				DC531AFF2CA2014C0053DC24 /* Person+Convenience.swift in Sources */,
 				DC6DE7462CBA5BCF0050F6EF /* MainView.swift in Sources */,
@@ -608,7 +612,6 @@
 				DC6DE78F2CBE0B830050F6EF /* ArchiveView.swift in Sources */,
 				DC531AFD2CA201350053DC24 /* Trip+Convenience.swift in Sources */,
 				DC531AF62CA1FA530053DC24 /* Person+CoreDataProperties.swift in Sources */,
-				DC6DE71D2CB9FC3F0050F6EF /* PhoneNumberController.swift in Sources */,
 				DC6DE71E2CB9FC3F0050F6EF /* MethodExtensions.swift in Sources */,
 				DC6DE71F2CB9FC3F0050F6EF /* DummyViewController.swift in Sources */,
 				DC6DE7202CB9FC3F0050F6EF /* LoginView.swift in Sources */,
@@ -639,6 +642,7 @@
 				DC6DE7302CB9FC3F0050F6EF /* VerificationViewContainer.swift in Sources */,
 				DC6DE7312CB9FC3F0050F6EF /* ThemeManager.swift in Sources */,
 				DC6DE7322CB9FC3F0050F6EF /* AuthManager.swift in Sources */,
+				DC7FAA482CC46009004593E4 /* UserProfileViewController.swift in Sources */,
 				DC6DE7332CB9FC3F0050F6EF /* ProfileViewContainer.swift in Sources */,
 				DC6DE7342CB9FC3F0050F6EF /* DividerView.swift in Sources */,
 				DC6DE7352CB9FC3F0050F6EF /* Utilities.swift in Sources */,

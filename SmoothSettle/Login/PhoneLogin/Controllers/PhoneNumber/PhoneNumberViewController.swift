@@ -5,6 +5,7 @@ class PhoneNumberViewController: UIViewController {
     
     let phoneNumberViewContainer = PhoneNumberViewContainer()
     let countries = Country().countries
+    weak var delegate: LoginViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -77,6 +78,7 @@ class PhoneNumberViewController: UIViewController {
             guard success else { return }
             DispatchQueue.main.async {
                 let destination = VerificationController()
+                destination.delegate = self!.delegate
                 destination.verificationContainerView.titleNumber.text = number
                 self?.navigationController?.pushViewController(destination, animated: true)
             }

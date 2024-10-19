@@ -157,7 +157,7 @@ class MainViewController: UIViewController {
             userVC.logoutDelegate = delegate
         }
         let navigationController = UINavigationController(rootViewController: userVC)
-        navigationController.modalPresentationStyle = .pageSheet
+        navigationController.modalPresentationStyle = .fullScreen
         present(navigationController, animated: true, completion: nil)
     }
 
@@ -264,13 +264,28 @@ extension MainViewController: PeopleSliderViewDelegate, PeopleCellDelegate {
         
         // Use UUID to remove the person
         if !viewModel.requestToRemovePerson(by: personId) {
-            print("Failed to remove person because they are involved in bills")
+            print(" involved in bills")
+            showAlert(title:"Can't remove", message: "Involved in some bills")
         } else {
             print("Person removed successfully")
+            showAlert(title: "Person removed", message: nil)
         }
         mainView.peopleSliderView.hideAllRemoveButtons()
     }
 
+    func showAlert(title: String, message: String?) {
+        
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
+    
+    func showSuccessAlert(title: String) {
+        let alert = UIAlertController(title: title, message: nil, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
+    
     func didSelectPerson(_ personId: UUID?, for tripId: UUID?, context: SliderContext) {
         // Check if personId exists, do nothing if it's nil
         guard let personId = personId else {

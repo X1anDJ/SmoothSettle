@@ -60,7 +60,8 @@ extension LoginViewController : AuthenticationButtonsViewDelegate{
     @objc func phoneButtonTapped(sender: UIButton) {
         // Handle Phone sign-in
         print("phoneTapped")
-        let phoneViewController = PhoneNumberController()
+        let phoneViewController = PhoneNumberViewController()
+        phoneViewController.delegate = self.delegate
         self.navigationController?.pushViewController(phoneViewController, animated: true)
     }
 
