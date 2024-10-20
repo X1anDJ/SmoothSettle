@@ -19,6 +19,8 @@ class AuthManager {
         PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil) { [weak self]verificationId, error in
             guard let verificationId = verificationId, error == nil else {
                 completion(false)
+                print("Auth error: \(String(describing: error))")
+                
                 return
             }
             self?.verificationId = verificationId

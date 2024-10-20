@@ -18,6 +18,8 @@ class BillTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        // background color
+        self.backgroundColor = .clear
         setupViews()
         setupConstraints()
     }

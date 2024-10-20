@@ -133,7 +133,7 @@ extension LoginViewController : AuthenticationButtonsViewDelegate{
 extension LoginViewController {
     
     private func style() {
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = Colors.background0
         
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.textAlignment = .center

@@ -10,8 +10,8 @@ class VerificationCodeViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .systemBackground
-        verificationContainerView.backgroundColor = .systemBackground
+        view.backgroundColor = Colors.background0
+        verificationContainerView.backgroundColor = Colors.background0
         view.addSubview(verificationContainerView)
         configureVerificationContainerView()
         configureNavigationBar()

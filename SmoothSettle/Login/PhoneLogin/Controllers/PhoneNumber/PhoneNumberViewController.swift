@@ -10,7 +10,7 @@ class PhoneNumberViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = Colors.background0
         configurePhoneNumberContainerView()
         configureNavigationBar()
         setCountry()

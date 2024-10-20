@@ -28,7 +28,7 @@ class BillDetailViewController: UIViewController, UIImagePickerControllerDelegat
     
     // MARK: - Setup UI
     private func setupView() {
-        view.backgroundColor = UIColor.systemBackground
+        view.backgroundColor = Colors.background1
         
         // Setup titleLabel
         titleLabel.font = UIFont.boldSystemFont(ofSize: 24)

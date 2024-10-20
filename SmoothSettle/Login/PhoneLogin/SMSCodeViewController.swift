@@ -10,7 +10,7 @@ import UIKit
 class SMSCodeViewController: UIViewController, UITextFieldDelegate {
     private let codeField: UITextField = {
         let field = UITextField()
-        field.backgroundColor = .secondarySystemBackground
+        field.backgroundColor = Colors.background1
         field.placeholder = "Enter code"
         field.returnKeyType = .continue
         field.textAlignment = .center
@@ -19,7 +19,7 @@ class SMSCodeViewController: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = Colors.background0
         view.addSubview(codeField)
         codeField.frame = CGRect(x: 0, y: 0, width: 220, height: 50)
         codeField.center = view.center

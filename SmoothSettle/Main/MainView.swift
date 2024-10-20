@@ -4,15 +4,18 @@
 //
 //  Created by Dajun Xian on 2024/10/12.
 //
+
 import UIKit
 
 class MainView: UIView {
     
-    // UI Components
+    // MARK: - UI Components
+    
+    // Main Header
     let mainHeaderStackView = UIStackView()
     let titleLabel = UILabel()
     let userButton = UIButton(type: .system)
-    let currentTripButton = UIButton()
+    let currentTripButton = UIButton(type: .system)
     let peopleSliderView = PeopleSliderView()
     
     // Card
@@ -28,13 +31,14 @@ class MainView: UIView {
     let totalLabel = UILabel()
     let totalAmountLabel = UILabel()
     
-    
-    // Settle and addBill
+    // Settle and AddBill Buttons with Shadow Containers
+    let settleButtonShadowContainer = UIView()
+    let addBillButtonShadowContainer = UIView()
     let settleButton = UIButton(type: .system)
     let addBillButton = UIButton(type: .system)
-    let buttonsStackView = UIStackView()
     
-
+    // MARK: - Initializers
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -47,11 +51,14 @@ class MainView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // MARK: - Setup Methods
+    
     func setBackgroundImage() {
-        self.backgroundColor = .secondarySystemGroupedBackground
+        self.backgroundColor = Colors.background0
         let backgroundImageView = UIImageView()
         backgroundImageView.translatesAutoresizingMaskIntoConstraints = false
-//        backgroundImageView.image = UIImage(named: "background5")
+        // Uncomment and set the desired image
+        // backgroundImageView.image = UIImage(named: "background5")
         backgroundImageView.contentMode = .scaleAspectFill
         self.addSubview(backgroundImageView)
         self.sendSubviewToBack(backgroundImageView)
@@ -63,7 +70,7 @@ class MainView: UIView {
             backgroundImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
         ])
     }
-
+    
     func style() {
         // -------------------------------------- Main Header --------------------------------------
         // Configure the main UI components
@@ -92,15 +99,14 @@ class MainView: UIView {
         currentTripText.append(NSAttributedString(attachment: arrowIconAttachment))
         currentTripButton.setAttributedTitle(currentTripText, for: .normal)
         currentTripButton.titleLabel?.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        currentTripButton.tintColor = Colors.primaryDark
         currentTripButton.contentHorizontalAlignment = .left
 
         peopleSliderView.translatesAutoresizingMaskIntoConstraints = false
-
         
         // -------------------------------------- Card --------------------------------------
         
         // Shadow + Card Container
-        
         shadowContainerView.translatesAutoresizingMaskIntoConstraints = false
         shadowContainerView.backgroundColor = .clear
         shadowContainerView.layer.shadowColor = UIColor.black.cgColor
@@ -110,14 +116,13 @@ class MainView: UIView {
         shadowContainerView.layer.masksToBounds = false
 
         cardContainerView.translatesAutoresizingMaskIntoConstraints = false
-        cardContainerView.backgroundColor = .white
+        cardContainerView.backgroundColor = Colors.background1
         cardContainerView.layer.cornerRadius = 15
         cardContainerView.layer.masksToBounds = true
 
         // Header
-        
         cardHeaderView.translatesAutoresizingMaskIntoConstraints = false
-        cardHeaderView.backgroundColor = .white
+        cardHeaderView.backgroundColor = .clear
         
         cardTitleLabel.translatesAutoresizingMaskIntoConstraints = false
         cardTitleLabel.font = UIFont.preferredFont(forTextStyle: .headline)
@@ -137,22 +142,21 @@ class MainView: UIView {
         cardRightArrowButton.setImage(UIImage(systemName: "chevron.right"), for: .normal)
         cardRightArrowButton.translatesAutoresizingMaskIntoConstraints = false
         cardRightArrowButton.tintColor = .systemGray
-        
 
         // Table
         customTableView.translatesAutoresizingMaskIntoConstraints = false
         customTableView.register(UITableViewCell.self, forCellReuseIdentifier: "BillCell")
-        
+        customTableView.backgroundColor = .clear
+
         // Separator 2
         separatorLine2.translatesAutoresizingMaskIntoConstraints = false
         separatorLine2.backgroundColor = Colors.accentYellow
-        
+
         // Tail
         cardTailView.translatesAutoresizingMaskIntoConstraints = false
-        cardTailView.backgroundColor = .white
+        cardTailView.backgroundColor = .clear
         totalLabel.translatesAutoresizingMaskIntoConstraints = false
         totalLabel.text = " "
-//        totalLabel.font = UIFont.preferredFont(forTextStyle: .subheadline)
         totalLabel.font = UIFont.systemFont(ofSize: 14, weight: .regular)
         totalLabel.textColor = Colors.primaryDark
         totalAmountLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -160,89 +164,118 @@ class MainView: UIView {
         totalAmountLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         totalAmountLabel.textColor = Colors.accentOrange
 
-        // -------------------------------------- Main Bottom --------------------------------------
+        // -------------------------------------- Settle and AddBill Buttons --------------------------------------
         // Style the Settle Button
         settleButton.translatesAutoresizingMaskIntoConstraints = false
         settleButton.setTitle("Compute", for: .normal)
         settleButton.setImage(UIImage(systemName: "shuffle"), for: .normal)
-        settleButton.layer.cornerRadius = 20
-        settleButton.layer.borderWidth = 2
-        settleButton.layer.borderColor = Colors.primaryDark.cgColor
+        settleButton.layer.cornerRadius = 15
+//        settleButton.layer.borderWidth = 0
+//        settleButton.layer.borderColor = Colors.primaryDark.cgColor
         settleButton.setTitleColor(Colors.primaryDark, for: .normal)
         settleButton.tintColor = Colors.primaryDark
-        settleButton.backgroundColor = .systemBackground
+        settleButton.backgroundColor = Colors.background1
         settleButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        // settleButton.contentEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
 
         // Style the Add Bill Button
         addBillButton.translatesAutoresizingMaskIntoConstraints = false
         addBillButton.setTitle("Bill", for: .normal)
         addBillButton.setImage(UIImage(systemName: "plus"), for: .normal)
-        addBillButton.layer.cornerRadius = 20
-        addBillButton.tintColor = .systemBackground
-        addBillButton.setTitleColor(.systemBackground, for: .normal)
+        addBillButton.layer.cornerRadius = 15
+        addBillButton.tintColor = Colors.background1
+        addBillButton.setTitleColor(Colors.background1, for: .normal)
         addBillButton.backgroundColor = Colors.primaryDark
         addBillButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        // addBillButton.contentEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
 
-        // Configure the buttons stack view
-        buttonsStackView.translatesAutoresizingMaskIntoConstraints = false
-        buttonsStackView.axis = .horizontal
-        buttonsStackView.spacing = 16
-        buttonsStackView.distribution = .fillEqually
+        // -------------------------------------- Shadow Containers for Buttons --------------------------------------
+        // Settle Button Shadow Container
+        settleButtonShadowContainer.translatesAutoresizingMaskIntoConstraints = false
+        settleButtonShadowContainer.backgroundColor = .clear
+        settleButtonShadowContainer.layer.shadowColor = UIColor.black.cgColor
+        settleButtonShadowContainer.layer.shadowOpacity = 0.2
+        settleButtonShadowContainer.layer.shadowOffset = CGSize(width: 0, height: 2)
+        settleButtonShadowContainer.layer.shadowRadius = 5
+        settleButtonShadowContainer.layer.masksToBounds = false
 
-        buttonsStackView.addArrangedSubview(settleButton)
-        buttonsStackView.addArrangedSubview(addBillButton)
+        // Add Bill Button Shadow Container
+        addBillButtonShadowContainer.translatesAutoresizingMaskIntoConstraints = false
+        addBillButtonShadowContainer.backgroundColor = .clear
+        addBillButtonShadowContainer.layer.shadowColor = UIColor.black.cgColor
+        addBillButtonShadowContainer.layer.shadowOpacity = 0.2
+        addBillButtonShadowContainer.layer.shadowOffset = CGSize(width: 0, height: 2)
+        addBillButtonShadowContainer.layer.shadowRadius = 5
+        addBillButtonShadowContainer.layer.masksToBounds = false
     }
-
+    
     func layout() {
-        
+        // -------------------------------------- Main Header Layout --------------------------------------
         mainHeaderStackView.addArrangedSubview(titleLabel)
         mainHeaderStackView.addArrangedSubview(currentTripButton)
         
+        // Add subviews to card header
         cardHeaderView.addSubview(cardTitleLabel)
         cardHeaderView.addSubview(cardRightArrowButton)
+        
+        // Add subviews to card tail view
         cardTailView.addSubview(totalLabel)
         cardTailView.addSubview(totalAmountLabel)
+        
+        // Add subviews to card container
         cardContainerView.addSubview(cardHeaderView)
         cardContainerView.addSubview(customTableView)
         cardContainerView.addSubview(separatorLine2)
         cardContainerView.addSubview(cardTailView)
+        
+        // Add card container to its shadow container
         shadowContainerView.addSubview(cardContainerView)
 
+        // Add buttons to their shadow containers
+        settleButtonShadowContainer.addSubview(settleButton)
+        addBillButtonShadowContainer.addSubview(addBillButton)
 
+        // Add main subviews to the main view
         addSubview(mainHeaderStackView)
         addSubview(userButton)
         addSubview(peopleSliderView)
         addSubview(shadowContainerView)
-        
-        addSubview(buttonsStackView)
+        addSubview(settleButtonShadowContainer)
+        addSubview(addBillButtonShadowContainer)
 
-        
-        // Set up layout constraints
+        // -------------------------------------- Layout Constraints --------------------------------------
         NSLayoutConstraint.activate([
-            mainHeaderStackView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 8),
+            // Main Header Stack View Constraints
+            mainHeaderStackView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 16),
             mainHeaderStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-
+            mainHeaderStackView.trailingAnchor.constraint(lessThanOrEqualTo: userButton.leadingAnchor, constant: -16),
+            
+            // User Button Constraints
             userButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
             userButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             userButton.widthAnchor.constraint(equalToConstant: 40),
             userButton.heightAnchor.constraint(equalToConstant: 40),
             
+            // People Slider View Constraints
             peopleSliderView.topAnchor.constraint(equalTo: mainHeaderStackView.bottomAnchor, constant: 16),
-            peopleSliderView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 6),
+            peopleSliderView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             peopleSliderView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             peopleSliderView.heightAnchor.constraint(equalToConstant: 70),
 
+            // ---------------------- Card ----------------------
+            // Shadow Container for Card Constraints
             shadowContainerView.topAnchor.constraint(equalTo: peopleSliderView.bottomAnchor, constant: 16),
             shadowContainerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             shadowContainerView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            shadowContainerView.bottomAnchor.constraint(equalTo: buttonsStackView.topAnchor, constant: -24),
+            shadowContainerView.bottomAnchor.constraint(equalTo: settleButtonShadowContainer.topAnchor, constant: -24),
 
+            // Card Container Constraints
             cardContainerView.topAnchor.constraint(equalTo: shadowContainerView.topAnchor),
             cardContainerView.leadingAnchor.constraint(equalTo: shadowContainerView.leadingAnchor),
             cardContainerView.trailingAnchor.constraint(equalTo: shadowContainerView.trailingAnchor),
             cardContainerView.bottomAnchor.constraint(equalTo: shadowContainerView.bottomAnchor),
 
-            // Card Header
+            // Card Header Constraints
             cardHeaderView.topAnchor.constraint(equalTo: cardContainerView.topAnchor),
             cardHeaderView.leadingAnchor.constraint(equalTo: cardContainerView.leadingAnchor),
             cardHeaderView.trailingAnchor.constraint(equalTo: cardContainerView.trailingAnchor),
@@ -253,20 +286,20 @@ class MainView: UIView {
             
             cardRightArrowButton.trailingAnchor.constraint(equalTo: cardHeaderView.trailingAnchor, constant: -16),
             cardRightArrowButton.centerYAnchor.constraint(equalTo: cardHeaderView.centerYAnchor),
-            
-            // Card Content
+
+            // Custom Table View Constraints
             customTableView.topAnchor.constraint(equalTo: cardHeaderView.bottomAnchor),
             customTableView.leadingAnchor.constraint(equalTo: cardContainerView.leadingAnchor),
             customTableView.trailingAnchor.constraint(equalTo: cardContainerView.trailingAnchor),
             customTableView.bottomAnchor.constraint(equalTo: separatorLine2.topAnchor),
-//            customTableView.bottomAnchor.constraint(equalTo: cardContainerView.bottomAnchor),
 
-            separatorLine2.bottomAnchor.constraint(equalTo: cardTailView.topAnchor),
+            // Separator Line 2 Constraints
             separatorLine2.leadingAnchor.constraint(equalTo: cardContainerView.leadingAnchor, constant: 16),
             separatorLine2.trailingAnchor.constraint(equalTo: cardContainerView.trailingAnchor, constant: -16),
             separatorLine2.heightAnchor.constraint(equalToConstant: 0),
-            
-            // Card Tail
+            separatorLine2.bottomAnchor.constraint(equalTo: cardTailView.topAnchor),
+
+            // Card Tail View Constraints
             cardTailView.heightAnchor.constraint(equalToConstant: 44),
             cardTailView.leadingAnchor.constraint(equalTo: cardContainerView.leadingAnchor),
             cardTailView.trailingAnchor.constraint(equalTo: cardContainerView.trailingAnchor),
@@ -275,17 +308,49 @@ class MainView: UIView {
             totalAmountLabel.centerYAnchor.constraint(equalTo: cardTailView.centerYAnchor),
             totalAmountLabel.trailingAnchor.constraint(equalTo: cardTailView.trailingAnchor, constant: -16),
             
-//            totalLabel.centerYAnchor.constraint(equalTo: cardTailView.centerYAnchor),
-            totalLabel.bottomAnchor.constraint(equalTo: totalAmountLabel.bottomAnchor),
+            totalLabel.centerYAnchor.constraint(equalTo: totalAmountLabel.centerYAnchor),
             totalLabel.trailingAnchor.constraint(equalTo: totalAmountLabel.leadingAnchor, constant: -8),
             
+            // ---------------------- Settle and AddBill Buttons ----------------------
+
+            // Settle Button Shadow Container Constraints
+            settleButtonShadowContainer.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            settleButtonShadowContainer.trailingAnchor.constraint(equalTo: addBillButtonShadowContainer.leadingAnchor, constant: -16),
+            settleButtonShadowContainer.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -24),
+            settleButtonShadowContainer.heightAnchor.constraint(equalToConstant: 44),
+            settleButtonShadowContainer.widthAnchor.constraint(equalTo: addBillButtonShadowContainer.widthAnchor),
             
+            // Settle Button Constraints within its Shadow Container
+//            settleButton.centerXAnchor.constraint(equalTo: settleButtonShadowContainer.centerXAnchor),
+//            settleButton.centerYAnchor.constraint(equalTo: settleButtonShadowContainer.centerYAnchor, constant: -22),
+//            settleButton.widthAnchor.constraint(equalTo: settleButtonShadowContainer.widthAnchor, multiplier: 0.45),
+//            settleButton.heightAnchor.constraint(equalTo: settleButtonShadowContainer.heightAnchor, multiplier: 0.9),
             
-            // Buttons Stack View Constraints
-            buttonsStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            buttonsStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            buttonsStackView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -24),
-            buttonsStackView.heightAnchor.constraint(equalToConstant: 44)
+            settleButton.topAnchor.constraint(equalTo: settleButtonShadowContainer.topAnchor),
+            settleButton.leadingAnchor.constraint(equalTo: settleButtonShadowContainer.leadingAnchor),
+            settleButton.trailingAnchor.constraint(equalTo: settleButtonShadowContainer.trailingAnchor),
+            settleButton.bottomAnchor.constraint(equalTo: settleButtonShadowContainer.bottomAnchor),
+            
+            // Add Bill Button Shadow Container Constraints
+//            addBillButtonShadowContainer.leadingAnchor.constraint(equalTo: settleButtonShadowContainer.trailingAnchor, constant: 16),
+//            addBillButtonShadowContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+//            addBillButtonShadowContainer.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -24),
+//            addBillButtonShadowContainer.heightAnchor.constraint(equalToConstant: 44),
+            addBillButtonShadowContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            addBillButtonShadowContainer.heightAnchor.constraint(equalTo: settleButtonShadowContainer.heightAnchor),
+            addBillButtonShadowContainer.widthAnchor.constraint(equalTo: settleButtonShadowContainer.widthAnchor),
+            addBillButtonShadowContainer.centerYAnchor.constraint(equalTo: settleButtonShadowContainer.centerYAnchor),
+            
+//            // Add Bill Button Constraints within its Shadow Container
+//            addBillButton.centerXAnchor.constraint(equalTo: addBillButtonShadowContainer.centerXAnchor),
+//            addBillButton.centerYAnchor.constraint(equalTo: addBillButtonShadowContainer.centerYAnchor, constant: -22),
+//            addBillButton.widthAnchor.constraint(equalTo: addBillButtonShadowContainer.widthAnchor, multiplier: 0.45),
+//            addBillButton.heightAnchor.constraint(equalTo: addBillButtonShadowContainer.heightAnchor, multiplier: 0.9),
+                
+                addBillButton.topAnchor.constraint(equalTo: addBillButtonShadowContainer.topAnchor),
+                addBillButton.leadingAnchor.constraint(equalTo: addBillButtonShadowContainer.leadingAnchor),
+                addBillButton.trailingAnchor.constraint(equalTo: addBillButtonShadowContainer.trailingAnchor),
+                addBillButton.bottomAnchor.constraint(equalTo: addBillButtonShadowContainer.bottomAnchor)
         ])
     }
 }

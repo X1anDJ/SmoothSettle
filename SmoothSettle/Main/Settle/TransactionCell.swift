@@ -42,7 +42,7 @@ class TransactionCell: UITableViewCell {
         contentView.addSubview(separatorLine)
 
         // Background color and shadow for the rounded section look
-        self.backgroundColor = .systemBackground // Cell's background is clear
+        self.backgroundColor = Colors.background1 // Cell's background is clear
         self.layer.masksToBounds = false // Disable content clipping
     }
 

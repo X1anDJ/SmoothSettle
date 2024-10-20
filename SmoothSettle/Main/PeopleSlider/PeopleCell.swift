@@ -26,7 +26,7 @@ class PeopleCell: UICollectionViewCell {
         // Circle view setup
         circleView.translatesAutoresizingMaskIntoConstraints = false
         circleView.layer.cornerRadius = (self.frame.height - 20) / 2
-        circleView.backgroundColor = .systemGray6
+        circleView.backgroundColor = Colors.background1
         contentView.addSubview(circleView)
         
         // RemovePersonButton setup
@@ -105,7 +105,7 @@ class PeopleCell: UICollectionViewCell {
         personId = nil
         initialsLabel.text = ""
         initialsLabel.textColor = .clear
-        circleView.backgroundColor = .white
+        circleView.backgroundColor = Colors.background1
         circleView.layer.borderColor = UIColor.systemGray5.cgColor
         circleView.layer.borderWidth = 1
         removePersonButton.isHidden = true

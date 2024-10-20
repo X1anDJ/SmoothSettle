@@ -34,7 +34,7 @@ extension LoginView {
     
     private func style() {
         translatesAutoresizingMaskIntoConstraints = false
-        backgroundColor = .secondarySystemBackground
+        backgroundColor = Colors.background0
         
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical

@@ -48,7 +48,8 @@ class PhoneNumberViewContainer: UIView {
         selectCountry.contentHorizontalAlignment = .center
         selectCountry.contentVerticalAlignment = .center
         selectCountry.titleLabel?.sizeToFit()
-        selectCountry.backgroundColor = ThemeManager.currentTheme().buttonColor
+//        selectCountry.backgroundColor = ThemeManager.currentTheme().buttonColor
+        selectCountry.backgroundColor = Colors.background0
         selectCountry.layer.cornerRadius = 25
        // selectCountry.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10.0, bottom: 0.0, right: 10.0)
         selectCountry.titleLabel?.font = UIFont.systemFont(ofSize: 20)

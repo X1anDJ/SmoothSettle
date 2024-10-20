@@ -24,7 +24,7 @@ class ArchiveTripController: UIViewController {
     // MARK: - Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .secondarySystemBackground
+        view.backgroundColor = Colors.background1
         setupViews()
         setupConstraints()
         configureView()

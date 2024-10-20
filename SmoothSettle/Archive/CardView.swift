@@ -56,13 +56,13 @@ class CardView: UIView {
         
         // Container View
         containerView.translatesAutoresizingMaskIntoConstraints = false
-        containerView.backgroundColor = .white
+        containerView.backgroundColor = Colors.background1
         containerView.layer.cornerRadius = 16
         containerView.layer.masksToBounds = true
         
         // Card Header View
         cardHeaderView.translatesAutoresizingMaskIntoConstraints = false
-        cardHeaderView.backgroundColor = .white
+        cardHeaderView.backgroundColor = Colors.background1
         
         // Card Title Label
         cardTitleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -70,7 +70,7 @@ class CardView: UIView {
         
         // Card Trailer View
         cardTrailerView.translatesAutoresizingMaskIntoConstraints = false
-        cardTrailerView.backgroundColor = .white
+        cardTrailerView.backgroundColor = Colors.background1
         
         // Date Label
         dateLabel.translatesAutoresizingMaskIntoConstraints = false

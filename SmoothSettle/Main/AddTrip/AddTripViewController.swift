@@ -71,7 +71,7 @@ class AddTripViewController: UIViewController {
 extension AddTripViewController {
     
     private func style() {
-        view.backgroundColor = UIColor.systemGray6 // Light gray background
+        view.backgroundColor = Colors.background1 // Light gray background
         
         // Title TextField
         titleTextField.placeholder = "Enter trip title"

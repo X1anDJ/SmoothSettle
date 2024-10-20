@@ -29,8 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
-        window?.backgroundColor = .systemBackground
-
+        window?.backgroundColor = Colors.background1
         loginViewController.delegate = self
         let loginNavController = UINavigationController(rootViewController: loginViewController)
 
@@ -117,11 +116,11 @@ extension AppDelegate {
         tabBarController.tabBar.unselectedItemTintColor = .systemGray3 // Unselected item color
 
         // Set up the shadow for the tab bar
-        tabBarController.tabBar.backgroundColor = .systemBackground
+        tabBarController.tabBar.backgroundColor = Colors.background0
         tabBarController.tabBar.layer.shadowColor = UIColor.systemGray.cgColor
-        tabBarController.tabBar.layer.shadowOpacity = 0.1
+        tabBarController.tabBar.layer.shadowOpacity = 0.2
         tabBarController.tabBar.layer.shadowOffset = CGSize(width: 0, height: -2) // Negative height to apply shadow above the tab bar
-        tabBarController.tabBar.layer.shadowRadius = 4
+        tabBarController.tabBar.layer.shadowRadius = 5
         tabBarController.tabBar.layer.masksToBounds = false
 
         // Set the tab bar controller as the root view controller

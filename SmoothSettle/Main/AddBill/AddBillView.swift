@@ -43,7 +43,7 @@ class AddBillView: UIView {
     }
     
     private func style() {
-        backgroundColor = UIColor.systemGray6
+        backgroundColor = Colors.background1
         layer.cornerRadius = 16
         clipsToBounds = true
         
@@ -63,7 +63,7 @@ class AddBillView: UIView {
         cameraButton.tintColor = UIColor.systemBlue
         cameraButton.translatesAutoresizingMaskIntoConstraints = false
         cameraButton.layer.cornerRadius = 8
-        cameraButton.backgroundColor = UIColor.systemGray5
+        cameraButton.backgroundColor = Colors.background0
         cameraButton.imageView?.contentMode = .scaleAspectFit
         cameraButton.clipsToBounds = true
         
@@ -91,7 +91,7 @@ class AddBillView: UIView {
         currencyButton.setTitleColor(UIColor.systemBlue, for: .normal)
         currencyButton.translatesAutoresizingMaskIntoConstraints = false
         currencyButton.layer.cornerRadius = 8
-        currencyButton.backgroundColor = UIColor.systemGray5
+        currencyButton.backgroundColor = Colors.background0
         
         // Payer Section Label
         payerSectionLabel.text = "Payer"

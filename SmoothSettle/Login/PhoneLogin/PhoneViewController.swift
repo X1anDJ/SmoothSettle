@@ -10,7 +10,7 @@ import UIKit
 class PhoneViewController: UIViewController, UITextFieldDelegate {
     private let phoneNumberField: UITextField = {
         let field = UITextField()
-        field.backgroundColor = .secondarySystemBackground
+        field.backgroundColor = Colors.background1
         field.placeholder = "Phone Number"
         field.returnKeyType = .continue
         field.textAlignment = .center
@@ -19,7 +19,7 @@ class PhoneViewController: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = Colors.background0
         view.addSubview(phoneNumberField)
         phoneNumberField.frame = CGRect(x: 0, y: 0, width: 220, height: 50)
         phoneNumberField.center = view.center

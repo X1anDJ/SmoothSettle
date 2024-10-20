@@ -29,7 +29,7 @@ class SettleViewController: UIViewController {
         super.viewDidLoad()
 
         // Set up the view background and style
-        view.backgroundColor = .secondarySystemBackground
+        view.backgroundColor = Colors.background0
 
         setupViews()
         setupConstraints()
@@ -82,7 +82,7 @@ class SettleViewController: UIViewController {
         settleButton.setTitle("Archive", for: .normal)
         settleButton.setTitleColor(.white, for: .normal)
         settleButton.backgroundColor = Colors.primaryDark
-        settleButton.layer.cornerRadius = 16
+        settleButton.layer.cornerRadius = 22
         settleButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         settleButton.addTarget(self, action: #selector(didTapSettleTrip), for: .touchUpInside)
 
