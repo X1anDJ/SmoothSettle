@@ -15,7 +15,7 @@ import GoogleSignIn
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    let mainViewController = MainViewController()
+//    let mainViewController = MainViewController()
     let loginViewController = LoginViewController()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions:
@@ -32,12 +32,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.backgroundColor = Colors.background1
         loginViewController.delegate = self
         let loginNavController = UINavigationController(rootViewController: loginViewController)
-
-        if Auth.auth().currentUser == nil {
-            window?.rootViewController = loginNavController
-        } else {
-            setupTabBarController()
-        }
+        setupTabBarController()
+        
+//        if Auth.auth().currentUser == nil {
+//            window?.rootViewController = loginNavController
+//        } else {
+//            setupTabBarController()
+//        }
         TripRepository.shared.createMockData()
         return true
     }
@@ -91,7 +92,6 @@ extension AppDelegate: LogoutDelegate {
     }
 }
 
-import UIKit
 
 extension AppDelegate {
     // Function to set up the UITabBarController with the main and archive view controllers

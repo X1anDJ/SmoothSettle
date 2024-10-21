@@ -31,7 +31,7 @@ class BillDetailViewController: UIViewController, UIImagePickerControllerDelegat
         view.backgroundColor = Colors.background1
         
         // Setup titleLabel
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 24)
+        titleLabel.font = UIFont.boldSystemFont(ofSize: 28)
         titleLabel.textAlignment = .center
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
@@ -78,8 +78,8 @@ class BillDetailViewController: UIViewController, UIImagePickerControllerDelegat
         // Setup tableView
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.backgroundColor = .clear
-        tableView.separatorStyle = .none
+        tableView.backgroundColor = Colors.background1
+        tableView.separatorStyle = .singleLine
         tableView.translatesAutoresizingMaskIntoConstraints = false
         
         // Register custom cell
@@ -285,15 +285,19 @@ extension BillDetailViewController: UITableViewDataSource, UITableViewDelegate {
         if indexPath.section == 0 {
             // Payer
             if let payer = viewModel.getPayer() {
-                let amount = -viewModel.getAmount()
+                let amount = viewModel.getAmount()
                 cell.configure(with: payer, amount: amount, isPayer: true)
             }
         } else {
             // Involvers
             let involvers = viewModel.getInvolvers()
-            let person = involvers[indexPath.row]
-            let share = viewModel.getAmount() / Double(involvers.count)
-            cell.configure(with: person, amount: share, isPayer: false)
+            if indexPath.row < involvers.count {
+                let person = involvers[indexPath.row]
+                let share = viewModel.getAmount() / Double(involvers.count)
+                cell.configure(with: person, amount: share, isPayer: false)
+            } else {
+                print("Error: Involver index out of range.")
+            }
         }
         
         return cell

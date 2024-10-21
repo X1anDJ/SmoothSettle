@@ -11,7 +11,6 @@ class BillDetailViewModel {
     private let tripRepository: TripRepository
     private var bill: Bill
     
-    // Observable properties (you can use KVO, Combine, or your own mechanism)
     var titleText: String {
         return bill.title ?? "Untitled Bill"
     }
@@ -34,6 +33,8 @@ class BillDetailViewModel {
     init(tripRepository: TripRepository, bill: Bill) {
         self.tripRepository = tripRepository
         self.bill = bill
+        
+
     }
     
     // Methods to interact with the model
@@ -51,12 +52,53 @@ class BillDetailViewModel {
     
     func getInvolvers() -> [Person] {
         if let involversSet = bill.involvers as? Set<Person> {
-            return Array(involversSet)
+            let involversArray = Array(involversSet).sorted { (person1, person2) -> Bool in
+                // Sort by name alphabetically
+                let name1 = person1.name ?? ""
+                let name2 = person2.name ?? ""
+                return name1 < name2
+            }
+            for (index, person) in involversArray.enumerated() {
+                let name = person.name ?? "Unknown"
+
+            }
+            return involversArray
         }
+
         return []
     }
+
     
     func getAmount() -> Double {
         return bill.amount
     }
+    
+//    func printBillDetails() {
+//        print("----- Bill Details -----")
+//        print("ID: \(bill.id)")
+//        print("Title: \(titleText)")
+//        print("Date: \(dateText)")
+//        print(String(format: "Amount: $%.2f", getAmount()))
+//        
+//        if let payer = getPayer(), let payerName = payer.name {
+//            print("Payer: \(payerName)")
+//        } else {
+//            print("Payer: None")
+//        }
+//        
+//        let involvers = getInvolvers()
+//        if involvers.isEmpty {
+//            print("Involvers: None")
+//        } else {
+//            print("Involvers:")
+//            for (index, person) in involvers.enumerated() {
+//                if let name = person.name {
+//                    print("  \(index + 1). \(name)")
+//                } else {
+//                    print("  \(index + 1). Unknown Name")
+//                }
+//            }
+//        }
+//        print("------------------------")
+//    }
 }

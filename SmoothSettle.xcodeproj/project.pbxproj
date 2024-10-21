@@ -82,7 +82,6 @@
 		DC6DE78D2CBE0B600050F6EF /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE78C2CBE0B600050F6EF /* CardView.swift */; };
 		DC6DE78F2CBE0B830050F6EF /* ArchiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE78E2CBE0B830050F6EF /* ArchiveView.swift */; };
 		DC7FAA212CC3971E004593E4 /* ArchiveTripController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC7FAA202CC3971E004593E4 /* ArchiveTripController.swift */; };
-		DC7FAA482CC46009004593E4 /* UserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC7FAA472CC46009004593E4 /* UserProfileViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -158,7 +157,6 @@
 		DC6DE78C2CBE0B600050F6EF /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		DC6DE78E2CBE0B830050F6EF /* ArchiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveView.swift; sourceTree = "<group>"; };
 		DC7FAA202CC3971E004593E4 /* ArchiveTripController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveTripController.swift; sourceTree = "<group>"; };
-		DC7FAA472CC46009004593E4 /* UserProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -501,7 +499,6 @@
 			isa = PBXGroup;
 			children = (
 				DC6DE7432CBA530A0050F6EF /* UserViewController.swift */,
-				DC7FAA472CC46009004593E4 /* UserProfileViewController.swift */,
 			);
 			path = User;
 			sourceTree = "<group>";
@@ -642,7 +639,6 @@
 				DC6DE7302CB9FC3F0050F6EF /* VerificationViewContainer.swift in Sources */,
 				DC6DE7312CB9FC3F0050F6EF /* ThemeManager.swift in Sources */,
 				DC6DE7322CB9FC3F0050F6EF /* AuthManager.swift in Sources */,
-				DC7FAA482CC46009004593E4 /* UserProfileViewController.swift in Sources */,
 				DC6DE7332CB9FC3F0050F6EF /* ProfileViewContainer.swift in Sources */,
 				DC6DE7342CB9FC3F0050F6EF /* DividerView.swift in Sources */,
 				DC6DE7352CB9FC3F0050F6EF /* Utilities.swift in Sources */,
