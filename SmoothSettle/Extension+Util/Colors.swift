@@ -29,12 +29,16 @@ struct Colors {
     static let background1 = UIColor(hex: "F2F2F2")
     static let lightButton = UIColor(hex: "F7F4F3")
     
-//    // https://coolors.co/eae6e3-e6e2df-d1cdcb-aeaaa9-6f6d6d-323232-FF6C32
+
+    //https://coolors.co/323232-635f58-858281-aeaaa9-f7a84d-ff6c32-ded2ca-ede8e4
+    //https://coolors.co/visualizer/323232-635f58-858281-aeaaa9-f7a84d-ff6c32-ded2ca-ede8e4
+    
+    
     // https://coolors.co/323232-6f6d6d-aeaaa9-E6E2DF-F7A84D-FF6C32
 //    static let buttonLight = UIColor(hex: "61BDFF")
 //    https://coolors.co/palette/323232-8f8e8d-eae6e4-222121-bdbcba
+////    // https://coolors.co/eae6e3-e6e2df-d1cdcb-aeaaa9-6f6d6d-323232-FF6C32
 //
-//    
 //    static let background0 = UIColor(hex: "EAE6E3")
 //    static let background1 = UIColor(hex: "E6E2DF")
 //    

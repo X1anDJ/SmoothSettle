@@ -130,6 +130,7 @@ extension BillsViewController: UITableViewDelegate, UITableViewDataSource {
             payerName: bill.payer?.name ?? "Unknown",
             involversCount: bill.involvers?.count ?? 0
         )
+        
         return cell
     }
 

@@ -114,7 +114,7 @@ class BillTableViewCell: UITableViewCell {
         NSLayoutConstraint.activate([
             amountLabel.centerYAnchor.constraint(equalTo: payerCircleView.centerYAnchor),
             amountLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            amountLabel.widthAnchor.constraint(equalToConstant: 90),
+            amountLabel.widthAnchor.constraint(equalToConstant: 100),
         ])
         
         // Involvers Circle Container Constraints
@@ -153,7 +153,7 @@ class BillTableViewCell: UITableViewCell {
         
         // Calculate available width for involvers
         let leftFixedWidths: CGFloat = 16 + 30 + 8 + 60 + 8  // Left margin, payerCircleView, spacing, paidLabel, spacing
-        let rightFixedWidths: CGFloat = 8 + 90 + 16          // spacing, amountLabel, right margin
+        let rightFixedWidths: CGFloat = 8 + 100 + 16          // spacing, amountLabel, right margin
         let totalFixedWidths = leftFixedWidths + rightFixedWidths
         
         let availableWidth = contentView.bounds.width - totalFixedWidths
@@ -189,7 +189,8 @@ class BillTableViewCell: UITableViewCell {
         var previousCircle: UIView? = nil
         for _ in 0..<storedInvolversCount {
             let circleView = UIView()
-            circleView.backgroundColor = Colors.primaryLight
+//            circleView.backgroundColor = Colors.primaryLight
+            circleView.backgroundColor = Colors.accentYellow
             circleView.translatesAutoresizingMaskIntoConstraints = false
             circleView.layer.cornerRadius = circleWidth / 2
             circleView.layer.masksToBounds = true

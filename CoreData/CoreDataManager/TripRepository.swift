@@ -407,74 +407,81 @@ extension TripRepository {
         // Create People (Country Leaders)
         let person1 = Person(context: context)
         person1.id = UUID()
-        person1.name = "Barack Obama"
+        person1.name = "Joe Biden"
         person1.balance = 0.0
         
         let person2 = Person(context: context)
         person2.id = UUID()
-        person2.name = "Angela Merkel"
+        person2.name = "Vladimir Putin"
         person2.balance = 0.0
         
         let person3 = Person(context: context)
         person3.id = UUID()
-        person3.name = "Vladimir Putin"
+        person3.name = "Elon Musk"
         person3.balance = 0.0
         
         let person4 = Person(context: context)
         person4.id = UUID()
-        person4.name = "Justin Trudeau"
+        person4.name = "Kim Jong Un"
         person4.balance = 0.0
         
         let person5 = Person(context: context)
         person5.id = UUID()
-        person5.name = "Jacinda Ardern"
+        person5.name = "Justin Bieber"
         person5.balance = 0.0
         
         let person6 = Person(context: context)
         person6.id = UUID()
-        person6.name = "Emmanuel Macron"
+        person6.name = "嬴政"
         person6.balance = 0.0
         
         let person7 = Person(context: context)
         person7.id = UUID()
-        person7.name = "Boris Johnson"
+        person7.name = "天命人"
         person7.balance = 0.0
         
         let person8 = Person(context: context)
         person8.id = UUID()
-        person8.name = "Narendra Modi"
+        person8.name = "四驱兄弟"
         person8.balance = 0.0
         
         let person9 = Person(context: context)
         person9.id = UUID()
-        person9.name = "Xi Jinping"
+        person9.name = "Optimus Prime"
         person9.balance = 0.0
         
         let person10 = Person(context: context)
         person10.id = UUID()
-        person10.name = "Joe Biden"
+        person10.name = "Lady Gaga"
         person10.balance = 0.0
         
         let person11 = Person(context: context)
         person11.id = UUID()
-        person11.name = "Scott Morrison"
+        person11.name = "Andrei Tarkovsky"
         person11.balance = 0.0
         
         let person12 = Person(context: context)
         person12.id = UUID()
-        person12.name = "Shinzo Abe"
+        person12.name = "Henri Matisse"
         person12.balance = 0.0
+        
+        let person13 = Person(context: context)
+        person13.id = UUID()
+        person13.name = "Edgar Degas"
+        person13.balance = 0.0
+        
 
         // Mock trip #1: Settled Trip (Hawaii Surfing Retreat)
-        let trip1 = createTrip(title: "Hawaii Surfing Retreat", people: [person1, person2], date: Date().addingTimeInterval(-86400 * 10)) // 10 days ago
-        addBill(to: trip1.id, title: "Surfboard Rentals", amount: 150.00, date: Date().addingTimeInterval(-86400 * 9), payerId: person1.id, involversIds: [person1.id, person2.id], image: nil)
-        addBill(to: trip1.id, title: "Luau Party Tickets", amount: 200.00, date: Date().addingTimeInterval(-86400 * 8), payerId: person2.id, involversIds: [person1.id, person2.id], image: nil)
-        settleTrip(by: trip1.id)
+        let trip1 = createTrip(title: "Midnight in Paris", people: [person1, person2, person3, person5, person9, person10, person12], date: Date().addingTimeInterval(-86400 * 2)) // 10 days ago
+        addBill(to: trip1.id, title: "Hotel Le Meurice", amount: 1250.00, date: Date().addingTimeInterval(-86400 * 9), payerId: person9.id, involversIds: [person5.id, person9.id, person10.id, person12.id], image: nil)
+        addBill(to: trip1.id, title: "Le Pre Catlan", amount: 200.00, date: Date().addingTimeInterval(-86400 * 8), payerId: person2.id, involversIds: [person1.id, person2.id, person3.id, person10.id], image: nil)
+        addBill(to: trip1.id, title: "LECLAIREUR", amount: 14000.00, date: Date().addingTimeInterval(-86400 * 7), payerId: person1.id, involversIds: [person1.id, person3.id, person5.id, person9.id, person10.id, person12.id], image: nil)
+        addBill(to: trip1.id, title: "Cafe Du Monde", amount: 1000.00, date: Date().addingTimeInterval(-86400 * 6), payerId: person3.id, involversIds: [person1.id, person2.id, person3.id, person12.id], image: nil)
 
         // Mock trip #2: Settled Trip (G7 Summit in Japan)
         let trip2 = createTrip(title: "G7 Summit in Japan", people: [person1, person2, person3, person4, person5, person6, person12], date: Date().addingTimeInterval(-86400 * 60)) // 60 days ago
         addBill(to: trip2.id, title: "Summit Banquet", amount: 3000.00, date: Date().addingTimeInterval(-86400 * 59), payerId: person12.id, involversIds: [person1.id, person2.id, person3.id, person4.id, person5.id, person6.id, person12.id], image: nil)
-        addBill(to: trip2.id, title: "Sushi Dinner", amount: 1500.00, date: Date().addingTimeInterval(-86400 * 58), payerId: person5.id, involversIds: [person1.id, person2.id, person5.id], image: nil)
+        addBill(to: trip2.id, title: "Sushi", amount: 1500.00, date: Date().addingTimeInterval(-86400 * 58), payerId: person5.id, involversIds: [person1.id, person2.id, person5.id], image: nil)
         settleTrip(by: trip2.id)
         
         // Mock trip #3: Unsettled Trip (Australia Wildlife Adventure)
@@ -485,29 +492,29 @@ extension TripRepository {
 
         // Mock trip #4: Settled Trip (India Cultural Exploration)
         let trip4 = createTrip(title: "India Cultural Exploration", people: [person8, person2, person10], date: Date().addingTimeInterval(-86400 * 30)) // 30 days ago
-        addBill(to: trip4.id, title: "Taj Mahal Tickets", amount: 100.00, date: Date().addingTimeInterval(-86400 * 29), payerId: person8.id, involversIds: [person8.id, person2.id, person10.id], image: nil)
+        addBill(to: trip4.id, title: "Taj Mahal", amount: 100.00, date: Date().addingTimeInterval(-86400 * 29), payerId: person8.id, involversIds: [person8.id, person2.id, person10.id], image: nil)
         addBill(to: trip4.id, title: "Rickshaw Tour of Delhi", amount: 50.00, date: Date().addingTimeInterval(-86400 * 28), payerId: person2.id, involversIds: [person2.id, person8.id], image: nil)
         settleTrip(by: trip4.id)
 
         // Mock trip #5: Unsettled Trip (China Expo)
         
-        let trip5 = createTrip(title: "China Expo", people: [person3, person4, person5, person6, person7, person8, person9, person10], date: Date().addingTimeInterval(-86400 * 20)) // 20 days ago
+        let trip5 = createTrip(title: "Shanghai Expo", people: [person3, person4, person5, person6, person7, person8, person9, person10], date: Date().addingTimeInterval(-86400 * 20)) // 20 days ago
         
-        addBill(to: trip5.id, title: "Robotics Expo Tickets", amount: 500.00, date: Date().addingTimeInterval(-86400 * 19), payerId: person9.id, involversIds: [person9.id, person3.id, person10.id], image: nil)
+        addBill(to: trip5.id, title: "Expo Tickets", amount: 500.00, date: Date().addingTimeInterval(-86400 * 19), payerId: person9.id, involversIds: [person9.id, person3.id, person10.id], image: nil)
         
         addBill(to: trip5.id, title: "Peking Duck Dinner", amount: 300.00, date: Date().addingTimeInterval(-86400 * 18), payerId: person7.id, involversIds: [person7.id, person9.id], image: nil)
         
         addBill(to: trip5.id, title: "KTV", amount: 480.00, date: Date().addingTimeInterval(-86400 * 17), payerId: person4.id, involversIds: [person4.id, person5.id, person9.id], image: nil)
         
-        addBill(to: trip5.id, title: "Seafood Dinner", amount: 1280.00, date: Date().addingTimeInterval(-86400 * 17), payerId: person5.id, involversIds: [person3.id, person4.id, person6.id, person7.id, person10.id], image: nil)
+        addBill(to: trip5.id, title: "Oriental Pearl TV Tower ", amount: 1280.00, date: Date().addingTimeInterval(-86400 * 17), payerId: person5.id, involversIds: [person3.id, person4.id, person6.id, person7.id, person10.id], image: nil)
         
-        addBill(to: trip5.id, title: "Great Wall Tour", amount: 850.00, date: Date().addingTimeInterval(-86400 * 16), payerId: person10.id, involversIds: [person4.id, person5.id,  person7.id], image: nil)
+        addBill(to: trip5.id, title: "Great Wall Tour", amount: 850.00, date: Date().addingTimeInterval(-86400 * 16), payerId: person10.id, involversIds: [person4.id, person5.id,  person7.id, person10.id], image: nil)
         
 
         // Mock trip #6: Settled Trip (Russia Winter Festival)
         let trip6 = createTrip(title: "Russia Winter Festival", people: [person3, person10], date: Date().addingTimeInterval(-86400 * 90)) // 90 days ago
-        addBill(to: trip6.id, title: "Vodka Tasting", amount: 200.00, date: Date().addingTimeInterval(-86400 * 89), payerId: person3.id, involversIds: [person3.id, person10.id], image: nil)
-        addBill(to: trip6.id, title: "Ice Sculpting Contest", amount: 150.00, date: Date().addingTimeInterval(-86400 * 88), payerId: person10.id, involversIds: [person3.id, person10.id], image: nil)
+        addBill(to: trip6.id, title: "Vodka and Vodka", amount: 200.00, date: Date().addingTimeInterval(-86400 * 89), payerId: person3.id, involversIds: [person3.id, person10.id], image: nil)
+        addBill(to: trip6.id, title: "Ice Sculpting", amount: 150.00, date: Date().addingTimeInterval(-86400 * 88), payerId: person10.id, involversIds: [person3.id, person10.id], image: nil)
         settleTrip(by: trip6.id)
 
         // Save the context to store the mock data
