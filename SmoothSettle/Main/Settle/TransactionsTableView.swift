@@ -29,7 +29,7 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
 
     // Initializer
     init() {
-        super.init(frame: .zero, style: .grouped)
+        super.init(frame: .zero, style: .plain)
         setupTableView()
     }
 

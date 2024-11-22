@@ -57,8 +57,8 @@ class MainView: UIView {
         self.backgroundColor = Colors.background0
         let backgroundImageView = UIImageView()
         backgroundImageView.translatesAutoresizingMaskIntoConstraints = false
-        // Uncomment and set the desired image
-        // backgroundImageView.image = UIImage(named: "background5")
+//         Background image
+         backgroundImageView.image = UIImage(named: "backgroundGradient")
         backgroundImageView.contentMode = .scaleAspectFill
         self.addSubview(backgroundImageView)
         self.sendSubviewToBack(backgroundImageView)

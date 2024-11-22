@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="_图层_2" data-name="图层_2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1130 2436">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#_未命名的渐变_35);
+        stroke: #000;
+        stroke-miterlimit: 10;
+      }
+    </style>
+    <linearGradient id="_未命名的渐变_35" data-name="未命名的渐变 35" x1="565" y1=".5" x2="565" y2="2435.5" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f3f1ef"/>
+      <stop offset="1" stop-color="#e3dfdc"/>
+    </linearGradient>
+  </defs>
+  <g id="_图层_1-2" data-name="图层_1">
+    <rect class="cls-1" x=".5" y=".5" width="1129" height="2435"/>
+  </g>
+</svg>

@@ -39,7 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        } else {
 //            setupTabBarController()
 //        }
-        TripRepository.shared.createMockData()
+        //TripRepository.shared.createMockData()
         return true
     }
 

@@ -474,9 +474,9 @@ extension TripRepository {
         // Mock trip #1: Settled Trip (Hawaii Surfing Retreat)
         let trip1 = createTrip(title: "Midnight in Paris", people: [person1, person2, person3, person5, person9, person10, person12], date: Date().addingTimeInterval(-86400 * 2)) // 10 days ago
         addBill(to: trip1.id, title: "Hotel Le Meurice", amount: 1250.00, date: Date().addingTimeInterval(-86400 * 9), payerId: person9.id, involversIds: [person5.id, person9.id, person10.id, person12.id], image: nil)
-        addBill(to: trip1.id, title: "Le Pre Catlan", amount: 200.00, date: Date().addingTimeInterval(-86400 * 8), payerId: person2.id, involversIds: [person1.id, person2.id, person3.id, person10.id], image: nil)
-        addBill(to: trip1.id, title: "LECLAIREUR", amount: 14000.00, date: Date().addingTimeInterval(-86400 * 7), payerId: person1.id, involversIds: [person1.id, person3.id, person5.id, person9.id, person10.id, person12.id], image: nil)
-        addBill(to: trip1.id, title: "Cafe Du Monde", amount: 1000.00, date: Date().addingTimeInterval(-86400 * 6), payerId: person3.id, involversIds: [person1.id, person2.id, person3.id, person12.id], image: nil)
+        addBill(to: trip1.id, title: "Le Pre Catlan", amount: 2200.00, date: Date().addingTimeInterval(-86400 * 8), payerId: person2.id, involversIds: [person1.id, person2.id, person3.id, person10.id], image: nil)
+        addBill(to: trip1.id, title: "LECLAIREUR", amount: 4000.00, date: Date().addingTimeInterval(-86400 * 7), payerId: person1.id, involversIds: [person1.id, person3.id, person5.id, person9.id, person10.id, person12.id], image: nil)
+        addBill(to: trip1.id, title: "Cafe Du Monde", amount: 1800.00, date: Date().addingTimeInterval(-86400 * 6), payerId: person3.id, involversIds: [person1.id, person2.id, person3.id, person12.id], image: nil)
 
         // Mock trip #2: Settled Trip (G7 Summit in Japan)
         let trip2 = createTrip(title: "G7 Summit in Japan", people: [person1, person2, person3, person4, person5, person6, person12], date: Date().addingTimeInterval(-86400 * 60)) // 60 days ago
