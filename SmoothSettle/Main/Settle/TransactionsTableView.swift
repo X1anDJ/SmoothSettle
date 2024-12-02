@@ -7,7 +7,7 @@
 import UIKit
 
 class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSource {
-
+    
     // Data structure to hold the grouped transactions
     struct Section {
         let fromId: UUID    // Using UUID instead of fromName
@@ -26,13 +26,25 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
             // loadTransactions()
         }
     }
-
+    
+    // Property to control whether cells are selectable
+    var isSelectable: Bool = false {
+        didSet {
+            self.allowsSelection = isSelectable
+            self.allowsMultipleSelection = true
+            self.reloadData()
+        }
+    }
+    
+    // Set to keep track of selected indexPaths
+    private var selectedIndexPaths = Set<IndexPath>()
+    
     // Initializer
     init() {
         super.init(frame: .zero, style: .plain)
         setupTableView()
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -46,7 +58,7 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
         self.separatorStyle = .none
         self.backgroundColor = .clear
     }
-
+    
     // Load transactions from the repository, passing the loaded sections via the completion handler
     func loadTransactions(completion: @escaping ([Section]) -> Void) {
         guard let tripId = currentTrip, let repository = tripRepository else { return }
@@ -78,42 +90,54 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
         // Reload the table view to display the new transactions
         self.reloadData()
     }
-
-
-
-
-
+    
     // Override intrinsicContentSize to dynamically calculate the height
     override var intrinsicContentSize: CGSize {
         self.layoutIfNeeded()  // Ensure the layout is up to date
         return CGSize(width: UIView.noIntrinsicMetric, height: self.contentSize.height)
     }
-
+    
     // UITableViewDataSource Methods
     func numberOfSections(in tableView: UITableView) -> Int {
         return sections.count
     }
-
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return sections[section].transactions.count
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "TransactionCell", for: indexPath) as! TransactionCell
+
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "TransactionCell", for: indexPath) as? TransactionCell else {
+            return UITableViewCell()
+        }
+        
         let transaction = sections[indexPath.section].transactions[indexPath.row]
 
         // Fetch the toName using the UUID
         let toPerson = tripRepository?.fetchPerson(by: transaction.toId)
         let toName = toPerson?.name ?? "Unknown"
 
-        // Configure the cell with rounded corners where necessary
+        // Determine if the cell is first or last in the section
         let isFirst = indexPath.row == 0
         let isLast = indexPath.row == sections[indexPath.section].transactions.count - 1
-        cell.configure(toName: toName, amount: transaction.amount, isFirst: isFirst, isLast: isLast)
+
+        // Determine if the cell is selected
+        let isSelected = selectedIndexPaths.contains(indexPath)
+        
+        // Configure the cell with rounded corners where necessary and symbol visibility
+        cell.configure(
+            toName: toName,
+            amount: transaction.amount,
+            isFirst: isFirst,
+            isLast: isLast,
+            showSymbol: isSelectable,
+            isSelected: isSelected
+        )
         
         return cell
     }
-
+    
     // UITableViewDelegate Methods
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView = UIView()
@@ -138,12 +162,36 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
         
         return headerView
     }
-
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 40
     }
-
+    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 32
+    }
+    
+    // Handle cell selection to toggle the symbol
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard isSelectable else { return }
+        
+        if selectedIndexPaths.contains(indexPath) {
+            selectedIndexPaths.remove(indexPath)
+        } else {
+            selectedIndexPaths.insert(indexPath)
+        }
+        
+        // Reload the specific row to update the symbol
+        tableView.reloadRows(at: [indexPath], with: .automatic)
+    }
+    
+    // Optionally handle deselection if multiple selection is allowed
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        guard isSelectable else { return }
+        
+        if selectedIndexPaths.contains(indexPath) {
+            selectedIndexPaths.remove(indexPath)
+            tableView.reloadRows(at: [indexPath], with: .automatic)
+        }
     }
 }

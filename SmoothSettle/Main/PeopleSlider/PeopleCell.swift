@@ -47,7 +47,8 @@ class PeopleCell: UICollectionViewCell {
         NSLayoutConstraint.activate([
             circleView.widthAnchor.constraint(equalTo: contentView.heightAnchor, constant: -20),
             circleView.heightAnchor.constraint(equalTo: circleView.widthAnchor),
-            circleView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+ //           circleView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            circleView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             circleView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             
 //            removePersonButton.centerXAnchor.constraint(equalTo: circleView.centerXAnchor, constant: 30),

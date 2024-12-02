@@ -30,7 +30,7 @@ struct Colors {
     static let lightButton = UIColor(hex: "F7F4F3")
     
 
-    //https://coolors.co/323232-635f58-858281-aeaaa9-f7a84d-ff6c32-ded2ca-ede8e4
+    //https://coolors.co/323232-686667-8f8c8b-aeaaa9-f7a84d-ff6c32-E3DFDC-F2F2F2-F7F4F3
     //https://coolors.co/visualizer/323232-635f58-858281-aeaaa9-f7a84d-ff6c32-ded2ca-ede8e4
     
     

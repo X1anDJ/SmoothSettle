@@ -24,7 +24,7 @@ class ArchiveTripController: UIViewController {
     // MARK: - Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = Colors.background1
+        view.backgroundColor = Colors.background0
         setupViews()
         setupConstraints()
         configureView()
@@ -43,6 +43,8 @@ class ArchiveTripController: UIViewController {
         // Transactions Table View
         transactionsTableView.translatesAutoresizingMaskIntoConstraints = false
         transactionsTableView.isScrollEnabled = false // Disable internal scrolling
+        transactionsTableView.isSelectable = true
+        
         contentView.addSubview(transactionsTableView)
         
         // No Transactions Label

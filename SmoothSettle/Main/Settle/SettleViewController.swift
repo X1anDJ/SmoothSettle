@@ -44,7 +44,7 @@ class SettleViewController: UIViewController {
                 // Pass the repository and current trip to the TransactionsTableView
                 transactionsTableView.tripRepository = viewModel.tripRepository
                 transactionsTableView.currentTrip = currentTripId
-
+                transactionsTableView.isSelectable = false
                 // Load transactions and pass them to CircleLayoutView via the completion handler
                 transactionsTableView.loadTransactions { [weak self] sections in
                     self?.circleLayoutView.transactions = sections

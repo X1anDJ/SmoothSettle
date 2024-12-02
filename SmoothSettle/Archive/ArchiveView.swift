@@ -22,34 +22,35 @@ class ArchiveView: UIView {
     // Initialization
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setBackgroundImage()
+        self.backgroundColor = Colors.background0
+//        setBackgroundImage()
         style()
         layout()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        setBackgroundImage()
+//        setBackgroundImage()
         style()
         layout()
     }
     
-    func setBackgroundImage() {
-        let backgroundImageView = UIImageView()
-        backgroundImageView.translatesAutoresizingMaskIntoConstraints = false
-        backgroundImageView.image = UIImage(named: "background5")
-        backgroundImageView.contentMode = .scaleAspectFill
-        self.addSubview(backgroundImageView)
-        self.sendSubviewToBack(backgroundImageView)
-        
-        NSLayoutConstraint.activate([
-            backgroundImageView.topAnchor.constraint(equalTo: self.topAnchor),
-            backgroundImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            backgroundImageView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            backgroundImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
-        ])
-    }
-    
+//    func setBackgroundImage() {
+//        let backgroundImageView = UIImageView()
+//        backgroundImageView.translatesAutoresizingMaskIntoConstraints = false
+//        backgroundImageView.image = UIImage(named: "background5")
+//        backgroundImageView.contentMode = .scaleAspectFill
+//        self.addSubview(backgroundImageView)
+//        self.sendSubviewToBack(backgroundImageView)
+//        
+//        NSLayoutConstraint.activate([
+//            backgroundImageView.topAnchor.constraint(equalTo: self.topAnchor),
+//            backgroundImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+//            backgroundImageView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+//            backgroundImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
+//        ])
+//    }
+//    
     func style() {
         // Title Label
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
