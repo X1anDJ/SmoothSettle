@@ -13,8 +13,8 @@ class ArchiveViewModel {
     let tripRepository: TripRepository
     private var cancellables = Set<AnyCancellable>()
     
-    // Published settled trips
-    @Published var settledTrips: [Trip] = []
+    // Published archived trips
+    @Published var archivedTrips: [Trip] = []
     
     // MARK: - Initialization
     init(tripRepository: TripRepository = TripRepository.shared) {
@@ -24,12 +24,12 @@ class ArchiveViewModel {
     
     // MARK: - Bind to TripRepository
     private func bindToRepository() {
-        // Subscribe to settledTripsPublisher and update settledTrips
-        tripRepository.settledTripsPublisher
+        // Subscribe to archivedTripsPublisher and update archivedTrips
+        tripRepository.archivedTripsPublisher
             .receive(on: DispatchQueue.main)  // Ensure updates happen on the main thread
             .sink { [weak self] trips in
-                self?.settledTrips = trips
-//                print("Settled trip count in ArchiveViewModel: \(trips.count)")
+                self?.archivedTrips = trips
+//                print("Archived trip count in ArchiveViewModel: \(trips.count)")
 //                print("Their dates are: \(trips.map { $0.date })")
             }
             .store(in: &cancellables)

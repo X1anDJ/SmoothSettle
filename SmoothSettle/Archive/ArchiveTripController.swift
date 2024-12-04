@@ -3,7 +3,6 @@
 //
 //  Created by Dajun Xian on 2024/10/18.
 //
-
 import UIKit
 import SwiftUI
 import Charts // Ensure you have imported the Charts framework
@@ -15,7 +14,10 @@ class ArchiveTripController: UIViewController {
     private let contentView = UIView()
     private let transactionsTableView = TransactionsTableView()
     private let noTransactionsLabel = UILabel() // Placeholder label
-    private let chartHostingController = UIHostingController(rootView: OwesChartView(data: [])) // Initial empty chart
+    private let chartHostingController = UIHostingController(rootView: OwesChartView(data: [], timePeriod: "")) // Initial empty chart
+    
+    // New Settle Button
+    private let settleButton = UIButton(type: .system)
     
     // MARK: - Data
     var trip: Trip? // The trip to display
@@ -25,6 +27,7 @@ class ArchiveTripController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Colors.background0
+        chartHostingController.view.backgroundColor = .clear
         setupViews()
         setupConstraints()
         configureView()
@@ -61,6 +64,28 @@ class ArchiveTripController: UIViewController {
         chartHostingController.view.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(chartHostingController.view)
         chartHostingController.didMove(toParent: self)
+        
+        // Settle Button
+        settleButton.translatesAutoresizingMaskIntoConstraints = false
+        settleButton.setTitle("Settle All", for: .normal)
+        settleButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        settleButton.setImage(UIImage(systemName: "checkmark.circle"), for: .normal)
+        settleButton.layer.cornerRadius = 15
+        settleButton.tintColor = Colors.background1
+        settleButton.setTitleColor(Colors.background1, for: .normal)
+        settleButton.backgroundColor = Colors.primaryDark
+        settleButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        settleButton.imageView?.contentMode = .scaleAspectFit
+        settleButton.heightAnchor.constraint(equalToConstant: 50).isActive = true // Adjust height as needed
+        
+        // Adjust image and title position
+        settleButton.semanticContentAttribute = .forceLeftToRight
+        settleButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: -8, bottom: 0, right: 0)
+        
+        // Add action for the button
+        settleButton.addTarget(self, action: #selector(settleButtonTapped), for: .touchUpInside)
+        
+        contentView.addSubview(settleButton)
     }
     
     private func setupConstraints() {
@@ -81,7 +106,7 @@ class ArchiveTripController: UIViewController {
             contentView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
             
             // Chart Hosting Controller Constraints
-            chartHostingController.view.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
+            chartHostingController.view.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
             chartHostingController.view.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             chartHostingController.view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             chartHostingController.view.heightAnchor.constraint(equalToConstant: 300), // Adjust height as needed
@@ -90,13 +115,14 @@ class ArchiveTripController: UIViewController {
             transactionsTableView.topAnchor.constraint(equalTo: chartHostingController.view.bottomAnchor, constant: 24),
             transactionsTableView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             transactionsTableView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            transactionsTableView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -24),
+            // Remove the bottom constraint to contentView
+            // transactionsTableView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -24),
             
-            // No Transactions Label Constraints
-            noTransactionsLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            noTransactionsLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            noTransactionsLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            noTransactionsLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
+            // Settle Button Constraints
+            settleButton.topAnchor.constraint(equalTo: transactionsTableView.bottomAnchor, constant: 24),
+            settleButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            settleButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            settleButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -24),
         ])
     }
     
@@ -116,41 +142,68 @@ class ArchiveTripController: UIViewController {
         // Configure TransactionsTableView
         transactionsTableView.tripRepository = tripRepository
         transactionsTableView.currentTrip = trip.id
-        transactionsTableView.loadTransactions { [weak self] sections in
-            DispatchQueue.main.async {
-                if sections.isEmpty {
-                    self?.transactionsTableView.isHidden = true
-                    self?.noTransactionsLabel.isHidden = false
-                } else {
-                    self?.transactionsTableView.isHidden = false
-                    self?.noTransactionsLabel.isHidden = true
-                }
-                self?.updateChartData()
-                self?.view.setNeedsLayout()
-            }
-        }
+        transactionsTableView.loadTransactions()
+        
+        // Get the time period
+        let timePeriod = tripRepository?.getTimePeriod(for: trip) ?? ""
+        
+        updateChartData(timePeriod: timePeriod)
     }
     
     // MARK: - Chart Data Update
-    private func updateChartData() {
+    private func updateChartData(timePeriod: String) {
         guard let trip = trip,
               let tripRepository = tripRepository else {
-            chartHostingController.rootView = OwesChartView(data: [])
+            chartHostingController.rootView = OwesChartView(data: [], timePeriod: "")
             return
         }
         
-        // Fetch people and their balances
-        let people = trip.peopleArray
+        // Fetch the total amounts per person
+        let chartData = transactionsTableView.calculateTotalAmountsPerPerson()
         
-        // Prepare data for the chart
-        let chartData = people.map { person in
-            ChartData(name: person.name ?? "Unnamed", owes: 100.0) // Replace 100.0 with actual balance
+        // Update the chart's data on the main thread
+        DispatchQueue.main.async {
+            self.chartHostingController.rootView = OwesChartView(data: chartData, timePeriod: timePeriod)
         }
         
-        // Update the chart's data
-        chartHostingController.rootView = OwesChartView(data: chartData)
+        // Handle visibility of transactions table and no transactions label
+        if chartData.isEmpty {
+            transactionsTableView.isHidden = true
+            noTransactionsLabel.isHidden = false
+            settleButton.isHidden = true // Hide the settle button if there are no transactions
+        } else {
+            transactionsTableView.isHidden = false
+            noTransactionsLabel.isHidden = true
+            settleButton.isHidden = false // Show the settle button
+        }
+    }
+    
+    // MARK: - Actions
+    @objc private func settleButtonTapped() {
+        guard let tripId = trip?.id, let repository = tripRepository else { return }
+        
+        // Fetch all transactions for the trip
+        let transactions = repository.fetchAllTransactions(for: tripId)
+        
+        // Mark all transactions as settled
+        for transaction in transactions {
+            transaction.settled = true
+        }
+        
+        // Save changes
+        repository.saveContext()
+        
+        // Reload the transactions table view
+        transactionsTableView.loadTransactions()
+        
+        // Optionally, update the UI to reflect the changes
+        // For example, navigate back or show an alert
+        let alert = UIAlertController(title: "Success", message: "All transactions have been settled.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
     }
 }
+
 
 // MARK: - Chart Data Model
 struct ChartData: Identifiable {
@@ -162,44 +215,140 @@ struct ChartData: Identifiable {
 // MARK: - SwiftUI Chart View
 struct OwesChartView: View {
     var data: [ChartData]
+    var timePeriod: String
+
+    // Define a color palette to assign consistent colors to each person
+    private let colorPalette: [Color] = [
+        Color(UIColor(hex: "ba3133")), // Color 1
+        Color(UIColor(hex: "f94144")), // Color 2
+        Color(UIColor(hex: "f3722c")), // Color 3
+        Color(UIColor(hex: "f8961e")), // Color 4
+        Color(UIColor(hex: "f9c74f")), // Color 5
+        Color(UIColor(hex: "90be6d")), // Color 6
+        Color(UIColor(hex: "43aa8b")), // Color 7
+        Color(UIColor(hex: "4d908e")), // Color 8
+        Color(UIColor(hex: "577590")), // Color 9
+        Color(UIColor(hex: "4d94b2"))  // Color 10
+    ]
+    
+    // Function to assign a color to each person based on their index
+    private func color(for index: Int) -> Color {
+        return colorPalette[index % colorPalette.count]
+    }
     
     var body: some View {
         VStack {
-            Text("Owes by Person")
-                .font(.title2)
-                .padding(.bottom, 8)
-            
+            HStack {
+                Text("Expenses by person")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .padding(.bottom, 16) // Increased padding for better spacing
+                    .foregroundColor(Color(Colors.primaryDark))
+                Spacer()
+            }
+            HStack {
+                Text(timePeriod)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                Spacer()
+            }
             if data.isEmpty {
-                Text("No owes to display.")
-                    .foregroundColor(.gray)
+                Text("No expenses to display.")
+                    .foregroundColor(Color(.darkGray))
                     .padding()
             } else {
-                Chart {
-                    ForEach(data) { entry in
-                        BarMark(
-                            x: .value("Person", entry.name),
-                            y: .value("Owes", entry.owes)
-                        )
-                        .foregroundStyle(entry.owes > 0 ? Color.green : Color.red)
-                        .annotation(position: .top) {
-                            Text(String(format: "%.2f", entry.owes))
-                                .font(.caption)
-                                .foregroundColor(.black)
+                GeometryReader { geometry in
+                    HStack(spacing: 0) {
+                        Chart {
+                            ForEach(Array(data.enumerated()), id: \.element.id) { index, entry in
+                                SectorMark(
+                                    angle: .value("Amount", entry.owes),
+                                    innerRadius: .ratio(0.4),
+                                    angularInset: 1
+                                )
+                                .foregroundStyle(color(for: index))
+                                .annotation(position: .overlay) {
+                                    // Optional: Add labels inside the pie slices
+                                    // set text to bold
+                                    Text(String(format: "$%.0f", entry.owes))
+                                        .font(.caption)
+                                        .fontWeight(.bold)
+                                        .foregroundColor(.white)
+                                        .rotationEffect(.degrees(0))
+                                }
+                            }
                         }
+                        .chartLegend(.hidden) // Hide default legend
+                        .frame(width: geometry.size.width * 2 / 3.4 , height: geometry.size.width * 2 / 3.4)
+                        
+                        Spacer()
+                        
+                        VStack {
+                            LegendView(data: data, colorPalette: colorPalette)
+
+                            Spacer()
+                            // total amount label
+                            VStack(spacing: 8) {
+                                Text("Total")
+                                    .font(.footnote)
+                                    .foregroundColor(.primary)
+                                    .padding(.top, 16)
+                                    
+                                Text(String(format: "$%.2f", data.reduce(0) { $0 + $1.owes }))
+                                    .font(.body)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(Color(Colors.accentOrange))
+                                    .padding(.bottom, 16)
+                            }
+                            .frame(width: geometry.size.width / 3 )
+                            .background(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(Color(Colors.background1))
+//                                    .shadow(radius: 1, x: 0, y: 2)
+                            )
+
+                        
+                        }
+                        .frame(width: geometry.size.width / 3 )
+
                     }
                 }
-                .chartYAxis {
-                    AxisMarks(position: .leading)
-                }
-                .chartXAxis {
-                    AxisMarks(values: .automatic) { _ in
-                        AxisGridLine()
-                        AxisTick()
-                        AxisValueLabel()
-                    }
-                }
-                .padding()
             }
         }
+        
+    }
+}
+
+
+// MARK: - Legend View
+struct LegendView: View {
+    var data: [ChartData]
+    var colorPalette: [Color]
+    
+    // Function to assign a color to each person based on their index
+    private func color(for index: Int) -> Color {
+        return colorPalette[index % colorPalette.count]
+    }
+    
+    var body: some View {
+        VStack(spacing: 8) {
+            ForEach(Array(data.enumerated()), id: \.element.id) { index, entry in
+                HStack {
+                    Circle()
+                        .fill(color(for: index))
+                        .frame(width: 12, height: 12)
+                    Text(entry.name)
+                        .font(.caption)
+                        .foregroundColor(.primary)
+                    Spacer()
+                }
+            }
+        }
+        .padding(8)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color(Colors.background1))
+//                .shadow(radius: 1, x: 0, y: 2)
+        )
     }
 }

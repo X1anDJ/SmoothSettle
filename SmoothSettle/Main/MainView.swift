@@ -31,10 +31,10 @@ class MainView: UIView {
     let totalLabel = UILabel()
     let totalAmountLabel = UILabel()
     
-    // Settle and AddBill Buttons with Shadow Containers
-    let settleButtonShadowContainer = UIView()
+    // Archive and AddBill Buttons with Shadow Containers
+    let archiveButtonShadowContainer = UIView()
     let addBillButtonShadowContainer = UIView()
-    let settleButton = UIButton(type: .system)
+    let computeButton = UIButton(type: .system)
     let addBillButton = UIButton(type: .system)
     
     // MARK: - Initializers
@@ -95,7 +95,7 @@ class MainView: UIView {
         currentTripButton.translatesAutoresizingMaskIntoConstraints = false
         let arrowIconAttachment = NSTextAttachment()
         arrowIconAttachment.image = UIImage(systemName: "chevron.down")
-        let currentTripText = NSMutableAttributedString(string: "Add a Trip")
+        let currentTripText = NSMutableAttributedString(string: "Add a Trip ")
         currentTripText.append(NSAttributedString(attachment: arrowIconAttachment))
         currentTripButton.setAttributedTitle(currentTripText, for: .normal)
         currentTripButton.titleLabel?.font = UIFont.systemFont(ofSize: 24, weight: .bold)
@@ -164,19 +164,19 @@ class MainView: UIView {
         totalAmountLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         totalAmountLabel.textColor = Colors.accentOrange
 
-        // -------------------------------------- Settle and AddBill Buttons --------------------------------------
-        // Style the Settle Button
-        settleButton.translatesAutoresizingMaskIntoConstraints = false
-        settleButton.setTitle("Compute", for: .normal)
-        settleButton.setImage(UIImage(systemName: "shuffle"), for: .normal)
-        settleButton.layer.cornerRadius = 15
-//        settleButton.layer.borderWidth = 0
-//        settleButton.layer.borderColor = Colors.primaryDark.cgColor
-        settleButton.setTitleColor(Colors.primaryDark, for: .normal)
-        settleButton.tintColor = Colors.primaryDark
-        settleButton.backgroundColor = Colors.background1
-        settleButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
-        // settleButton.contentEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
+        // -------------------------------------- Archive and AddBill Buttons --------------------------------------
+        // Style the Archive Button
+        computeButton.translatesAutoresizingMaskIntoConstraints = false
+        computeButton.setTitle("Compute", for: .normal)
+        computeButton.setImage(UIImage(systemName: "shuffle"), for: .normal)
+        computeButton.layer.cornerRadius = 15
+//        computeButton.layer.borderWidth = 0
+//        computeButton.layer.borderColor = Colors.primaryDark.cgColor
+        computeButton.setTitleColor(Colors.primaryDark, for: .normal)
+        computeButton.tintColor = Colors.primaryDark
+        computeButton.backgroundColor = Colors.background1
+        computeButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        // archiveButton.contentEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
 
         // Style the Add Bill Button
         addBillButton.translatesAutoresizingMaskIntoConstraints = false
@@ -190,14 +190,14 @@ class MainView: UIView {
         // addBillButton.contentEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
 
         // -------------------------------------- Shadow Containers for Buttons --------------------------------------
-        // Settle Button Shadow Container
-        settleButtonShadowContainer.translatesAutoresizingMaskIntoConstraints = false
-        settleButtonShadowContainer.backgroundColor = .clear
-        settleButtonShadowContainer.layer.shadowColor = UIColor.black.cgColor
-        settleButtonShadowContainer.layer.shadowOpacity = 0.2
-        settleButtonShadowContainer.layer.shadowOffset = CGSize(width: 0, height: 2)
-        settleButtonShadowContainer.layer.shadowRadius = 5
-        settleButtonShadowContainer.layer.masksToBounds = false
+        // archive Button Shadow Container
+        archiveButtonShadowContainer.translatesAutoresizingMaskIntoConstraints = false
+        archiveButtonShadowContainer.backgroundColor = .clear
+        archiveButtonShadowContainer.layer.shadowColor = UIColor.black.cgColor
+        archiveButtonShadowContainer.layer.shadowOpacity = 0.2
+        archiveButtonShadowContainer.layer.shadowOffset = CGSize(width: 0, height: 2)
+        archiveButtonShadowContainer.layer.shadowRadius = 5
+        archiveButtonShadowContainer.layer.masksToBounds = false
 
         // Add Bill Button Shadow Container
         addBillButtonShadowContainer.translatesAutoresizingMaskIntoConstraints = false
@@ -232,7 +232,7 @@ class MainView: UIView {
         shadowContainerView.addSubview(cardContainerView)
 
         // Add buttons to their shadow containers
-        settleButtonShadowContainer.addSubview(settleButton)
+        archiveButtonShadowContainer.addSubview(computeButton)
         addBillButtonShadowContainer.addSubview(addBillButton)
 
         // Add main subviews to the main view
@@ -240,7 +240,7 @@ class MainView: UIView {
         addSubview(userButton)
         addSubview(peopleSliderView)
         addSubview(shadowContainerView)
-        addSubview(settleButtonShadowContainer)
+        addSubview(archiveButtonShadowContainer)
         addSubview(addBillButtonShadowContainer)
 
         // -------------------------------------- Layout Constraints --------------------------------------
@@ -267,7 +267,7 @@ class MainView: UIView {
             shadowContainerView.topAnchor.constraint(equalTo: peopleSliderView.bottomAnchor, constant: 16),
             shadowContainerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             shadowContainerView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            shadowContainerView.bottomAnchor.constraint(equalTo: settleButtonShadowContainer.topAnchor, constant: -24),
+            shadowContainerView.bottomAnchor.constraint(equalTo: archiveButtonShadowContainer.topAnchor, constant: -24),
 
             // Card Container Constraints
             cardContainerView.topAnchor.constraint(equalTo: shadowContainerView.topAnchor),
@@ -311,35 +311,35 @@ class MainView: UIView {
             totalLabel.centerYAnchor.constraint(equalTo: totalAmountLabel.centerYAnchor),
             totalLabel.trailingAnchor.constraint(equalTo: totalAmountLabel.leadingAnchor, constant: -8),
             
-            // ---------------------- Settle and AddBill Buttons ----------------------
+            // ---------------------- Archive and AddBill Buttons ----------------------
 
             // Settle Button Shadow Container Constraints
-            settleButtonShadowContainer.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            settleButtonShadowContainer.trailingAnchor.constraint(equalTo: addBillButtonShadowContainer.leadingAnchor, constant: -16),
-            settleButtonShadowContainer.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -24),
-            settleButtonShadowContainer.heightAnchor.constraint(equalToConstant: 44),
-            settleButtonShadowContainer.widthAnchor.constraint(equalTo: addBillButtonShadowContainer.widthAnchor),
+            archiveButtonShadowContainer.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            archiveButtonShadowContainer.trailingAnchor.constraint(equalTo: addBillButtonShadowContainer.leadingAnchor, constant: -16),
+            archiveButtonShadowContainer.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -24),
+            archiveButtonShadowContainer.heightAnchor.constraint(equalToConstant: 44),
+            archiveButtonShadowContainer.widthAnchor.constraint(equalTo: addBillButtonShadowContainer.widthAnchor),
             
-            // Settle Button Constraints within its Shadow Container
-//            settleButton.centerXAnchor.constraint(equalTo: settleButtonShadowContainer.centerXAnchor),
-//            settleButton.centerYAnchor.constraint(equalTo: settleButtonShadowContainer.centerYAnchor, constant: -22),
-//            settleButton.widthAnchor.constraint(equalTo: settleButtonShadowContainer.widthAnchor, multiplier: 0.45),
-//            settleButton.heightAnchor.constraint(equalTo: settleButtonShadowContainer.heightAnchor, multiplier: 0.9),
+            // Archive Button Constraints within its Shadow Container
+//            computeButton.centerXAnchor.constraint(equalTo: archiveButtonShadowContainer.centerXAnchor),
+//            computeButton.centerYAnchor.constraint(equalTo: archiveButtonShadowContainer.centerYAnchor, constant: -22),
+//            computeButton.widthAnchor.constraint(equalTo: archiveButtonShadowContainer.widthAnchor, multiplier: 0.45),
+//            computeButton.heightAnchor.constraint(equalTo: archiveButtonShadowContainer.heightAnchor, multiplier: 0.9),
             
-            settleButton.topAnchor.constraint(equalTo: settleButtonShadowContainer.topAnchor),
-            settleButton.leadingAnchor.constraint(equalTo: settleButtonShadowContainer.leadingAnchor),
-            settleButton.trailingAnchor.constraint(equalTo: settleButtonShadowContainer.trailingAnchor),
-            settleButton.bottomAnchor.constraint(equalTo: settleButtonShadowContainer.bottomAnchor),
+            computeButton.topAnchor.constraint(equalTo: archiveButtonShadowContainer.topAnchor),
+            computeButton.leadingAnchor.constraint(equalTo: archiveButtonShadowContainer.leadingAnchor),
+            computeButton.trailingAnchor.constraint(equalTo: archiveButtonShadowContainer.trailingAnchor),
+            computeButton.bottomAnchor.constraint(equalTo: archiveButtonShadowContainer.bottomAnchor),
             
             // Add Bill Button Shadow Container Constraints
-//            addBillButtonShadowContainer.leadingAnchor.constraint(equalTo: settleButtonShadowContainer.trailingAnchor, constant: 16),
+//            addBillButtonShadowContainer.leadingAnchor.constraint(equalTo: archiveButtonShadowContainer.trailingAnchor, constant: 16),
 //            addBillButtonShadowContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
 //            addBillButtonShadowContainer.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -24),
 //            addBillButtonShadowContainer.heightAnchor.constraint(equalToConstant: 44),
             addBillButtonShadowContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            addBillButtonShadowContainer.heightAnchor.constraint(equalTo: settleButtonShadowContainer.heightAnchor),
-            addBillButtonShadowContainer.widthAnchor.constraint(equalTo: settleButtonShadowContainer.widthAnchor),
-            addBillButtonShadowContainer.centerYAnchor.constraint(equalTo: settleButtonShadowContainer.centerYAnchor),
+            addBillButtonShadowContainer.heightAnchor.constraint(equalTo: archiveButtonShadowContainer.heightAnchor),
+            addBillButtonShadowContainer.widthAnchor.constraint(equalTo: archiveButtonShadowContainer.widthAnchor),
+            addBillButtonShadowContainer.centerYAnchor.constraint(equalTo: archiveButtonShadowContainer.centerYAnchor),
             
 //            // Add Bill Button Constraints within its Shadow Container
 //            addBillButton.centerXAnchor.constraint(equalTo: addBillButtonShadowContainer.centerXAnchor),

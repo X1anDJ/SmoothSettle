@@ -8,7 +8,7 @@
 import UIKit
 import Combine
 
-class MainViewController: UIViewController {
+class MainViewController: UIViewController, TripPopoverDelegate, UIPopoverPresentationControllerDelegate {
 
     var viewModel = MainViewModel()
     var cancellables = Set<AnyCancellable>()
@@ -25,7 +25,7 @@ class MainViewController: UIViewController {
         super.viewDidLoad()
         
         setupBindings()
-        viewModel.loadAllUnsettledTrips()
+        viewModel.loadAllUnarchivedTrips()
         
         // Add target for cardRightArrowButton here
         mainView.cardRightArrowButton.addTarget(self, action: #selector(didTapCardRightArrowButton), for: .touchUpInside)
@@ -41,16 +41,45 @@ class MainViewController: UIViewController {
         
         // Set up target-actions for buttons
         mainView.userButton.addTarget(self, action: #selector(didTapUserButton), for: .touchUpInside)
-        mainView.settleButton.addTarget(self, action: #selector(didTapSettle), for: .touchUpInside)
+        mainView.computeButton.addTarget(self, action: #selector(didTapCompute), for: .touchUpInside)
         mainView.addBillButton.addTarget(self, action: #selector(didTapAddBill), for: .touchUpInside)
         
-        setupTripDropdownMenu()
+        
+        // Modify the currentTripButton action
+        mainView.currentTripButton.addTarget(self, action: #selector(didTapCurrentTripButton), for: .touchUpInside)
+//        setupTripDropdownMenu()
     }
     
     
+    @objc func didTapCurrentTripButton() {
+        let tripPopoverVC = TripPopoverViewController(viewModel: viewModel)
+        tripPopoverVC.delegate = self
+        tripPopoverVC.modalPresentationStyle = .popover
+        tripPopoverVC.preferredContentSize = CGSize(width: 200, height: 200)
+        if let popoverPresentationController = tripPopoverVC.popoverPresentationController {
+            popoverPresentationController.delegate = self
+            popoverPresentationController.sourceView = mainView.currentTripButton
+            popoverPresentationController.sourceRect = mainView.currentTripButton.bounds
+            popoverPresentationController.permittedArrowDirections = .up
+            popoverPresentationController.backgroundColor = Colors.background1
+        }
+        present(tripPopoverVC, animated: true)
+    }
+
+    // TripSelectionDelegate method
+    func didSelectTrip(_ trip: Trip) {
+        viewModel.selectTrip(by: trip.id)
+    }
+    
+    // UIPopoverPresentationControllerDelegate method
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        // Ensures that the popover is presented as a popover and not full screen
+        return .none
+    }
+    
     // Set up bindings between the view model and the UI
     func setupBindings() {
-        // Observe current trip changes
+        // In setupBindings()
         viewModel.$currentTripId
             .receive(on: DispatchQueue.main)
             .sink { [weak self] tripId in
@@ -60,20 +89,21 @@ class MainViewController: UIViewController {
                     self?.mainView.peopleSliderView.tripId = tripId
                     self?.updateUIElements(isEnabled: true)
                 } else {
+                    self?.updateCurrentTripUI(with: nil)
+                    self?.updatePeopleSlider(with: [])
                     self?.updateUIElements(isEnabled: false)
-//                    print("updateUIElements(isEnabled: false)")
                 }
             }
             .store(in: &cancellables)
-        
-        // Observe trips changes and update the dropdown menu
+
+        // Observe trips changes
         viewModel.$trips
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
-                self?.setupTripDropdownMenu() // Rebuild the UIMenu whenever trips are updated
+                // No action needed here since TripSelectionViewController observes trips directly
             }
             .store(in: &cancellables)
-        
+
         // Observe current people changes
         viewModel.$people
             .receive(on: DispatchQueue.main)
@@ -94,23 +124,11 @@ class MainViewController: UIViewController {
     }
 
     func updateCurrentTripUI(with trip: Trip?) {
-//        if let trip = trip {
-//            let currentTripText = NSMutableAttributedString(string: trip.title ?? "Unnamed Trip")
-//            let arrowIconAttachment = NSTextAttachment()
-//            arrowIconAttachment.image = UIImage(systemName: "chevron.down")
-//            currentTripText.append(NSAttributedString(attachment: arrowIconAttachment))
-//            mainView.currentTripButton.setAttributedTitle(currentTripText, for: .normal)
-//        } else {
-//            let currentTripText = NSMutableAttributedString(string: "Add a Trip")
-//            let arrowIconAttachment = NSTextAttachment()
-//            arrowIconAttachment.image = UIImage(systemName: "chevron.down")
-//            currentTripText.append(NSAttributedString(attachment: arrowIconAttachment))
-//            mainView.currentTripButton.setAttributedTitle(currentTripText, for: .normal)
-//        }
         
         let currentTripText = NSMutableAttributedString(string: trip?.title ?? "Add a Trip")
         let arrowIconAttachment = NSTextAttachment()
         arrowIconAttachment.image = UIImage(systemName: "chevron.down")
+        currentTripText.append(NSAttributedString(string: " "))
         currentTripText.append(NSAttributedString(attachment: arrowIconAttachment))
         mainView.currentTripButton.setAttributedTitle(currentTripText, for: .normal)
     }
@@ -124,26 +142,26 @@ class MainViewController: UIViewController {
         mainView.totalAmountLabel.text = "$\(String(format: "%.2f", totalAmount))"
     }
     
-    func setupTripDropdownMenu() {
-        // Create actions for each existing trip
-        let tripMenuActions = viewModel.trips.map { trip in
-            UIAction(title: trip.title ?? "Unnamed Trip", image: nil) { [weak self] _ in
-                self?.viewModel.selectTrip(by: trip.id) // Use UUID to select the trip
-            }
-        }
-        
-        // Add a special action for adding a new trip
-        let addTripAction = UIAction(title: "Add a Trip", image: UIImage(systemName: "plus")) { [weak self] _ in
-            self?.didTapAddTrip() // Call the function to add a new trip
-        }
-        
-        // Create the UIMenu and append the "Add Trip" action as the last item
-        let tripMenu = UIMenu(title: "Switch Trip", children: tripMenuActions + [addTripAction])
-        
-        // Assign the menu to the currentTripButton
-        mainView.currentTripButton.menu = tripMenu
-        mainView.currentTripButton.showsMenuAsPrimaryAction = true
-    }
+//    func setupTripDropdownMenu() {
+//        // Create actions for each existing trip
+//        let tripMenuActions = viewModel.trips.map { trip in
+//            UIAction(title: trip.title ?? "Unnamed Trip", image: nil) { [weak self] _ in
+//                self?.viewModel.selectTrip(by: trip.id) // Use UUID to select the trip
+//            }
+//        }
+//        
+//        // Add a special action for adding a new trip
+//        let addTripAction = UIAction(title: "Add a Trip", image: UIImage(systemName: "plus")) { [weak self] _ in
+//            self?.didTapAddTrip() // Call the function to add a new trip
+//        }
+//        
+//        // Create the UIMenu and append the "Add Trip" action as the last item
+//        let tripMenu = UIMenu(title: "Switch Trip", children: tripMenuActions + [addTripAction])
+//        
+//        // Assign the menu to the currentTripButton
+//        mainView.currentTripButton.menu = tripMenu
+//        mainView.currentTripButton.showsMenuAsPrimaryAction = true
+//    }
 
     @objc func didTapCardRightArrowButton() {
         let billsViewController = BillsViewController(viewModel: viewModel)
@@ -169,25 +187,26 @@ class MainViewController: UIViewController {
         present(addTripVC, animated: false)
     }
     
-    @objc func didTapSettle() {
-        let settleVC = SettleViewController()
-        settleVC.viewModel = self.viewModel
-        settleVC.modalPresentationStyle = .overFullScreen
+    @objc func didTapCompute() {
+        self.viewModel.simplifyCurrentTrip()
+        let archiveVC = ArchiveActionViewController()
+        archiveVC.viewModel = self.viewModel
+        archiveVC.modalPresentationStyle = .overFullScreen
         
-        // Subscribe to the settleSubject and call reload on settlement
-        settleVC.settleSubject
+        // Subscribe to the archiveSubject and call reload on archive
+        archiveVC.archiveSubject
             .sink { [weak self] in
-                self?.reloadMainViewController() // Call reload method when settled
+                self?.reloadMainViewController() // Call reload method when archived
             }
             .store(in: &cancellables)
         
-        present(settleVC, animated: true, completion: nil)
+        present(archiveVC, animated: true, completion: nil)
     }
 
 
     func reloadMainViewController() {
         // Reload the trip data
-        viewModel.loadAllUnsettledTrips()
+        viewModel.loadAllUnarchivedTrips()
         
         // Fetch and reload the current trip and its people
         if let currentTripId = viewModel.currentTripId, let currentTrip = viewModel.tripRepository.fetchTrip(by: currentTripId) {
@@ -211,7 +230,7 @@ class MainViewController: UIViewController {
         mainView.cardHeaderView.isUserInteractionEnabled = isEnabled
         mainView.cardRightArrowButton.isUserInteractionEnabled = isEnabled
         mainView.customTableView.isUserInteractionEnabled = isEnabled
-        mainView.settleButton.isUserInteractionEnabled = isEnabled
+        mainView.computeButton.isUserInteractionEnabled = isEnabled
         mainView.addBillButton.isUserInteractionEnabled = isEnabled
 
         // Change alpha to visually indicate disabled state
@@ -219,7 +238,7 @@ class MainViewController: UIViewController {
         mainView.shadowContainerView.alpha = isEnabled ? enabledAlpha : disabledAlpha
 //        mainView.cardRightArrowButton.alpha = isEnabled ? enabledAlpha : disabledAlpha
 //        mainView.customTableView.alpha = isEnabled ? enabledAlpha : disabledAlpha
-        mainView.settleButton.alpha = isEnabled ? enabledAlpha : disabledAlpha
+        mainView.computeButton.alpha = isEnabled ? enabledAlpha : disabledAlpha
         mainView.addBillButton.alpha = isEnabled ? enabledAlpha : disabledAlpha
         
     }
@@ -400,9 +419,5 @@ extension MainViewController: AddBillViewControllerDelegate {
         // Use UUID for the payer and involvers
         viewModel.addBillToCurrentTrip(title: title, amount: amount, date: date, payerId: payerId, involverIds: involverIds, image: image)
     }
-    
-//    func didAddBill(title: String, amount: Double, date: Date, payerId: UUID, involverIds: [UUID]) {
-//        // Use UUID for the payer and involvers
-//        viewModel.addBillToCurrentTrip(title: title, amount: amount, date: date, payerId: payerId, involverIds: involverIds)
-//    }
+
 }

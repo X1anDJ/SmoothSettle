@@ -29,6 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
+        window?.overrideUserInterfaceStyle = .light
         window?.backgroundColor = Colors.background1
         loginViewController.delegate = self
         let loginNavController = UINavigationController(rootViewController: loginViewController)
@@ -39,7 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        } else {
 //            setupTabBarController()
 //        }
-        //TripRepository.shared.createMockData()
+        TripRepository.shared.createMockData()
         return true
     }
 
@@ -115,8 +116,20 @@ extension AppDelegate {
         tabBarController.tabBar.tintColor = Colors.primaryDark // Selected item color
         tabBarController.tabBar.unselectedItemTintColor = .systemGray3 // Unselected item color
 
+        // Set up the appearance for the tab bar
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground() // Ensures the background is opaque
+    //    appearance.backgroundEffect = UIBlurEffect(style: .systemUltraThinMaterial)
+        appearance.backgroundColor = UIColor.clear
+
+
+        // Apply the appearance to both standard and scroll edge appearances
+        tabBarController.tabBar.standardAppearance = appearance
+        if #available(iOS 15.0, *) {
+            tabBarController.tabBar.scrollEdgeAppearance = appearance
+        }
+
         // Set up the shadow for the tab bar
-        tabBarController.tabBar.backgroundColor = Colors.background0
         tabBarController.tabBar.layer.shadowColor = UIColor.systemGray.cgColor
         tabBarController.tabBar.layer.shadowOpacity = 0.2
         tabBarController.tabBar.layer.shadowOffset = CGSize(width: 0, height: -2) // Negative height to apply shadow above the tab bar

@@ -9,19 +9,27 @@ class TripRepository {
     // CoreData managed object context
     private let context: NSManagedObjectContext
     
-    // Combine Publisher for settled trips
-    private var settledTripsSubject = CurrentValueSubject<[Trip], Never>([])
+    // Combine Publisher for archived trips
+    private var archivedTripsSubject = CurrentValueSubject<[Trip], Never>([])
 
     // Dependency injection to pass the managed object context
     private init(context: NSManagedObjectContext = CoreDataManager.shared.context) {
         self.context = context
-        loadSettledTrips()  // Load settled trips when the repository is initialized
+        loadArchivedTrips()  // Load archived trips when the repository is initialized
     }
     
     // MARK: - Combine Publisher
 
-    var settledTripsPublisher: AnyPublisher<[Trip], Never> {
-        settledTripsSubject.eraseToAnyPublisher()  // Expose as read-only publisher
+    var archivedTripsPublisher: AnyPublisher<[Trip], Never> {
+        archivedTripsSubject.eraseToAnyPublisher()  // Expose as read-only publisher
+    }
+    
+    // Combine Publisher for unarchived trips
+    private var unarchivedTripsSubject = CurrentValueSubject<[Trip], Never>([])
+
+    // Public publisher for external subscription
+    var unarchivedTripsPublisher: AnyPublisher<[Trip], Never> {
+        unarchivedTripsSubject.eraseToAnyPublisher()
     }
     
     // MARK: - Managing Trips
@@ -37,47 +45,50 @@ class TripRepository {
         }
     }
     
-    // Fetch unsettled trips from CoreData
-    func fetchUnsettledTrips() -> [Trip] {
+    // Fetch unarchived trips from CoreData
+    func fetchUnarchivedTrips() -> [Trip] {
         let fetchRequest: NSFetchRequest<Trip> = Trip.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "settled == NO")
-        
-        do {
-            return try context.fetch(fetchRequest)
-        } catch {
-//            print("Failed to fetch unsettled trips: \(error)")
-            return []
-        }
-    }
+        fetchRequest.predicate = NSPredicate(format: "archived == NO")
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
+        fetchRequest.returnsObjectsAsFaults = false // Ensure objects are fully realized
 
-    // Fetch settled trips from CoreData
-    // Fetch settled trips from CoreData
-    func fetchSettledTrips() -> [Trip] {
-        let fetchRequest: NSFetchRequest<Trip> = Trip.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "settled == YES")
-        
         do {
             let trips = try context.fetch(fetchRequest)
-            
-            // Force Core Data to resolve faulting for dates (preload data)
-            trips.forEach { trip in
-//                print("Settled trip with date: \(trip.date?.description ?? "nil")")  // Add this line to debug trip dates
-                _ = trip.date  // Access the date property to force it to load
-            }
-            
-            settledTripsSubject.send(trips)  // Publish changes
-//            print("Fetch settled trips from CoreData")
+            unarchivedTripsSubject.send(trips) // Publish changes
             return trips
         } catch {
-//            print("Failed to fetch settled trips: \(error)")
+            print("Failed to fetch unarchived trips: \(error)")
             return []
         }
     }
 
+
     
-    // Load settled trips initially
-    private func loadSettledTrips() {
-        _ = fetchSettledTrips()  // Load trips into the subject when initialized
+
+    // Fetch archived trips from CoreData
+    func fetchArchivedTrips() -> [Trip] {
+        let fetchRequest: NSFetchRequest<Trip> = Trip.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "archived == YES")
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
+
+        do {
+            let trips = try context.fetch(fetchRequest)
+            trips.forEach { trip in
+                _ = trip.date  // Access the date property to force it to load
+            }
+            archivedTripsSubject.send(trips)  // Publish changes
+            return trips
+        } catch {
+            print("Failed to fetch archived trips: \(error)")
+            return []
+        }
+    }
+
+
+    
+    // Load archived trips initially
+    private func loadArchivedTrips() {
+        _ = fetchArchivedTrips()  // Load trips into the subject when initialized
     }
     
     
@@ -85,6 +96,7 @@ class TripRepository {
     func fetchTrip(by id: UUID) -> Trip? {
         let fetchRequest: NSFetchRequest<Trip> = Trip.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)  // Fetch by UUID
+        
         do {
             return try context.fetch(fetchRequest).first
         } catch {
@@ -99,8 +111,8 @@ class TripRepository {
         trip.id = UUID()  // Assign a unique UUID
         trip.title = title
         trip.date = date
+        trip.archived = false
         trip.settled = false
-        
         // Add people to the trip
         trip.addToPeople(NSSet(array: people))
         
@@ -109,15 +121,85 @@ class TripRepository {
         return trip
     }
     
+//    // Delete a trip
+//    func deleteTrip(by id: UUID) {
+//        if let trip = fetchTrip(by: id) {
+//            context.delete(trip)
+//            saveContext()
+//        } else {
+////            print("Trip with id \(id) not found")
+//        }
+//    }
+    
+    // Unarchive a trip (move it back to current trips)
+    func unarchiveTrip(by tripId: UUID) {
+        guard let trip = fetchTrip(by: tripId) else {
+            print("Trip not found for tripId: \(tripId)")
+            return
+        }
+        
+        // Check if trip is already unarchived
+        if !trip.archived {
+            print("Trip with tripId: \(tripId) is already unarchived.")
+            return
+        }
+        
+        // Mark the trip as unarchived
+        trip.archived = false
+        markTripAsNotSettled(tripId: tripId)
+        
+        // Remove transactions since they are no longer relevant
+        if let transactions = trip.transactions as? Set<Transaction> {
+            for transaction in transactions {
+                context.delete(transaction)
+            }
+            trip.transactions = nil
+        }
+        
+        // Save the context to persist changes
+        do {
+            try context.save()
+            print("Trip unarchived successfully for tripId: \(tripId)")
+            
+            // Update the unarchived trips publisher
+            fetchUnarchivedTrips()
+            // Update the archived trips publisher as well
+            fetchArchivedTrips()
+        } catch {
+            print("Failed to unarchive Trip with tripId: \(tripId): \(error)")
+        }
+    }
+    
     // Delete a trip
     func deleteTrip(by id: UUID) {
         if let trip = fetchTrip(by: id) {
+            // Delete related bills
+            if let bills = trip.bills as? Set<Bill> {
+                for bill in bills {
+                    context.delete(bill)
+                }
+            }
+            
+            // Delete related transactions
+            if let transactions = trip.transactions as? Set<Transaction> {
+                for transaction in transactions {
+                    context.delete(transaction)
+                }
+            }
+            
+            // Finally, delete the trip
             context.delete(trip)
             saveContext()
+            
+            // Update the archived trips publisher
+            fetchArchivedTrips()
+            fetchUnarchivedTrips()
         } else {
-//            print("Trip with id \(id) not found")
+            print("Trip with id \(id) not found")
         }
     }
+
+    
     
     // Save any changes to CoreData
     func saveContext() {
@@ -138,9 +220,18 @@ class TripRepository {
     
     // Fetch bills for a specific trip
     func fetchBills(for tripId: UUID) -> [Bill] {
-        guard let trip = fetchTrip(by: tripId) else { return [] }
-        return trip.billsArray
+        let fetchRequest: NSFetchRequest<Bill> = Bill.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "trip.id == %@", tripId as CVarArg)
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
+
+        do {
+            return try context.fetch(fetchRequest)
+        } catch {
+            print("Failed to fetch bills for tripId \(tripId): \(error)")
+            return []
+        }
     }
+
 }
 
 // MARK: - Managing People
@@ -317,35 +408,79 @@ extension TripRepository {
     }
 }
 
+extension TripRepository {
+    // MARK: - Time Period Calculation
+
+    /// Calculates the time period for a given trip based on its bills.
+    /// - Parameter trip: The trip for which to calculate the time period.
+    /// - Returns: A formatted string representing the time period, or nil if no bills are present.
+    func getTimePeriod(for trip: Trip) -> String? {
+        guard let bills = trip.bills as? Set<Bill>, !bills.isEmpty else {
+            return nil
+        }
+        
+        // Extract bill dates, ignoring nil dates
+        let billDates = bills.compactMap { $0.date }
+        
+        guard let earliestDate = billDates.min(),
+              let latestDate = billDates.max() else {
+            return nil
+        }
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .medium
+        
+        let startDate = dateFormatter.string(from: earliestDate)
+        let endDate = dateFormatter.string(from: latestDate)
+        
+        return "\(startDate) - \(endDate)"
+    }
+}
 
 // MARK: - Simplifying Transactions and Settling Trips
 
 extension TripRepository {
     
-    func simplifyTransactions(for tripId: UUID) -> [(fromId: UUID, toId: UUID, amount: Double)] {
+    // Simplify Transactions and Create Transaction Entities
+    func simplifyTransactions(for tripId: UUID) -> [Transaction] {
+        print("Trip Repo 446")
         guard let trip = fetchTrip(by: tripId),
               let peopleSet = trip.people,
               let billsSet = trip.bills else {
+            print("Trip, People, or Bills not found for tripId: \(tripId)")
             return []
         }
-        
+
+        // Check if transactions already exist to prevent duplicates
+        if let existingTransactions = trip.transactions, existingTransactions.count > 0 {
+//            print("Transactions already exist for tripId: \(tripId). Skipping creation.")
+//            return existingTransactions.allObjects as? [Transaction] ?? []
+            
+            if let transactions = trip.transactions as? Set<Transaction> {
+                for transaction in transactions {
+                    context.delete(transaction)
+                }
+                trip.transactions = nil
+            }
+        }
+
         let people = peopleSet.allObjects as? [Person] ?? []
         let bills = billsSet.allObjects as? [Bill] ?? []
-        
+
         // Map Person to a unique index for processing
         let personToIndex = Dictionary(uniqueKeysWithValues: people.enumerated().map { ($1, $0) })
-        
+
         // Initialize the SimplifyDebts class
         let simplifyDebts = SimplifyDebts(totalPeopleCount: people.count)
-        
+
         // Process each bill
         for bill in bills {
             guard let payer = bill.payer, let involversSet = bill.involvers else { continue }
             let involvers = involversSet.allObjects as? [Person] ?? []
-            
+
             // Calculate share per person (assuming equal share)
             let share = Int64(bill.amount * 100) / Int64(involvers.count)  // Using cents to avoid floating point errors
-            
+
             if let payerIndex = personToIndex[payer] {
                 // Add transactions from the payer to each involver
                 for involver in involvers {
@@ -355,45 +490,154 @@ extension TripRepository {
                 }
             }
         }
-        
+
         // Run the simplification algorithm
-        let result = simplifyDebts.runSimplifyAlgorithm()
-        
-        // Convert the simplified transactions into readable format with UUIDs
-        var simplifiedTransactions: [(fromId: UUID, toId: UUID, amount: Double)] = []
+        let _ = simplifyDebts.runSimplifyAlgorithm()
+
+        // Convert the simplified transactions into readable format with UUIDs and create Transaction entities
+        var transactionEntities: [Transaction] = []
+        let context = self.context
+
         for (key, amount) in simplifyDebts.transactions {
-            let fromPerson = people[key.to] // Accessing Person by index
-            let toPerson = people[key.from]     // Accessing Person by index
+            let fromIndex = key.to
+            let toIndex = key.from
+
+            // Ensure indices are within bounds
+            guard fromIndex < people.count, toIndex < people.count else {
+                print("Invalid indices in SimplifyDebts result: fromIndex=\(fromIndex), toIndex=\(toIndex)")
+                continue
+            }
+
+            let fromPerson = people[fromIndex]
+            let toPerson = people[toIndex]
             let amountInDollars = Double(amount) / 100.0  // Convert cents back to dollars
 
             if amountInDollars > 0 {
-                simplifiedTransactions.append((fromId: fromPerson.id, toId: toPerson.id, amount: amountInDollars))
+                // Create a new Transaction entity
+                let transaction = Transaction(context: context)
+                transaction.id = UUID()
+                transaction.amount = amountInDollars
+                transaction.settled = false
+                transaction.fromPerson = fromPerson
+                transaction.toPerson = toPerson
+                transaction.trip = trip
+
+                // Add to trip's transactions
+                trip.addToTransactions(transaction)
+
+                transactionEntities.append(transaction)
             }
         }
-//        print(simplifiedTransactions)
-        return simplifiedTransactions
+
+        // Save the context to persist Transaction entities
+        do {
+            try context.save()
+            print("Simplified Transactions saved successfully for trip name: \(String(describing: trip.title)),  tripId: \(tripId)")
+        } catch {
+            print("Failed to save Transactions for tripId: \(tripId): \(error)")
+        }
+
+        return transactionEntities
     }
 
-    // Settle a trip and mark it as settled
-    func settleTrip(by tripId: UUID) {
-        guard let trip = fetchTrip(by: tripId) else { return }
+    // Archived a trip and mark it as archived
+    func archiveTrip(by tripId: UUID) {
+        guard let trip = fetchTrip(by: tripId) else {
+            print("Trip not found for tripId: \(tripId)")
+            return
+        }
         
+        // Check if trip is already archived
+        if trip.archived {
+            print("Trip with tripId: \(tripId) is already archived.")
+            return
+        }
+
         // Call the simplification function to process the transactions
         let simplifiedTransactions = simplifyTransactions(for: trip.id)
-        
-        // Mark the trip as settled
-        trip.settled = true
-        saveContext()
-        
-//        print("Settlements for Trip: \(trip.title ?? "")")
-        // Update the settled trips publisher
-        _ = fetchSettledTrips()
-    }
 
+        // Mark the trip as archived
+        trip.archived = true
+
+        // Save the context to persist changes
+        do {
+            try context.save()
+            print("Trip archived successfully for tripId: \(tripId)")
+        } catch {
+            print("Failed to archive Trip with tripId: \(tripId): \(error)")
+        }
+
+        // Update the archived trips publisher
+        fetchArchivedTrips()
+    }
+    
+    // Fetch all transactions for a trip
+    func fetchAllTransactions(for tripId: UUID) -> [Transaction] {
+        let fetchRequest: NSFetchRequest<Transaction> = Transaction.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "trip.id == %@", tripId as CVarArg)
+        //fetchRequest.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
+        
+        do {
+            let transactions = try context.fetch(fetchRequest)
+            print("Fetched \(transactions.count) transactions for tripId: \(tripId)")
+            return transactions
+        } catch {
+            print("Failed to fetch all transactions for tripId: \(tripId): \(error)")
+            return []
+        }
+    }
+    
+    
+    
+    /// Marks a trip as settled if all its transactions are settled.
+    /// - Parameter tripId: The UUID of the trip to mark as settled.
+    func markTripAsSettled(tripId: UUID) {
+        guard let trip = fetchTrip(by: tripId) else {
+            print("Trip not found for tripId: \(tripId)")
+            return
+        }
+        
+        // Check if trip is already settled
+        if trip.settled {
+            print("Trip \(trip.title ?? "Unnamed") is already settled.")
+            return
+        }
+        
+        // Verify that all transactions are settled
+        let transactions = fetchAllTransactions(for: tripId)
+        let allSettled = transactions.allSatisfy { $0.settled }
+        
+        if allSettled {
+            trip.settled = true
+            saveContext()
+            print("Trip \(trip.title ?? "Unnamed") has been marked as settled.")
+            
+            // Notify subscribers about the update
+            fetchArchivedTrips()
+        } else {
+            print("Cannot mark Trip \(trip.title ?? "Unnamed") as settled because not all transactions are settled.")
+        }
+    }
+    
+    /// Marks a trip as not settled if all its transactions are settled.
+    /// - Parameter tripId: The UUID of the trip to mark as settled.
+    func markTripAsNotSettled(tripId: UUID) {
+        guard let trip = fetchTrip(by: tripId) else {
+            print("Trip not found for tripId: \(tripId)")
+            return
+        }
+        
+        trip.settled = false
+        saveContext()
+        fetchArchivedTrips()
+
+    }
 }
 
+
+
+
 extension TripRepository {
-    // Method to create mock data for testing with country leaders and entertaining bills
     // Method to create mock data for testing with more country leaders, trips, and entertaining bills
     func createMockData() {
         CoreDataManager.shared.resetPersistentStore()
@@ -407,42 +651,42 @@ extension TripRepository {
         // Create People (Country Leaders)
         let person1 = Person(context: context)
         person1.id = UUID()
-        person1.name = "Joe Biden"
+        person1.name = "Andreas Gursky"
         person1.balance = 0.0
         
         let person2 = Person(context: context)
         person2.id = UUID()
-        person2.name = "Vladimir Putin"
+        person2.name = "Hilla Becher"
         person2.balance = 0.0
         
         let person3 = Person(context: context)
         person3.id = UUID()
-        person3.name = "Elon Musk"
+        person3.name = "Bernd Becher"
         person3.balance = 0.0
         
         let person4 = Person(context: context)
         person4.id = UUID()
-        person4.name = "Kim Jong Un"
+        person4.name = "Stephen Shore"
         person4.balance = 0.0
         
         let person5 = Person(context: context)
         person5.id = UUID()
-        person5.name = "Justin Bieber"
+        person5.name = "William Eggleston"
         person5.balance = 0.0
         
         let person6 = Person(context: context)
         person6.id = UUID()
-        person6.name = "嬴政"
+        person6.name = "Alec Soth"
         person6.balance = 0.0
         
         let person7 = Person(context: context)
         person7.id = UUID()
-        person7.name = "天命人"
+        person7.name = "Mark Rothko"
         person7.balance = 0.0
         
         let person8 = Person(context: context)
         person8.id = UUID()
-        person8.name = "四驱兄弟"
+        person8.name = "Piet Mondrian"
         person8.balance = 0.0
         
         let person9 = Person(context: context)
@@ -452,7 +696,7 @@ extension TripRepository {
         
         let person10 = Person(context: context)
         person10.id = UUID()
-        person10.name = "Lady Gaga"
+        person10.name = "Jackson Pollock"
         person10.balance = 0.0
         
         let person11 = Person(context: context)
@@ -471,51 +715,21 @@ extension TripRepository {
         person13.balance = 0.0
         
 
-        // Mock trip #1: Settled Trip (Hawaii Surfing Retreat)
+        // Mock trip #1: Archived Trip (Hawaii Surfing Retreat)
         let trip1 = createTrip(title: "Midnight in Paris", people: [person1, person2, person3, person5, person9, person10, person12], date: Date().addingTimeInterval(-86400 * 2)) // 10 days ago
         addBill(to: trip1.id, title: "Hotel Le Meurice", amount: 1250.00, date: Date().addingTimeInterval(-86400 * 9), payerId: person9.id, involversIds: [person5.id, person9.id, person10.id, person12.id], image: nil)
         addBill(to: trip1.id, title: "Le Pre Catlan", amount: 2200.00, date: Date().addingTimeInterval(-86400 * 8), payerId: person2.id, involversIds: [person1.id, person2.id, person3.id, person10.id], image: nil)
         addBill(to: trip1.id, title: "LECLAIREUR", amount: 4000.00, date: Date().addingTimeInterval(-86400 * 7), payerId: person1.id, involversIds: [person1.id, person3.id, person5.id, person9.id, person10.id, person12.id], image: nil)
         addBill(to: trip1.id, title: "Cafe Du Monde", amount: 1800.00, date: Date().addingTimeInterval(-86400 * 6), payerId: person3.id, involversIds: [person1.id, person2.id, person3.id, person12.id], image: nil)
 
-        // Mock trip #2: Settled Trip (G7 Summit in Japan)
-        let trip2 = createTrip(title: "G7 Summit in Japan", people: [person1, person2, person3, person4, person5, person6, person12], date: Date().addingTimeInterval(-86400 * 60)) // 60 days ago
-        addBill(to: trip2.id, title: "Summit Banquet", amount: 3000.00, date: Date().addingTimeInterval(-86400 * 59), payerId: person12.id, involversIds: [person1.id, person2.id, person3.id, person4.id, person5.id, person6.id, person12.id], image: nil)
-        addBill(to: trip2.id, title: "Sushi", amount: 1500.00, date: Date().addingTimeInterval(-86400 * 58), payerId: person5.id, involversIds: [person1.id, person2.id, person5.id], image: nil)
-        settleTrip(by: trip2.id)
-        
-        // Mock trip #3: Unsettled Trip (Australia Wildlife Adventure)
-        let trip3 = createTrip(title: "Sydney Zoo", people: [person1, person4, person11], date: Date().addingTimeInterval(-86400 * 15)) // 15 days ago
-        addBill(to: trip3.id, title: "Koala Tour", amount: 400.00, date: Date().addingTimeInterval(-86400 * 14), payerId: person11.id, involversIds: [person4.id, person11.id], image: nil)
-        addBill(to: trip3.id, title: "Jeep Rental", amount: 700.00, date: Date().addingTimeInterval(-86400 * 13), payerId: person4.id, involversIds: [person4.id, person11.id], image: nil)
-        addBill(to: trip3.id, title: "Elephant shooting", amount: 800.00, date: Date().addingTimeInterval(-86400 * 12), payerId: person1.id, involversIds: [person1.id, person4.id, person11.id], image: nil)
 
-        // Mock trip #4: Settled Trip (India Cultural Exploration)
-        let trip4 = createTrip(title: "India Cultural Exploration", people: [person8, person2, person10], date: Date().addingTimeInterval(-86400 * 30)) // 30 days ago
-        addBill(to: trip4.id, title: "Taj Mahal", amount: 100.00, date: Date().addingTimeInterval(-86400 * 29), payerId: person8.id, involversIds: [person8.id, person2.id, person10.id], image: nil)
-        addBill(to: trip4.id, title: "Rickshaw Tour of Delhi", amount: 50.00, date: Date().addingTimeInterval(-86400 * 28), payerId: person2.id, involversIds: [person2.id, person8.id], image: nil)
-        settleTrip(by: trip4.id)
-
-        // Mock trip #5: Unsettled Trip (China Expo)
-        
-        let trip5 = createTrip(title: "Shanghai Expo", people: [person3, person4, person5, person6, person7, person8, person9, person10], date: Date().addingTimeInterval(-86400 * 20)) // 20 days ago
-        
-        addBill(to: trip5.id, title: "Expo Tickets", amount: 500.00, date: Date().addingTimeInterval(-86400 * 19), payerId: person9.id, involversIds: [person9.id, person3.id, person10.id], image: nil)
-        
-        addBill(to: trip5.id, title: "Peking Duck Dinner", amount: 300.00, date: Date().addingTimeInterval(-86400 * 18), payerId: person7.id, involversIds: [person7.id, person9.id], image: nil)
-        
-        addBill(to: trip5.id, title: "KTV", amount: 480.00, date: Date().addingTimeInterval(-86400 * 17), payerId: person4.id, involversIds: [person4.id, person5.id, person9.id], image: nil)
-        
-        addBill(to: trip5.id, title: "Oriental Pearl TV Tower ", amount: 1280.00, date: Date().addingTimeInterval(-86400 * 17), payerId: person5.id, involversIds: [person3.id, person4.id, person6.id, person7.id, person10.id], image: nil)
-        
-        addBill(to: trip5.id, title: "Great Wall Tour", amount: 850.00, date: Date().addingTimeInterval(-86400 * 16), payerId: person10.id, involversIds: [person4.id, person5.id,  person7.id, person10.id], image: nil)
-        
-
-        // Mock trip #6: Settled Trip (Russia Winter Festival)
-        let trip6 = createTrip(title: "Russia Winter Festival", people: [person3, person10], date: Date().addingTimeInterval(-86400 * 90)) // 90 days ago
+        // Mock trip #6: Archived Trip (Russia Winter Festival)
+        let trip6 = createTrip(title: "Russia Winter Festival", people: [person3, person10, person6, person4], date: Date().addingTimeInterval(-86400 * 90)) // 90 days ago
         addBill(to: trip6.id, title: "Vodka and Vodka", amount: 200.00, date: Date().addingTimeInterval(-86400 * 89), payerId: person3.id, involversIds: [person3.id, person10.id], image: nil)
         addBill(to: trip6.id, title: "Ice Sculpting", amount: 150.00, date: Date().addingTimeInterval(-86400 * 88), payerId: person10.id, involversIds: [person3.id, person10.id], image: nil)
-        settleTrip(by: trip6.id)
+        addBill(to: trip6.id, title: "DJI Drone", amount: 300, date: Date().addingTimeInterval(-86400 * 85), payerId: person6.id, involversIds: [person4.id, person6.id, person10.id] , image: nil)
+        
+        archiveTrip(by: trip6.id)
 
         // Save the context to store the mock data
         saveContext()

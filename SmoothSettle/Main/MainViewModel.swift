@@ -20,18 +20,51 @@ class MainViewModel: ObservableObject {
     // Repository to manage CoreData operations
     let tripRepository: TripRepository
     
+    // Combine cancellables set
+    private var cancellables = Set<AnyCancellable>()
+    
+    
     // MARK: - Initializer with Dependency Injection
     init(tripRepository: TripRepository = TripRepository.shared) {
         self.tripRepository = tripRepository
-        loadAllUnsettledTrips() // Load trips on initialization
+        //loadAllUnarchivedTrips() // Load trips on initialization
+        
+        bindToRepository()
     }
+    
+    
+    // MARK: - Bind to Repository
+    private func bindToRepository() {
+        tripRepository.unarchivedTripsPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] trips in
+                self?.trips = trips
+                self?.handleTripsUpdate()
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func handleTripsUpdate() {
+        if let currentTripId = currentTripId, trips.contains(where: { $0.id == currentTripId }) {
+            // Current trip is still valid, do nothing
+        } else if let firstTrip = trips.first {
+            selectTrip(by: firstTrip.id)
+        } else {
+            // No trips available
+            currentTripId = nil
+            people = []
+            bills = []
+        }
+    }
+
+
     
     // MARK: - Methods to Load Data
     
 
-    // Load all unsettled trips from the repository
-    func loadAllUnsettledTrips() {
-        trips = tripRepository.fetchUnsettledTrips()
+    // Load all unarchived trips from the repository
+    func loadAllUnarchivedTrips() {
+        trips = tripRepository.fetchUnarchivedTrips()
         // Sort it here, fix later
         if let firstTrip = trips.first {
             selectTrip(by: firstTrip.id) // Set the first trip as the default selected trip using UUID
@@ -54,18 +87,23 @@ class MainViewModel: ObservableObject {
         selectTrip(by: newTrip.id) // Automatically select the new trip using UUID
     }
     
-    // Delete a trip by its UUID
     func deleteTrip(by tripId: UUID) {
         tripRepository.deleteTrip(by: tripId)
-        trips.removeAll { $0.id == tripId }  // Remove the trip from the array using UUID
-        if let firstTrip = trips.first {
-            selectTrip(by: firstTrip.id) // Select the next available trip by UUID
-        } else {
-            currentTripId = nil
-            people = []
-            bills = []
-        }
+        // No need to manually remove the trip from the array; the Combine publisher will handle it.
+        
+//        // Check if the deleted trip was the current trip
+//        if currentTripId == tripId {
+//            if let firstTrip = trips.first {
+//                selectTrip(by: firstTrip.id)
+//            } else {
+//                // No trips left; reset state
+//                currentTripId = nil
+//                people = []
+//                bills = []
+//            }
+//        }
     }
+
     
     // Add a new person to the current trip
     func addPersonToCurrentTrip(name: String) {
@@ -78,10 +116,12 @@ class MainViewModel: ObservableObject {
     // Add a new bill to the current trip
     func addBillToCurrentTrip(title: String, amount: Double, date: Date, payerId: UUID, involverIds: [UUID], image: UIImage?) {
         guard let currentTripId = currentTripId else { return }
-        if let newBill = tripRepository.addBill(to: currentTripId, title: title, amount: amount, date: date, payerId: payerId, involversIds: involverIds, image: image) {
-            bills.append(newBill)
+        if let _ = tripRepository.addBill(to: currentTripId, title: title, amount: amount, date: date, payerId: payerId, involversIds: involverIds, image: image) {
+            // Re-fetch the bills from the repository to ensure they are sorted correctly
+            bills = tripRepository.fetchBills(for: currentTripId)
         }
     }
+
     
     func deleteBill(by billId: UUID) {
         guard let currentTripId = currentTripId else { return }
@@ -93,28 +133,35 @@ class MainViewModel: ObservableObject {
         bills = tripRepository.fetchBills(for: currentTripId)
     }
     
-    // Update the current trip (e.g., if it's settled)
-    func updateTripSettledStatus(isSettled: Bool) {
+    // Simplify the current trip
+    func simplifyCurrentTrip() {
+        guard let currentTripId = currentTripId else { return }
+        
+        tripRepository.simplifyTransactions(for: currentTripId)
+    }
+    
+    // Update the current trip (e.g., if it's archived)
+    func updateTripArchivedStatus(isArchived: Bool) {
         guard let currentTripId = currentTripId, let trip = tripRepository.fetchTrip(by: currentTripId) else { return }
-        trip.settled = isSettled
+        trip.archived = isArchived
         tripRepository.saveContext() // Persist changes
     }
     
-    // Settle the current trip
-    func settleCurrentTrip() {
+    // Archive the current trip
+    func archiveCurrentTrip() {
         guard let currentTripId = currentTripId else {
             print("No current trip selected.")
             return
         }
 
-        // Settle the trip using the repository
-        tripRepository.settleTrip(by: currentTripId)
+        // Archive the trip using the repository
+        tripRepository.archiveTrip(by: currentTripId)
         
         // Reset the state before reloading the trips
         resetState()
 
-        // Reload unsettled trips after settling the current trip
-        loadAllUnsettledTrips()
+        // Reload unarchived trips after settling the current trip
+        loadAllUnarchivedTrips()
     }
     
     // Function to reset state

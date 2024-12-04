@@ -15,14 +15,26 @@
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <relationship name="bills" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Bill" inverseName="involvers" inverseEntity="Bill"/>
+        <relationship name="transactionsFrom" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Transaction" inverseName="fromPerson" inverseEntity="Transaction"/>
+        <relationship name="transactionsTo" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Transaction" inverseName="toPerson" inverseEntity="Transaction"/>
         <relationship name="trips" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Trip" inverseName="people" inverseEntity="Trip"/>
     </entity>
+    <entity name="Transaction" representedClassName=".Transaction" syncable="YES">
+        <attribute name="amount" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="settled" attributeType="Boolean" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="fromPerson" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Person" inverseName="transactionsFrom" inverseEntity="Person"/>
+        <relationship name="toPerson" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Person" inverseName="transactionsTo" inverseEntity="Person"/>
+        <relationship name="trip" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Trip" inverseName="transactions" inverseEntity="Trip"/>
+    </entity>
     <entity name="Trip" representedClassName=".Trip" syncable="YES">
+        <attribute name="archived" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="settled" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <relationship name="bills" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Bill" inverseName="trip" inverseEntity="Bill"/>
         <relationship name="people" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Person" inverseName="trips" inverseEntity="Person"/>
+        <relationship name="transactions" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Transaction" inverseName="trip" inverseEntity="Transaction"/>
     </entity>
 </model>

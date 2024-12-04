@@ -1,5 +1,5 @@
 //
-//  SettleViewController.swift
+//  ArchiveViewController.swift
 //  SmoothSettle
 //
 //  Created by Dajun Xian on 2024/10/12.
@@ -8,14 +8,14 @@
 import UIKit
 import Combine
 
-class SettleViewController: UIViewController {
+class ArchiveActionViewController: UIViewController {
 
     // UI Elements
     let scrollView = UIScrollView()  // Scroll view to hold the content
     let contentView = UIView()  // Content view inside the scroll view
     let circleLayoutView = CircleLayoutView()  // Custom circle layout view
     let transactionsTableView = TransactionsTableView() // Transactions table view
-    let settleButton = UIButton(type: .system)
+    let archiveButton = UIButton(type: .system)
     let closeButton = UIButton(type: .system)
     let buttonsView = UIStackView()
     
@@ -23,7 +23,7 @@ class SettleViewController: UIViewController {
     var viewModel: MainViewModel?
 
     // Add a PassthroughSubject to notify MainViewController
-    var settleSubject = PassthroughSubject<Void, Never>()
+    var archiveSubject = PassthroughSubject<Void, Never>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,9 +46,11 @@ class SettleViewController: UIViewController {
                 transactionsTableView.currentTrip = currentTripId
                 transactionsTableView.isSelectable = false
                 // Load transactions and pass them to CircleLayoutView via the completion handler
-                transactionsTableView.loadTransactions { [weak self] sections in
-                    self?.circleLayoutView.transactions = sections
-                }
+//                transactionsTableView.loadTransactions { [weak self] sections in
+//                    self?.circleLayoutView.transactions = sections
+//                }
+                transactionsTableView.loadTransactions()
+                self.circleLayoutView.transactions = transactionsTableView.sections
             }
         }
     }
@@ -78,13 +80,13 @@ class SettleViewController: UIViewController {
         contentView.addSubview(transactionsTableView)
 
         // Settle Button
-        settleButton.translatesAutoresizingMaskIntoConstraints = false
-        settleButton.setTitle("Archive", for: .normal)
-        settleButton.setTitleColor(.white, for: .normal)
-        settleButton.backgroundColor = Colors.primaryDark
-        settleButton.layer.cornerRadius = 22
-        settleButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
-        settleButton.addTarget(self, action: #selector(didTapSettleTrip), for: .touchUpInside)
+        archiveButton.translatesAutoresizingMaskIntoConstraints = false
+        archiveButton.setTitle("Archive", for: .normal)
+        archiveButton.setTitleColor(.white, for: .normal)
+        archiveButton.backgroundColor = Colors.primaryDark
+        archiveButton.layer.cornerRadius = 22
+        archiveButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        archiveButton.addTarget(self, action: #selector(didTapArchiveTrip), for: .touchUpInside)
 
         // Close Button
         closeButton.translatesAutoresizingMaskIntoConstraints = false
@@ -98,7 +100,7 @@ class SettleViewController: UIViewController {
         buttonsView.axis = .vertical
         buttonsView.spacing = 8
         buttonsView.distribution = .fillProportionally  // Or .fill depending on desired behavior
-        buttonsView.addArrangedSubview(settleButton)
+        buttonsView.addArrangedSubview(archiveButton)
         buttonsView.addArrangedSubview(closeButton)
         
         contentView.addSubview(buttonsView)
@@ -148,20 +150,20 @@ class SettleViewController: UIViewController {
             buttonsView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -24),
 
             // Set buttons' heights
-            settleButton.heightAnchor.constraint(equalToConstant: 44),
+            archiveButton.heightAnchor.constraint(equalToConstant: 44),
             closeButton.heightAnchor.constraint(equalToConstant: 44)
         ])
     }
 
-    // Action to settle the trip
-    @objc func didTapSettleTrip() {
+    // Action to archive the trip
+    @objc func didTapArchiveTrip() {
         guard let viewModel = viewModel else { return }
         
-        // Settle the current trip
-        viewModel.settleCurrentTrip()
+        // archive the current trip
+        viewModel.archiveCurrentTrip()
         
-        // Notify MainViewController about the trip settlement
-        settleSubject.send(())
+        // Notify MainViewController about the trip archive
+        archiveSubject.send(())
         
         // Dismiss this view controller
         dismiss(animated: true, completion: nil)

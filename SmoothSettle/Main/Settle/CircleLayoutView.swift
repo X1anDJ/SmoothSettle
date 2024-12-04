@@ -179,9 +179,16 @@ class CircleLayoutView: UIView {
     /// Checks if a transaction exists between two users
     private func transactionsExistBetween(from fromUserId: UUID, to toUserId: UUID) -> Bool {
         for section in transactions {
-            if section.fromId == fromUserId {
+//            if section.fromId == fromUserId {
+//                for transaction in section.transactions {
+//                    if transaction.toId == toUserId {
+//                        return true
+//                    }
+//                }
+//            }
+            if section.fromPerson.id == fromUserId {
                 for transaction in section.transactions {
-                    if transaction.toId == toUserId {
+                    if transaction.toPerson.id == toUserId {
                         return true
                     }
                 }

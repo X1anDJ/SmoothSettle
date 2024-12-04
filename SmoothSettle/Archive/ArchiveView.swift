@@ -15,6 +15,7 @@ class ArchiveView: UIView {
     let scrollView = UIScrollView()
     let contentView = UIView()
     let emptyStateLabel = UILabel()
+    let emptyStateImageView = UIImageView()
     
     // Stack view to hold CardViews
     let stackView = UIStackView()
@@ -55,7 +56,7 @@ class ArchiveView: UIView {
         // Title Label
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.text = "Archive"
-        titleLabel.font = UIFont.systemFont(ofSize: 32, weight: .bold)
+        titleLabel.font = UIFont.systemFont(ofSize: 36, weight: .bold)
         titleLabel.textAlignment = .left
         
         // Scroll View
@@ -69,13 +70,24 @@ class ArchiveView: UIView {
         stackView.axis = .vertical
         stackView.spacing = 24
         
+        
         // Empty State Label
         emptyStateLabel.translatesAutoresizingMaskIntoConstraints = false
-        emptyStateLabel.text = "No settled trips available."
-        emptyStateLabel.font = UIFont.preferredFont(forTextStyle: .body)
+        emptyStateLabel.text = "No archived trips available."
+        emptyStateLabel.font = UIFont.preferredFont(forTextStyle: .headline)
+        emptyStateLabel.textColor = Colors.primaryMedium
+        emptyStateLabel.tintColor = Colors.primaryMedium
         emptyStateLabel.textAlignment = .center
         emptyStateLabel.numberOfLines = 0
         emptyStateLabel.isHidden = true  // Hidden by default
+        
+        // Empty State Image View
+                emptyStateImageView.translatesAutoresizingMaskIntoConstraints = false
+                let trayImage = UIImage(systemName: "tray")
+                emptyStateImageView.image = trayImage
+                emptyStateImageView.contentMode = .scaleAspectFit
+                emptyStateImageView.tintColor = Colors.primaryMedium // Set tint color if needed
+                emptyStateImageView.isHidden = true  // Hidden by default
     }
     
     func layout() {
@@ -83,6 +95,8 @@ class ArchiveView: UIView {
         addSubview(scrollView)
         scrollView.addSubview(contentView)
         contentView.addSubview(stackView)
+        addSubview(emptyStateLabel)
+        addSubview(emptyStateImageView)
         
         NSLayoutConstraint.activate([
             // Title Label Constraints
@@ -90,7 +104,7 @@ class ArchiveView: UIView {
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             
             // Scroll View Constraints
-            scrollView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 32),
+            scrollView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 16),
             scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
@@ -106,7 +120,15 @@ class ArchiveView: UIView {
             stackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
             stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            stackView.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -16)
+            stackView.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -16),
+            
+            
+            emptyStateLabel.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor),
+            emptyStateLabel.centerYAnchor.constraint(equalTo: safeAreaLayoutGuide.centerYAnchor),
+            emptyStateImageView.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor),
+            emptyStateImageView.bottomAnchor.constraint(equalTo: emptyStateLabel.topAnchor, constant: -8),
+            emptyStateImageView.heightAnchor.constraint(equalTo: emptyStateLabel.heightAnchor, multiplier: 2.5),
+            emptyStateImageView.widthAnchor.constraint(equalTo: emptyStateLabel.heightAnchor, multiplier: 2.5)
         ])
     }
     
@@ -158,5 +180,7 @@ class ArchiveView: UIView {
     
     func showEmptyState(_ show: Bool) {
         emptyStateLabel.isHidden = !show
+        emptyStateImageView.isHidden = !show
+        stackView.isHidden = show
     }
 }

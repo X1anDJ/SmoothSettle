@@ -16,12 +16,13 @@ class CardView: UIView {
     let cardHeaderView = UIView()
     let cardTitleLabel = UILabel()
     let cardTrailerView = UIView()
-    let settledLabel = UILabel()
-    let settledIconImageView = UIImageView()
+    let archivedLabel = UILabel()
+    let archivedIconImageView = UIImageView()
     let dateLabel = UILabel()
     
     // Tap Action
     var onCardTapped: (() -> Void)?
+    var onLongPress: (() -> Void)?
     
     // Initialization
     override init(frame: CGRect) {
@@ -42,6 +43,22 @@ class CardView: UIView {
         // Add tap gesture recognizer
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(cardTapped))
         self.addGestureRecognizer(tapGesture)
+        setupLongPressGesture()
+        
+    }
+    
+    private func setupLongPressGesture() {
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
+        // Optionally, set minimum press duration
+        longPressGesture.minimumPressDuration = 0.5
+        self.addGestureRecognizer(longPressGesture)
+    }
+    
+    @objc private func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
+        // Ensure the gesture is in the began state to avoid multiple triggers
+        if gesture.state == .began {
+            onLongPress?()
+        }
     }
     
     private func style() {
@@ -77,13 +94,13 @@ class CardView: UIView {
         dateLabel.font = UIFont.preferredFont(forTextStyle: .subheadline)
         dateLabel.textColor = .systemGray
         
-        // Settled Label
-        settledLabel.translatesAutoresizingMaskIntoConstraints = false
-        settledLabel.font = UIFont.preferredFont(forTextStyle: .subheadline)
+        // archived Label
+                archivedLabel.translatesAutoresizingMaskIntoConstraints = false
+                archivedLabel.font = UIFont.preferredFont(forTextStyle: .subheadline)
         
-        // Settled Icon ImageView
-        settledIconImageView.translatesAutoresizingMaskIntoConstraints = false
-        settledIconImageView.contentMode = .scaleAspectFit
+        // archived Icon ImageView
+        archivedIconImageView.translatesAutoresizingMaskIntoConstraints = false
+        archivedIconImageView.contentMode = .scaleAspectFit
         
     }
     
@@ -95,8 +112,8 @@ class CardView: UIView {
         
         cardHeaderView.addSubview(cardTitleLabel)
         cardTrailerView.addSubview(dateLabel)
-        cardTrailerView.addSubview(settledLabel)
-        cardTrailerView.addSubview(settledIconImageView)
+        cardTrailerView.addSubview(        archivedLabel)
+        cardTrailerView.addSubview(archivedIconImageView)
         
         NSLayoutConstraint.activate([
             // Shadow Container View
@@ -131,21 +148,24 @@ class CardView: UIView {
             dateLabel.leadingAnchor.constraint(equalTo: cardTrailerView.leadingAnchor, constant: 16),
             dateLabel.centerYAnchor.constraint(equalTo: cardTrailerView.centerYAnchor),
             
-            // Settled Label
-            settledLabel.trailingAnchor.constraint(equalTo: settledIconImageView.leadingAnchor, constant: -8),
-            settledLabel.centerYAnchor.constraint(equalTo: cardTrailerView.centerYAnchor),
+            // archived Label
+                    archivedLabel.trailingAnchor.constraint(equalTo: archivedIconImageView.leadingAnchor, constant: -4),
+                    archivedLabel.centerYAnchor.constraint(equalTo: cardTrailerView.centerYAnchor),
             
-            // Settled Icon ImageView
-            settledIconImageView.trailingAnchor.constraint(equalTo: cardTrailerView.trailingAnchor, constant: -16),
-            settledIconImageView.centerYAnchor.constraint(equalTo: cardTrailerView.centerYAnchor),
-            settledIconImageView.widthAnchor.constraint(equalToConstant: 24),
-            settledIconImageView.heightAnchor.constraint(equalToConstant: 24),
+            // archived Icon ImageView
+            archivedIconImageView.trailingAnchor.constraint(equalTo: cardTrailerView.trailingAnchor, constant: -16),
+            archivedIconImageView.centerYAnchor.constraint(equalTo: cardTrailerView.centerYAnchor),
+            archivedIconImageView.widthAnchor.constraint(equalToConstant: 18),
+            archivedIconImageView.heightAnchor.constraint(equalToConstant: 18),
             
             // Empty space (for future use)
             // Adjust as needed
             cardHeaderView.bottomAnchor.constraint(equalTo: cardTrailerView.topAnchor)
         ])
     }
+    
+    
+    
     
     // MARK: - Configure Method
     func configure(with trip: Trip) {
@@ -159,13 +179,13 @@ class CardView: UIView {
         }
             
         if trip.settled {
-            settledLabel.text = "Settled"
-            settledLabel.textColor = .systemGreen
-            settledIconImageView.image = UIImage(systemName: "checkmark.circle")?.withTintColor(.systemGreen, renderingMode: .alwaysOriginal)
+            archivedLabel.text = "Settled"
+            archivedLabel.textColor = Colors.lightGreen
+            archivedIconImageView.image = UIImage(systemName: "checkmark.circle")?.withTintColor(Colors.lightGreen, renderingMode: .alwaysOriginal)
         } else {
-            settledLabel.text = "Unsettled"
-            settledLabel.textColor = .systemRed
-            settledIconImageView.image = UIImage(systemName: "multiply.circle")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
+            archivedLabel.text = "Unsettled"
+            archivedLabel.textColor = Colors.accentOrange
+            archivedIconImageView.image = UIImage(systemName: "minus.circle")?.withTintColor(Colors.accentOrange, renderingMode: .alwaysOriginal)
         }
     }
     

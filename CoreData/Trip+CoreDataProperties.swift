@@ -18,12 +18,17 @@ extension Trip {
 
     @NSManaged public var id: UUID
     @NSManaged public var date: Date?
+    @NSManaged public var archived: Bool
     @NSManaged public var settled: Bool
     @NSManaged public var title: String?
     @NSManaged public var bills: NSSet?
     @NSManaged public var people: NSSet?
-
+    @NSManaged public var transactions: NSSet?
+    
 }
+
+
+
 
 // MARK: Generated accessors for bills
 extension Trip {
@@ -41,6 +46,24 @@ extension Trip {
     @NSManaged public func removeFromBills(_ values: NSSet)
 
 }
+
+// MARK: Generated accessors for transactions
+extension Trip {
+
+    @objc(addTransactionsObject:)
+    @NSManaged public func addToTransactions(_ value: Transaction)
+
+    @objc(removeTransactionsObject:)
+    @NSManaged public func removeFromTransactions(_ value: Transaction)
+
+    @objc(addTransactions:)
+    @NSManaged public func addToTransactions(_ values: NSSet)
+
+    @objc(removeTransactions:)
+    @NSManaged public func removeFromTransactions(_ values: NSSet)
+
+}
+
 
 // MARK: Generated accessors for people
 extension Trip {

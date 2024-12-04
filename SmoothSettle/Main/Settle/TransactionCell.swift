@@ -103,7 +103,7 @@ class TransactionCell: UITableViewCell {
     }
     
     // Method to configure the cell and apply rounded corners
-    func configure(toName: String, amount: Double, isFirst: Bool, isLast: Bool, showSymbol: Bool, isSelected: Bool) {
+    func configure(toName: String, amount: Double, isFirst: Bool, isLast: Bool, showSymbol: Bool, isSettled: Bool) {
         toNameLabel.text = toName
         amountLabel.text = String(format: "$%.2f", amount)
 
@@ -134,7 +134,7 @@ class TransactionCell: UITableViewCell {
             toNameWithoutSymbolConstraint.isActive = false
             toNameWithSymbolConstraint.isActive = true
             // Set the symbol based on selection state
-            symbolImageView.image = isSelected ? UIImage(systemName: "circle.fill") : UIImage(systemName: "circle")
+            symbolImageView.image = isSettled ? UIImage(systemName: "checkmark.circle.fill") : UIImage(systemName: "circle")
         } else {
             symbolImageView.isHidden = true
             symbolWidthConstraint.isActive = false
@@ -142,7 +142,7 @@ class TransactionCell: UITableViewCell {
             toNameWithSymbolConstraint.isActive = false
             toNameWithoutSymbolConstraint.isActive = true
         }
-        
+
         // Update layout
         setNeedsUpdateConstraints()
     }

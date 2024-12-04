@@ -10,9 +10,10 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
     
     // Data structure to hold the grouped transactions
     struct Section {
-        let fromId: UUID    // Using UUID instead of fromName
-        var transactions: [(toId: UUID, amount: Double)]  // Using UUID for toName
+        let fromPerson: Person
+        let transactions: [Transaction]
     }
+
     
     // Array to store grouped and sorted transactions
     var sections: [Section] = []
@@ -23,7 +24,7 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
     var currentTrip: UUID? {
         didSet {
             // Uncomment when you want to trigger the load
-            // loadTransactions()
+            loadTransactions()
         }
     }
     
@@ -42,6 +43,7 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
     // Initializer
     init() {
         super.init(frame: .zero, style: .plain)
+        // selected indexPaths based on whether transaction is settled
         setupTableView()
     }
     
@@ -59,36 +61,78 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
         self.backgroundColor = .clear
     }
     
-    // Load transactions from the repository, passing the loaded sections via the completion handler
-    func loadTransactions(completion: @escaping ([Section]) -> Void) {
-        guard let tripId = currentTrip, let repository = tripRepository else { return }
+    func calculateTotalAmountsPerPerson() -> [ChartData] {
+        var chartData: [ChartData] = []
+        
+        for section in sections {
+            let fromPerson = section.fromPerson
+            let totalAmount = section.transactions.reduce(0.0) { $0 + $1.amount }
+            let personName = fromPerson.name ?? "Unnamed"
+            
+            let data = ChartData(name: personName, owes: totalAmount)
+            chartData.append(data)
+        }
+        
+        return chartData
+    }
+    
+    // Load transactions from the repository and organize into sections
+    func loadTransactions() {
+        guard let tripId = currentTrip, let repository = tripRepository else {
+            print("Current trip ID or repository not set.")
+            return
+        }
 
-        // Get the simplified transactions based on UUIDs
-        let transactions = repository.simplifyTransactions(for: tripId)
-
+        // Fetch transactions from Core Data
+        let transactions = repository.fetchAllTransactions(for: tripId)
+        
         // Fetch people involved in the trip for easy mapping of UUID to name
         let people = repository.fetchPeople(for: tripId)
         let uuidToName = Dictionary(uniqueKeysWithValues: people.map { ($0.id, $0.name ?? "Unknown") })
 
-        // Group transactions by the payer's UUID (fromId)
-        let groupedTransactions = Dictionary(grouping: transactions, by: { $0.fromId })
+        // Group transactions by the payer's (fromPerson) UUID
+        let groupedTransactions = Dictionary(grouping: transactions, by: { $0.fromPerson })
         
-        // Create sections from the grouped transactions using UUIDs
-        self.sections = groupedTransactions.map { (fromId, transactions) in
-            // Map the transactions for each section using UUIDs
-            let sortedTransactions = transactions.map { transaction -> (toId: UUID, amount: Double) in
-                return (toId: transaction.toId, amount: transaction.amount)
-            }.sorted { uuidToName[$0.toId] ?? "Unknown" < uuidToName[$1.toId] ?? "Unknown" }
+        // Create sections from the grouped transactions
+        self.sections = groupedTransactions.map { (fromPerson, transactions) in
+            // Sort transactions by toPerson's name
+            let sortedTransactions = transactions.sorted {
+                ($0.toPerson.name ?? "Unknown") < ($1.toPerson.name ?? "Unknown")
+            }
             
-            // Return a section object containing the payer's UUID and their transactions
-            return Section(fromId: fromId, transactions: sortedTransactions)
+            return Section(fromPerson: fromPerson, transactions: sortedTransactions)
+        }.sorted {
+            ($0.fromPerson.name ?? "Unknown") < ($1.fromPerson.name ?? "Unknown")
         }
-
-        // Call the completion handler to pass the loaded transactions (sections with UUIDs)
-        completion(self.sections)
-
+        
+        // Clear previous selection
+        selectedIndexPaths.removeAll()
+        
+        // Determine which transactions are settled and prepare selectedIndexPaths
+        for (sectionIndex, section) in sections.enumerated() {
+            for (rowIndex, transaction) in section.transactions.enumerated() {
+                if transaction.settled {
+                    let indexPath = IndexPath(row: rowIndex, section: sectionIndex)
+                    selectedIndexPaths.insert(indexPath)
+                }
+            }
+        }
+        
         // Reload the table view to display the new transactions
         self.reloadData()
+        print("Loaded \(sections.count) sections with \(transactions.count) transactions for tripId: \(tripId)")
+        
+        // Select the rows that are already settled
+        for indexPath in selectedIndexPaths {
+            self.selectRow(at: indexPath, animated: false, scrollPosition: .none)
+        }
+        
+        // Check if all transactions are settled
+        if transactions.allSatisfy({ $0.settled }) {
+            // All transactions are settled, mark the trip as settled
+            repository.markTripAsSettled(tripId: tripId)
+            print("All transactions settled. Trip \(tripId) marked as settled.")
+        }
     }
     
     // Override intrinsicContentSize to dynamically calculate the height
@@ -115,15 +159,15 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
         let transaction = sections[indexPath.section].transactions[indexPath.row]
 
         // Fetch the toName using the UUID
-        let toPerson = tripRepository?.fetchPerson(by: transaction.toId)
+        let toPerson = tripRepository?.fetchPerson(by: transaction.toPerson.id)
         let toName = toPerson?.name ?? "Unknown"
 
         // Determine if the cell is first or last in the section
         let isFirst = indexPath.row == 0
         let isLast = indexPath.row == sections[indexPath.section].transactions.count - 1
 
-        // Determine if the cell is selected
-        let isSelected = selectedIndexPaths.contains(indexPath)
+        // Determine if the cell is selected based on whether transaction is settled.
+        let isSettled = selectedIndexPaths.contains(indexPath)
         
         // Configure the cell with rounded corners where necessary and symbol visibility
         cell.configure(
@@ -132,8 +176,10 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
             isFirst: isFirst,
             isLast: isLast,
             showSymbol: isSelectable,
-            isSelected: isSelected
+            isSettled: isSettled
         )
+        //set cell's selected background is clear
+        cell.selectedBackgroundView?.isHidden = true
         
         return cell
     }
@@ -142,24 +188,23 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView = UIView()
         headerView.backgroundColor = .clear
-        
-        // Fetch the fromName using the UUID
-        let fromPerson = tripRepository?.fetchPerson(by: sections[section].fromId)
-        let fromName = fromPerson?.name ?? "Unknown"
-        
+
+        let fromPerson = sections[section].fromPerson
+        let fromName = fromPerson.name ?? "Unknown"
+
         let label = UILabel()
         label.text = "\(fromName) owes"
         label.font = UIFont.boldSystemFont(ofSize: 16)
         label.textColor = .darkGray
         label.translatesAutoresizingMaskIntoConstraints = false
-        
+
         headerView.addSubview(label)
-        
+
         NSLayoutConstraint.activate([
             label.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16),
             label.centerYAnchor.constraint(equalTo: headerView.centerYAnchor)
         ])
-        
+
         return headerView
     }
     
@@ -171,27 +216,77 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
         return 32
     }
     
-    // Handle cell selection to toggle the symbol
+    // Handle cell selection to toggle the symbol and mark transaction as settled
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard isSelectable else { return }
+        guard isSelectable, let repository = tripRepository, let tripId = currentTrip else {
+            print("Selection not allowed or repository/tripId not set.")
+            return
+        }
+
+        let transaction = sections[indexPath.section].transactions[indexPath.row]
         
-        if selectedIndexPaths.contains(indexPath) {
-            selectedIndexPaths.remove(indexPath)
-        } else {
+        // Toggle the settled status
+        transaction.settled.toggle()
+        repository.saveContext()
+        print("Transaction \(transaction.id) settled status is now \(transaction.settled)")
+        
+        if transaction.settled {
             selectedIndexPaths.insert(indexPath)
+        } else {
+            selectedIndexPaths.remove(indexPath)
         }
         
         // Reload the specific row to update the symbol
         tableView.reloadRows(at: [indexPath], with: .automatic)
+        
+        // Check if all transactions are settled
+        let allSettled = sections.allSatisfy { section in
+            section.transactions.allSatisfy { $0.settled }
+        }
+        
+        if allSettled {
+            // All transactions are settled, mark the trip as settled
+            repository.markTripAsSettled(tripId: tripId)
+            print("All transactions settled. Trip \(tripId) marked as settled.")
+        } else {
+            repository.markTripAsNotSettled(tripId: tripId)
+        }
     }
     
     // Optionally handle deselection if multiple selection is allowed
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        guard isSelectable else { return }
+        guard isSelectable, let repository = tripRepository, let tripId = currentTrip else {
+            print("Deselection not allowed or repository/tripId not set.")
+            return
+        }
         
-        if selectedIndexPaths.contains(indexPath) {
+        let transaction = sections[indexPath.section].transactions[indexPath.row]
+        
+        // Toggle the settled status
+        transaction.settled.toggle()
+        repository.saveContext()
+        print("Transaction \(transaction.id) settled status is now \(transaction.settled)")
+        
+        if transaction.settled {
+            selectedIndexPaths.insert(indexPath)
+        } else {
             selectedIndexPaths.remove(indexPath)
-            tableView.reloadRows(at: [indexPath], with: .automatic)
+        }
+        
+        // Reload the specific row to update the symbol
+        tableView.reloadRows(at: [indexPath], with: .automatic)
+        
+        // Check if all transactions are settled
+        let allSettled = sections.allSatisfy { section in
+            section.transactions.allSatisfy { $0.settled }
+        }
+        
+        if allSettled {
+            // All transactions are settled, mark the trip as settled
+            repository.markTripAsSettled(tripId: tripId)
+            print("All transactions settled. Trip \(tripId) marked as settled.")
+        } else {
+            repository.markTripAsNotSettled(tripId: tripId)
         }
     }
 }
