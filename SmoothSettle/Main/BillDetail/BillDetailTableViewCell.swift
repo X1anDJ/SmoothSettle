@@ -89,20 +89,14 @@ class BillDetailTableViewCell: UITableViewCell {
     func configure(with person: Person, amount: Double, isPayer: Bool) {
         nameLabel.text = person.name
         
-        // Format amount as currency
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        if let formattedAmount = formatter.string(from: NSNumber(value: amount)) {
-            amountLabel.text = formattedAmount
-        } else {
-            amountLabel.text = "$0.00"
-        }
+        // Set amount label with "$" and the amount formatted to two decimal places
+        amountLabel.text = String(format: "$%.2f", amount)
         
         // Set circle properties based on whether the person is the payer or an involver
         if isPayer {
-            circleView.backgroundColor = Colors.accentOrange
-        } else {
             circleView.backgroundColor = Colors.primaryMedium
+        } else {
+            circleView.backgroundColor = Colors.accentYellow
         }
         
         // Set the circle label to the initials of the person
@@ -112,6 +106,7 @@ class BillDetailTableViewCell: UITableViewCell {
             circleLabel.text = "?"
         }
     }
+
     
     // Helper method to get initials from a name
     private func getInitials(from name: String) -> String {

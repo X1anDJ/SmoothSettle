@@ -15,30 +15,27 @@ enum Theme: Int {
     }
     
     var mainTitleColor: UIColor {
-        switch self {
-        case .Light:
-            return AppPalette.black
-        case .Dark:
-            return AppPalette.white
-        }
+        return Colors.primaryDark
     }
     
     var mainSubTitleColor: UIColor {
-        switch self {
-        case .Light:
-            return AppPalette.grey
-        case .Dark:
-            return AppPalette.grey
-        }
+//        switch self {
+//        case .Light:
+//            return AppPalette.grey
+//        case .Dark:
+//            return AppPalette.grey
+//        }
+        return Colors.primaryDark
     }
     
     var barBackgroundColor: UIColor {
-        switch self {
-        case .Light:
-            return AppPalette.grey
-        case .Dark:
-            return AppPalette.grey
-        }
+//        switch self {
+//        case .Light:
+//            return AppPalette.grey
+//        case .Dark:
+//            return AppPalette.grey
+//        }
+        return Colors.background1
     }
     
     var buttonColor: UIColor {
@@ -51,12 +48,13 @@ enum Theme: Int {
     }
     
     var buttonTitleColor: UIColor {
-        switch self {
-            case .Light:
-            return AppPalette.white
-        case .Dark:
-            return AppPalette.white
-        }
+//        switch self {
+//            case .Light:
+//            return AppPalette.white
+//        case .Dark:
+//            return AppPalette.white
+//        }
+        return Colors.primaryMedium
     }
     
     var keyboardAppearance: UIKeyboardAppearance {
@@ -96,12 +94,13 @@ enum Theme: Int {
     }
     
     var backgroundColor: UIColor {
-        switch self {
-        case .Light:
-            return UIColor.white
-        case .Dark:
-            return UIColor.black
-        }
+//        switch self {
+//        case .Light:
+//            return UIColor.white
+//        case .Dark:
+//            return UIColor.black
+//        }
+        return Colors.background0
     }
     
     var secondaryColor: UIColor {

@@ -7,7 +7,7 @@ class PhoneNumberViewContainer: UIView {
         title.translatesAutoresizingMaskIntoConstraints = false
         title.textAlignment = .center
         title.text = "Phone Number"
-        title.textColor = .label
+        title.textColor = Colors.primaryDark
         title.font = UIFont.systemFont(ofSize: 32, weight: .bold)
         title.sizeToFit()
         
@@ -20,7 +20,7 @@ class PhoneNumberViewContainer: UIView {
         instructions.textAlignment = .center
         instructions.text = "Enter your phone number to login"
         instructions.numberOfLines = 2
-        instructions.textColor = .tertiaryLabel
+        instructions.textColor = Colors.primaryMedium
         instructions.font = UIFont.systemFont(ofSize: 18)
         instructions.sizeToFit()
         
@@ -33,7 +33,7 @@ class PhoneNumberViewContainer: UIView {
         terms.textAlignment = .left
         terms.text = "Login with phone number indicates you agree to our Terms of Service and Privacy Policy"
         terms.numberOfLines = 5
-        terms.textColor = .tertiaryLabel
+        terms.textColor = Colors.primaryMedium
         terms.font = UIFont.systemFont(ofSize: 14)
         terms.sizeToFit()
         
@@ -89,7 +89,7 @@ class PhoneNumberViewContainer: UIView {
         phoneContainer.layer.cornerRadius = 25
         phoneContainer.layer.borderWidth = 1
         phoneContainer.layer.borderColor = ThemeManager.currentTheme().borderColor.cgColor
-        
+        phoneContainer.backgroundColor = Colors.background1
         return phoneContainer
     }()
     

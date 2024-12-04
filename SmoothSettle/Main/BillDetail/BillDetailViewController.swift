@@ -81,7 +81,7 @@ class BillDetailViewController: UIViewController, UIImagePickerControllerDelegat
         tableView.backgroundColor = Colors.background1
         tableView.separatorStyle = .singleLine
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        
+        tableView.allowsSelection = false
         // Register custom cell
         tableView.register(BillDetailTableViewCell.self, forCellReuseIdentifier: "BillDetailCell")
         
@@ -299,6 +299,7 @@ extension BillDetailViewController: UITableViewDataSource, UITableViewDelegate {
                 print("Error: Involver index out of range.")
             }
         }
+        // configure the cell to be not tappable
         
         return cell
     }

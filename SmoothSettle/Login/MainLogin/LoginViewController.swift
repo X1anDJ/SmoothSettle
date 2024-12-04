@@ -4,8 +4,6 @@
 //
 //  Created by Dajun Xian on 2024/1/7.
 //
-
-
 import UIKit
 import FirebaseAuth
 import FirebaseCore
@@ -21,6 +19,9 @@ protocol LoginViewControllerDelegate: AnyObject {
 
 class LoginViewController: UIViewController {
 
+    // New UIImageView for the icon
+    let iconImageView = UIImageView()
+    
     let titleLabel = UILabel()
     let subtitleLabel = UILabel()
     let phoneSignButton = UIButton(type: .system)
@@ -28,7 +29,7 @@ class LoginViewController: UIViewController {
     let authButtonsView = AuthenticationButtonsView()
     
     weak var delegate: LoginViewControllerDelegate?
-//    
+//
 //    var emailAddress: String? {
 //        return loginView.emailTextField.text
 //    }
@@ -99,7 +100,7 @@ extension LoginViewController : AuthenticationButtonsViewDelegate{
                 }
                 // User is signed in
                 self.delegate?.didLogin()
-                print("Sucessful log-in LoginViewController")
+                print("Successful log-in LoginViewController")
             }
         }
 
@@ -128,18 +129,30 @@ extension LoginViewController : AuthenticationButtonsViewDelegate{
     }
 }
 
-
-
 extension LoginViewController {
     
     private func style() {
         view.backgroundColor = Colors.background0
         
+        // Style for iconImageView
+        iconImageView.translatesAutoresizingMaskIntoConstraints = false
+        iconImageView.image = UIImage(named: "icon") // Ensure "icon" exists in your assets
+        iconImageView.contentMode = .scaleAspectFit
+        iconImageView.tintColor = UIColor { (traitCollection: UITraitCollection) -> UIColor in
+            switch traitCollection.userInterfaceStyle {
+                case .dark:
+                    return .white  // Adjust if your icon uses template rendering
+                default:
+                    return .black
+            }
+        }
+
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.textAlignment = .center
-        titleLabel.font = UIFont.preferredFont(forTextStyle: .largeTitle)
+        titleLabel.font = UIFont.preferredFont(forTextStyle: .extraLargeTitle)
         titleLabel.adjustsFontForContentSizeCategory = true
         titleLabel.text = "Smooth Settle"
+        titleLabel.textColor = Colors.primaryDark
 
         subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
         subtitleLabel.textAlignment = .center
@@ -147,6 +160,7 @@ extension LoginViewController {
         subtitleLabel.adjustsFontForContentSizeCategory = true
         subtitleLabel.numberOfLines = 0
         subtitleLabel.text = "Simplify your transactions, smoothly"
+        subtitleLabel.textColor = Colors.primaryDark
 
         phoneSignButton.translatesAutoresizingMaskIntoConstraints = false
         phoneSignButton.configuration = .filled()
@@ -155,14 +169,8 @@ extension LoginViewController {
         phoneSignButton.heightAnchor.constraint(equalToConstant: phoneSignButton.frame.height + 50).isActive = true
         phoneSignButton.layer.cornerRadius = 25
         phoneSignButton.clipsToBounds = true
-        phoneSignButton.tintColor = UIColor { (traitCollection: UITraitCollection) -> UIColor in
-            switch traitCollection.userInterfaceStyle {
-                case .dark:
-                    return .white  // White color in dark mode
-                default:
-                    return .black  // Black color in light mode
-            }
-        }
+        phoneSignButton.tintColor = Colors.primaryDark
+        
         phoneSignButton.addTarget(self, action: #selector(phoneButtonTapped), for: .primaryActionTriggered)
         
         divider.translatesAutoresizingMaskIntoConstraints = false
@@ -172,6 +180,7 @@ extension LoginViewController {
     }
     
     private func layout() {
+        view.addSubview(iconImageView) // Add iconImageView to the view
         view.addSubview(titleLabel)
         view.addSubview(subtitleLabel)
         view.addSubview(phoneSignButton)
@@ -179,18 +188,26 @@ extension LoginViewController {
         view.addSubview(authButtonsView)
         // view.addSubview(errorMessageLabel)
 
+        // Icon ImageView
+        NSLayoutConstraint.activate([
+            iconImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40),
+            iconImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            iconImageView.widthAnchor.constraint(equalToConstant: 250),  // Adjust width as needed
+            iconImageView.heightAnchor.constraint(equalToConstant: 250)  // Adjust height as needed
+        ])
+        
         // Title
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalToSystemSpacingBelow: view.safeAreaLayoutGuide.topAnchor, multiplier: 20),
+            titleLabel.topAnchor.constraint(equalToSystemSpacingBelow: iconImageView.bottomAnchor, multiplier: 2),
             titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
         
         // Subtitle
         NSLayoutConstraint.activate([
             subtitleLabel.topAnchor.constraint(equalToSystemSpacingBelow: titleLabel.bottomAnchor, multiplier: 3),
-            subtitleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            subtitleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            subtitleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            subtitleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            subtitleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            // Removed centerX constraint to avoid conflicts
         ])
         
         // AuthButtonsView - Anchored to the bottom
@@ -209,7 +226,7 @@ extension LoginViewController {
             divider.heightAnchor.constraint(equalToConstant: 20)
         ])
 
-        // Continue Button - Above Divider
+        // Phone Sign-In Button - Above Divider
         NSLayoutConstraint.activate([
             phoneSignButton.bottomAnchor.constraint(equalTo: divider.topAnchor, constant: -20),
             phoneSignButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
@@ -219,4 +236,3 @@ extension LoginViewController {
     }
 
 }
-
