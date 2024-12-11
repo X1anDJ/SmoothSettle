@@ -74,31 +74,31 @@ class BillDetailViewModel {
     }
     
 //    func printBillDetails() {
-//        print("----- Bill Details -----")
-//        print("ID: \(bill.id)")
-//        print("Title: \(titleText)")
-//        print("Date: \(dateText)")
-//        print(String(format: "Amount: $%.2f", getAmount()))
+//        // print("----- Bill Details -----")
+//        // print("ID: \(bill.id)")
+//        // print("Title: \(titleText)")
+//        // print("Date: \(dateText)")
+//        // print(String(format: "Amount: $%.2f", getAmount()))
 //        
 //        if let payer = getPayer(), let payerName = payer.name {
-//            print("Payer: \(payerName)")
+//            // print("Payer: \(payerName)")
 //        } else {
-//            print("Payer: None")
+//            // print("Payer: None")
 //        }
 //        
 //        let involvers = getInvolvers()
 //        if involvers.isEmpty {
-//            print("Involvers: None")
+//            // print("Involvers: None")
 //        } else {
-//            print("Involvers:")
+//            // print("Involvers:")
 //            for (index, person) in involvers.enumerated() {
 //                if let name = person.name {
-//                    print("  \(index + 1). \(name)")
+//                    // print("  \(index + 1). \(name)")
 //                } else {
-//                    print("  \(index + 1). Unknown Name")
+//                    // print("  \(index + 1). Unknown Name")
 //                }
 //            }
 //        }
-//        print("------------------------")
+//        // print("------------------------")
 //    }
 }

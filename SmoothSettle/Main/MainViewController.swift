@@ -40,7 +40,7 @@ class MainViewController: UIViewController, TripPopoverDelegate, UIPopoverPresen
         mainView.customTableView.dataSource = self
         
         // Set up target-actions for buttons
-        mainView.userButton.addTarget(self, action: #selector(didTapUserButton), for: .touchUpInside)
+     //   mainView.userButton.addTarget(self, action: #selector(didTapUserButton), for: .touchUpInside)
         mainView.computeButton.addTarget(self, action: #selector(didTapCompute), for: .touchUpInside)
         mainView.addBillButton.addTarget(self, action: #selector(didTapAddBill), for: .touchUpInside)
         
@@ -125,7 +125,7 @@ class MainViewController: UIViewController, TripPopoverDelegate, UIPopoverPresen
 
     func updateCurrentTripUI(with trip: Trip?) {
         
-        let currentTripText = NSMutableAttributedString(string: trip?.title ?? "Add a Trip")
+        let currentTripText = NSMutableAttributedString(string: trip?.title ?? String(localized: "add_a_trip"))
         let arrowIconAttachment = NSTextAttachment()
         arrowIconAttachment.image = UIImage(systemName: "chevron.down")
         currentTripText.append(NSAttributedString(string: " "))
@@ -169,15 +169,15 @@ class MainViewController: UIViewController, TripPopoverDelegate, UIPopoverPresen
     }
 
     
-    @objc func didTapUserButton() {
-        let userVC = UserViewController()
-        if let delegate = UIApplication.shared.delegate as? AppDelegate {
-            userVC.logoutDelegate = delegate
-        }
-        let navigationController = UINavigationController(rootViewController: userVC)
-        navigationController.modalPresentationStyle = .fullScreen
-        present(navigationController, animated: true, completion: nil)
-    }
+//    @objc func didTapUserButton() {
+//        let userVC = UserViewController()
+//        if let delegate = UIApplication.shared.delegate as? AppDelegate {
+//            userVC.logoutDelegate = delegate
+//        }
+//        let navigationController = UINavigationController(rootViewController: userVC)
+//        navigationController.modalPresentationStyle = .fullScreen
+//        present(navigationController, animated: true, completion: nil)
+//    }
 
     @objc func didTapAddTrip() {
         let addTripVC = AddTripViewController()
@@ -277,17 +277,17 @@ extension MainViewController: PeopleSliderViewDelegate, PeopleCellDelegate {
     func didRequestRemovePerson(_ personId: UUID?) {
         // Check if personId is valid, do nothing if it's nil
         guard let personId = personId else {
-            print("Person ID is nil, no action taken.")
+            // print("Person ID is nil, no action taken.")
             return
         }
         
         // Use UUID to remove the person
         if !viewModel.requestToRemovePerson(by: personId) {
-            print(" involved in bills")
-            showAlert(title:"Can't remove", message: "Involved in some bills")
+            // print(" involved in bills")
+            showAlert(title: String(localized: "cant_remove_title"), message: String(localized: "cant_remove_message"))
         } else {
-            print("Person removed successfully")
-            showAlert(title: "Person removed", message: nil)
+            // print("Person removed successfully")
+            showAlert(title: String(localized: "person_removed"), message: nil)
         }
         mainView.peopleSliderView.hideAllRemoveButtons()
     }
@@ -295,25 +295,25 @@ extension MainViewController: PeopleSliderViewDelegate, PeopleCellDelegate {
     func showAlert(title: String, message: String?) {
         
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        alert.addAction(UIAlertAction(title: String(localized: "OK"), style: .default))
         present(alert, animated: true)
     }
     
     func showSuccessAlert(title: String) {
         let alert = UIAlertController(title: title, message: nil, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        alert.addAction(UIAlertAction(title: String(localized: "OK"), style: .default))
         present(alert, animated: true)
     }
     
     func didSelectPerson(_ personId: UUID?, for tripId: UUID?, context: SliderContext) {
         // Check if personId exists, do nothing if it's nil
         guard let personId = personId else {
-            print("Person ID is nil, no action taken.")
+            // print("Person ID is nil, no action taken.")
             return
         }
         
         // Add logic to handle person selection using personId
-        print("Person selected with ID: \(personId) in trip \(tripId?.uuidString ?? "Unknown") with context: \(context)")
+        // print("Person selected with ID: \(personId) in trip \(tripId?.uuidString ?? "Unknown") with context: \(context)")
     }
 
     
@@ -322,22 +322,22 @@ extension MainViewController: PeopleSliderViewDelegate, PeopleCellDelegate {
         
         // Show alert to add a person
         DispatchQueue.main.async {
-            let alert = UIAlertController(title: "Add Person", message: "Enter the name of the person", preferredStyle: .alert)
+            let alert = UIAlertController(title: String(localized: "add_person_alert_title"), message: String(localized: "add_person_alert_message"), preferredStyle: .alert)
             alert.addTextField { textField in
-                textField.placeholder = "Person Name"
+                textField.placeholder = String(localized: "person_name_place_holder")
             }
-            alert.addAction(UIAlertAction(title: "Add", style: .default, handler: { [weak self] _ in
+            alert.addAction(UIAlertAction(title: String(localized: "add_button"), style: .default, handler: { [weak self] _ in
                 if let name = alert.textFields?.first?.text, name.isEmpty {
                     // Show another alert if the name is empty
-                    let errorAlert = UIAlertController(title: "Invalid Input", message: "The name cannot be empty.", preferredStyle: .alert)
-                    errorAlert.addAction(UIAlertAction(title: "OK", style: .default))
+                    let errorAlert = UIAlertController(title: String(localized: "add_person_alert_title"), message:  String(localized: "add_person_alert_message"), preferredStyle: .alert)
+                    errorAlert.addAction(UIAlertAction(title: String(localized: "OK"), style: .default))
                     self?.present(errorAlert, animated: true)
                 } else if let name = alert.textFields?.first?.text {
                     // Add person to the current trip using tripId
                     self?.viewModel.addPersonToCurrentTrip(name: name)
                 }
             }))
-            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+            alert.addAction(UIAlertAction(title: String(localized: "close_button"), style: .cancel))
             self.present(alert, animated: true)
         }
     }

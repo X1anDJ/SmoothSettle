@@ -51,7 +51,7 @@ class SimplifyDebts {
         let personCount = totalPeopleCount
         let solver = Dinics(n: personCount)
         
-//        print("Person count: \(personCount)")
+//        // print("Person count: \(personCount)")
         // Simplify the transactions
         simplifyTransactions(solver: solver)
         
@@ -63,8 +63,8 @@ class SimplifyDebts {
     private func simplifyTransactions(solver: Dinics) {
         // Calculate net balance for each person
         var netAmount = Array(repeating: Int64(0), count: totalPeopleCount)
-//        print("Net amount: \(netAmount)")
-//        print("Transactions: \(transactions)")
+//        // print("Net amount: \(netAmount)")
+//        // print("Transactions: \(transactions)")
         for (key, amount) in transactions {
             netAmount[key.from] -= amount
             netAmount[key.to] += amount //Thread 1: Fatal error: Index out of range
@@ -85,7 +85,7 @@ class SimplifyDebts {
             }
         }
 //        
-//        print("\nSimplified transactions:")
+//        // print("\nSimplified transactions:")
         var i = 0, j = 0
         while i < creditors.count && j < debtors.count {
             let creditor = creditors[i]
@@ -93,7 +93,7 @@ class SimplifyDebts {
             
             let amount = min(creditor.1, debtor.1)
             
-//            print("\(solver.person[debtor.0]) pays \(amount) to \(solver.person[creditor.0])")
+//            // print("\(solver.person[debtor.0]) pays \(amount) to \(solver.person[creditor.0])")
             
             // Add only the simplified transactions
             addTransaction(from: debtor.0, to: creditor.0, amount: amount)
@@ -155,7 +155,7 @@ class Dinics {
     init(n: Int) {
         self.personCount = n
         self.person = Array(repeating: "Person", count: n)  // Just placeholders, should be filled with actual names
-//        print("Person count: \(personCount)")
+//        // print("Person count: \(personCount)")
     }
     
     // Placeholder functions for Dinics algorithm

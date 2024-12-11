@@ -40,7 +40,7 @@ class TripRepository {
         do {
             return try context.fetch(fetchRequest)
         } catch {
-//            print("Failed to fetch trips: \(error)")
+//            // print("Failed to fetch trips: \(error)")
             return []
         }
     }
@@ -57,7 +57,7 @@ class TripRepository {
             unarchivedTripsSubject.send(trips) // Publish changes
             return trips
         } catch {
-            print("Failed to fetch unarchived trips: \(error)")
+            // print("Failed to fetch unarchived trips: \(error)")
             return []
         }
     }
@@ -79,7 +79,7 @@ class TripRepository {
             archivedTripsSubject.send(trips)  // Publish changes
             return trips
         } catch {
-            print("Failed to fetch archived trips: \(error)")
+            // print("Failed to fetch archived trips: \(error)")
             return []
         }
     }
@@ -100,7 +100,7 @@ class TripRepository {
         do {
             return try context.fetch(fetchRequest).first
         } catch {
-//            print("Failed to fetch trip by id: \(error)")
+//            // print("Failed to fetch trip by id: \(error)")
             return nil
         }
     }
@@ -127,20 +127,20 @@ class TripRepository {
 //            context.delete(trip)
 //            saveContext()
 //        } else {
-////            print("Trip with id \(id) not found")
+////            // print("Trip with id \(id) not found")
 //        }
 //    }
     
     // Unarchive a trip (move it back to current trips)
     func unarchiveTrip(by tripId: UUID) {
         guard let trip = fetchTrip(by: tripId) else {
-            print("Trip not found for tripId: \(tripId)")
+       //     // print("Trip not found for tripId: \(tripId)")
             return
         }
         
         // Check if trip is already unarchived
         if !trip.archived {
-            print("Trip with tripId: \(tripId) is already unarchived.")
+   //         // print("Trip with tripId: \(tripId) is already unarchived.")
             return
         }
         
@@ -159,14 +159,14 @@ class TripRepository {
         // Save the context to persist changes
         do {
             try context.save()
-            print("Trip unarchived successfully for tripId: \(tripId)")
+       //     // print("Trip unarchived successfully for tripId: \(tripId)")
             
             // Update the unarchived trips publisher
             fetchUnarchivedTrips()
             // Update the archived trips publisher as well
             fetchArchivedTrips()
         } catch {
-            print("Failed to unarchive Trip with tripId: \(tripId): \(error)")
+          //  // print("Failed to unarchive Trip with tripId: \(tripId): \(error)")
         }
     }
     
@@ -195,7 +195,7 @@ class TripRepository {
             fetchArchivedTrips()
             fetchUnarchivedTrips()
         } else {
-            print("Trip with id \(id) not found")
+  //          // print("Trip with id \(id) not found")
         }
     }
 
@@ -206,7 +206,7 @@ class TripRepository {
         do {
             try context.save()
         } catch {
-//            print("Failed to save context: \(error)")
+//            // print("Failed to save context: \(error)")
         }
     }
     
@@ -227,7 +227,7 @@ class TripRepository {
         do {
             return try context.fetch(fetchRequest)
         } catch {
-            print("Failed to fetch bills for tripId \(tripId): \(error)")
+    //        // print("Failed to fetch bills for tripId \(tripId): \(error)")
             return []
         }
     }
@@ -245,7 +245,7 @@ extension TripRepository {
         do {
             return try context.fetch(fetchRequest).first
         } catch {
-//            print("Failed to fetch person by id: \(error)")
+//            // print("Failed to fetch person by id: \(error)")
             return nil
         }
     }
@@ -253,7 +253,7 @@ extension TripRepository {
     // Add a person to a trip
     func addPerson(to tripId: UUID, name: String, balance: Double = 0.0) -> Person? {
         guard let trip = fetchTrip(by: tripId) else {
-//            print("Trip not found")
+//            // print("Trip not found")
             return nil
         }
         
@@ -270,11 +270,11 @@ extension TripRepository {
     func removePerson(by personId: UUID, from tripId: UUID) -> Bool {
         guard let trip = fetchTrip(by: tripId),
               let person = fetchPerson(by: personId) else {
-//            print("Trip or Person not found")
+//            // print("Trip or Person not found")
             return false
         }
 
-        print("Removing person \(person.name ?? "Unnamed") from trip \(trip.title ?? "Unnamed")")
+   //     // print("Removing person \(person.name ?? "Unnamed") from trip \(trip.title ?? "Unnamed")")
         
         // Check if the person is involved in any bill
         for bill in trip.billsArray {
@@ -294,7 +294,7 @@ extension TripRepository {
     // Update a person by UUID
     func updatePerson(by id: UUID, name: String, balance: Double) {
         guard let person = fetchPerson(by: id) else {
-//            print("Person not found")
+//            // print("Person not found")
             return
         }
         person.name = name
@@ -310,7 +310,7 @@ extension TripRepository {
     // Update a bill's image by UUID
     func changeBillImage(billId: UUID, image: UIImage?) {
         guard let bill = fetchBill(by: billId) else {
-//            print("Bill not found")
+//            // print("Bill not found")
             return
         }
         
@@ -331,7 +331,7 @@ extension TripRepository {
         do {
             return try context.fetch(fetchRequest).first
         } catch {
-//            print("Failed to fetch bill by id: \(error)")
+//            // print("Failed to fetch bill by id: \(error)")
             return nil
         }
     }
@@ -341,7 +341,7 @@ extension TripRepository {
         guard let trip = fetchTrip(by: tripId),
               let payer = fetchPerson(by: payerId),
               !involversIds.isEmpty else {
-//            print("Trip or Payer not found, or no involvers specified")
+//            // print("Trip or Payer not found, or no involvers specified")
             return nil
         }
 
@@ -370,7 +370,7 @@ extension TripRepository {
     func removeBill(by billId: UUID, from tripId: UUID) {
         guard let trip = fetchTrip(by: tripId),
               let bill = fetchBill(by: billId) else {
-//            print("Trip or Bill not found")
+//            // print("Trip or Bill not found")
             return
         }
 
@@ -383,7 +383,7 @@ extension TripRepository {
     func updateBill(by billId: UUID, title: String, amount: Double, date: Date, payerId: UUID, involversIds: [UUID], image: UIImage?) {
         guard let bill = fetchBill(by: billId),
               let payer = fetchPerson(by: payerId) else {
-//            print("Bill or Payer not found")
+//            // print("Bill or Payer not found")
             return
         }
 
@@ -443,17 +443,17 @@ extension TripRepository {
     
     // Simplify Transactions and Create Transaction Entities
     func simplifyTransactions(for tripId: UUID) -> [Transaction] {
-        print("Trip Repo 446")
+  //      // print("Trip Repo 446")
         guard let trip = fetchTrip(by: tripId),
               let peopleSet = trip.people,
               let billsSet = trip.bills else {
-            print("Trip, People, or Bills not found for tripId: \(tripId)")
+  //          // print("Trip, People, or Bills not found for tripId: \(tripId)")
             return []
         }
 
         // Check if transactions already exist to prevent duplicates
         if let existingTransactions = trip.transactions, existingTransactions.count > 0 {
-//            print("Transactions already exist for tripId: \(tripId). Skipping creation.")
+//            // print("Transactions already exist for tripId: \(tripId). Skipping creation.")
 //            return existingTransactions.allObjects as? [Transaction] ?? []
             
             if let transactions = trip.transactions as? Set<Transaction> {
@@ -504,7 +504,7 @@ extension TripRepository {
 
             // Ensure indices are within bounds
             guard fromIndex < people.count, toIndex < people.count else {
-                print("Invalid indices in SimplifyDebts result: fromIndex=\(fromIndex), toIndex=\(toIndex)")
+                // print("Invalid indices in SimplifyDebts result: fromIndex=\(fromIndex), toIndex=\(toIndex)")
                 continue
             }
 
@@ -532,9 +532,9 @@ extension TripRepository {
         // Save the context to persist Transaction entities
         do {
             try context.save()
-            print("Simplified Transactions saved successfully for trip name: \(String(describing: trip.title)),  tripId: \(tripId)")
+            // print("Simplified Transactions saved successfully for trip name: \(String(describing: trip.title)),  tripId: \(tripId)")
         } catch {
-            print("Failed to save Transactions for tripId: \(tripId): \(error)")
+            // print("Failed to save Transactions for tripId: \(tripId): \(error)")
         }
 
         return transactionEntities
@@ -543,13 +543,13 @@ extension TripRepository {
     // Archived a trip and mark it as archived
     func archiveTrip(by tripId: UUID) {
         guard let trip = fetchTrip(by: tripId) else {
-            print("Trip not found for tripId: \(tripId)")
+            // print("Trip not found for tripId: \(tripId)")
             return
         }
         
         // Check if trip is already archived
         if trip.archived {
-            print("Trip with tripId: \(tripId) is already archived.")
+            // print("Trip with tripId: \(tripId) is already archived.")
             return
         }
 
@@ -562,9 +562,9 @@ extension TripRepository {
         // Save the context to persist changes
         do {
             try context.save()
-            print("Trip archived successfully for tripId: \(tripId)")
+            // print("Trip archived successfully for tripId: \(tripId)")
         } catch {
-            print("Failed to archive Trip with tripId: \(tripId): \(error)")
+            // print("Failed to archive Trip with tripId: \(tripId): \(error)")
         }
 
         // Update the archived trips publisher
@@ -579,10 +579,10 @@ extension TripRepository {
         
         do {
             let transactions = try context.fetch(fetchRequest)
-            print("Fetched \(transactions.count) transactions for tripId: \(tripId)")
+            // print("Fetched \(transactions.count) transactions for tripId: \(tripId)")
             return transactions
         } catch {
-            print("Failed to fetch all transactions for tripId: \(tripId): \(error)")
+            // print("Failed to fetch all transactions for tripId: \(tripId): \(error)")
             return []
         }
     }
@@ -593,13 +593,13 @@ extension TripRepository {
     /// - Parameter tripId: The UUID of the trip to mark as settled.
     func markTripAsSettled(tripId: UUID) {
         guard let trip = fetchTrip(by: tripId) else {
-            print("Trip not found for tripId: \(tripId)")
+            // print("Trip not found for tripId: \(tripId)")
             return
         }
         
         // Check if trip is already settled
         if trip.settled {
-            print("Trip \(trip.title ?? "Unnamed") is already settled.")
+            // print("Trip \(trip.title ?? "Unnamed") is already settled.")
             return
         }
         
@@ -610,12 +610,12 @@ extension TripRepository {
         if allSettled {
             trip.settled = true
             saveContext()
-            print("Trip \(trip.title ?? "Unnamed") has been marked as settled.")
+            // print("Trip \(trip.title ?? "Unnamed") has been marked as settled.")
             
             // Notify subscribers about the update
             fetchArchivedTrips()
         } else {
-            print("Cannot mark Trip \(trip.title ?? "Unnamed") as settled because not all transactions are settled.")
+            // print("Cannot mark Trip \(trip.title ?? "Unnamed") as settled because not all transactions are settled.")
         }
     }
     
@@ -623,7 +623,7 @@ extension TripRepository {
     /// - Parameter tripId: The UUID of the trip to mark as settled.
     func markTripAsNotSettled(tripId: UUID) {
         guard let trip = fetchTrip(by: tripId) else {
-            print("Trip not found for tripId: \(tripId)")
+            // print("Trip not found for tripId: \(tripId)")
             return
         }
         
@@ -644,7 +644,7 @@ extension TripRepository {
 
         // First, check if mock data already exists to avoid duplicate entries
         if !fetchAllTrips().isEmpty {
-            print("Mock data already exists.")
+            // print("Mock data already exists.")
             return
         }
         
@@ -734,7 +734,7 @@ extension TripRepository {
         // Save the context to store the mock data
         saveContext()
         
-        print("Mock data created with \(fetchAllTrips().count) trips.")
+        // print("Mock data created with \(fetchAllTrips().count) trips.")
     }
 
 }

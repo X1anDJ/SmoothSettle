@@ -150,7 +150,7 @@ class MainViewModel: ObservableObject {
     // Archive the current trip
     func archiveCurrentTrip() {
         guard let currentTripId = currentTripId else {
-            print("No current trip selected.")
+            // print("No current trip selected.")
             return
         }
 

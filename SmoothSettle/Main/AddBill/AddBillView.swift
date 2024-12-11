@@ -17,7 +17,7 @@ class AddBillView: UIView {
     
     // Buttons
     let cameraButton = UIButton()
-    let currencyButton = UIButton()
+//    let currencyButton = UIButton()
     
     // Date Picker
     let datePicker = UIDatePicker()
@@ -48,13 +48,13 @@ class AddBillView: UIView {
         clipsToBounds = true
         
         // Bill Title Section Label
-        billTitleSectionLabel.text = "Bill Title"
+        billTitleSectionLabel.text = String(localized: "bill_title")
         billTitleSectionLabel.font = UIFont.systemFont(ofSize: 14)
         billTitleSectionLabel.textColor = .gray
         billTitleSectionLabel.translatesAutoresizingMaskIntoConstraints = false
         
         // Bill Title TextField
-        billTitleTextField.placeholder = "Enter bill title"
+        billTitleTextField.placeholder = String(localized: "enter_bill_title")
         billTitleTextField.borderStyle = .roundedRect
         billTitleTextField.translatesAutoresizingMaskIntoConstraints = false
         
@@ -75,26 +75,27 @@ class AddBillView: UIView {
         datePicker.translatesAutoresizingMaskIntoConstraints = false
         
         // Amount Section Label
-        amountSectionLabel.text = "Amount"
+        amountSectionLabel.text = String(localized: "Amount")
         amountSectionLabel.font = UIFont.systemFont(ofSize: 14)
         amountSectionLabel.textColor = .gray
         amountSectionLabel.translatesAutoresizingMaskIntoConstraints = false
         
         // Amount TextField
-        amountTextField.placeholder = "Enter amount"
+        amountTextField.placeholder = String(localized: "enter_amount")
         amountTextField.borderStyle = .roundedRect
         amountTextField.keyboardType = .decimalPad
         amountTextField.translatesAutoresizingMaskIntoConstraints = false
         
-        // Currency Button
-        currencyButton.setTitle("USD", for: .normal)
-        currencyButton.setTitleColor(UIColor.systemBlue, for: .normal)
-        currencyButton.translatesAutoresizingMaskIntoConstraints = false
-        currencyButton.layer.cornerRadius = 8
-        currencyButton.backgroundColor = Colors.background0
+//        // Currency Button
+//        currencyButton.setTitle("USD", for: .normal)
+//        currencyButton.setTitleColor(UIColor.systemBlue, for: .normal)
+//        currencyButton.translatesAutoresizingMaskIntoConstraints = false
+//        currencyButton.layer.cornerRadius = 8
+//        currencyButton.backgroundColor = Colors.background0
         
         // Payer Section Label
-        payerSectionLabel.text = "Payer"
+        let payerSectionLabelLocalized = String(localized: "payer")
+        payerSectionLabel.text = payerSectionLabelLocalized
         payerSectionLabel.font = UIFont.systemFont(ofSize: 14)
         payerSectionLabel.textColor = .gray
         payerSectionLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -103,7 +104,8 @@ class AddBillView: UIView {
         payerSliderView.translatesAutoresizingMaskIntoConstraints = false
         
         // Involvers Section Label
-        involversSectionLabel.text = "Involvers"
+        let involversSectionLabelLocalized = String(localized: "participants")
+        involversSectionLabel.text = involversSectionLabelLocalized
         involversSectionLabel.font = UIFont.systemFont(ofSize: 14)
         involversSectionLabel.textColor = .gray
         involversSectionLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -119,7 +121,7 @@ class AddBillView: UIView {
         addSubview(datePicker)
         addSubview(amountSectionLabel)
         addSubview(amountTextField)
-        addSubview(currencyButton)
+//        addSubview(currencyButton)
         addSubview(payerSectionLabel)
         addSubview(payerSliderView)
         addSubview(involversSectionLabel)
@@ -152,16 +154,16 @@ class AddBillView: UIView {
             amountSectionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             amountSectionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             
-            // Currency Button
-            currencyButton.centerYAnchor.constraint(equalTo: amountTextField.centerYAnchor),
-            currencyButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            currencyButton.widthAnchor.constraint(equalToConstant: 60),
-            currencyButton.heightAnchor.constraint(equalToConstant: 44),
+//            // Currency Button
+//            currencyButton.centerYAnchor.constraint(equalTo: amountTextField.centerYAnchor),
+//            currencyButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+//            currencyButton.widthAnchor.constraint(equalToConstant: 60),
+//            currencyButton.heightAnchor.constraint(equalToConstant: 44),
             
             // Amount TextField
             amountTextField.topAnchor.constraint(equalTo: amountSectionLabel.bottomAnchor, constant: 8),
             amountTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            amountTextField.trailingAnchor.constraint(equalTo: currencyButton.leadingAnchor, constant: -8),
+            amountTextField.trailingAnchor.constraint(equalTo: leadingAnchor, constant: -8),
             amountTextField.heightAnchor.constraint(equalToConstant: 44),
             
             // Payer Section

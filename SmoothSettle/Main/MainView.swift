@@ -14,7 +14,7 @@ class MainView: UIView {
     // Main Header
     let mainHeaderStackView = UIStackView()
     let titleLabel = UILabel()
-    let userButton = UIButton(type: .system)
+//    let userButton = UIButton(type: .system)
     let currentTripButton = UIButton(type: .system)
     let peopleSliderView = PeopleSliderView()
     
@@ -79,23 +79,25 @@ class MainView: UIView {
         mainHeaderStackView.spacing = 16
         
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.text = "Current Trip"
+//        titleLabel.text = "Current Trip"
+        titleLabel.text = String(localized: "main_title")
         titleLabel.font = UIFont.systemFont(ofSize: 36, weight: .bold)
         titleLabel.textAlignment = .left
         
-        userButton.translatesAutoresizingMaskIntoConstraints = false
-        userButton.setImage(UIImage(systemName: "person.circle.fill"), for: .normal)
-        userButton.tintColor = Colors.primaryDark
-        userButton.layer.cornerRadius = 20
-        userButton.clipsToBounds = true
-        userButton.imageView?.contentMode = .scaleAspectFill
-        userButton.contentHorizontalAlignment = .fill
-        userButton.contentVerticalAlignment = .fill
+//        userButton.translatesAutoresizingMaskIntoConstraints = false
+//        userButton.setImage(UIImage(systemName: "person.circle.fill"), for: .normal)
+//        userButton.tintColor = Colors.primaryDark
+//        userButton.layer.cornerRadius = 20
+//        userButton.clipsToBounds = true
+//        userButton.imageView?.contentMode = .scaleAspectFill
+//        userButton.contentHorizontalAlignment = .fill
+//        userButton.contentVerticalAlignment = .fill
         
         currentTripButton.translatesAutoresizingMaskIntoConstraints = false
         let arrowIconAttachment = NSTextAttachment()
         arrowIconAttachment.image = UIImage(systemName: "chevron.down")
-        let currentTripText = NSMutableAttributedString(string: "Add a Trip ")
+ //       let currentTripText = NSMutableAttributedString(string: "Add a Trip ")
+        let currentTripText = NSMutableAttributedString(string: String(localized: "add_a_trip"))
         currentTripText.append(NSAttributedString(attachment: arrowIconAttachment))
         currentTripButton.setAttributedTitle(currentTripText, for: .normal)
         currentTripButton.titleLabel?.font = UIFont.systemFont(ofSize: 24, weight: .bold)
@@ -131,8 +133,10 @@ class MainView: UIView {
             trayImageAttachment.image = trayImage.withTintColor(Colors.accentOrange, renderingMode: .alwaysOriginal)
             trayImageAttachment.bounds = CGRect(x: 0, y: -2, width: trayImage.size.width, height: trayImage.size.height)
         }
+        
+        let billsTextLocalized = String(localized: "Bills")
         let trayAttributedString = NSMutableAttributedString(attachment: trayImageAttachment)
-        let billsText = NSAttributedString(string: "  Bills", attributes: [
+        let billsText = NSAttributedString(string: "  \(billsTextLocalized)", attributes: [
             .foregroundColor: Colors.accentOrange,
             .font: UIFont.preferredFont(forTextStyle: .headline)
         ])
@@ -167,7 +171,8 @@ class MainView: UIView {
         // -------------------------------------- Archive and AddBill Buttons --------------------------------------
         // Style the Archive Button
         computeButton.translatesAutoresizingMaskIntoConstraints = false
-        computeButton.setTitle("Compute", for: .normal)
+        let computeLocalized = String(localized: "Compute")
+        computeButton.setTitle(computeLocalized, for: .normal)
         computeButton.setImage(UIImage(systemName: "shuffle"), for: .normal)
         computeButton.layer.cornerRadius = 15
 //        computeButton.layer.borderWidth = 0
@@ -180,7 +185,8 @@ class MainView: UIView {
 
         // Style the Add Bill Button
         addBillButton.translatesAutoresizingMaskIntoConstraints = false
-        addBillButton.setTitle("Bill", for: .normal)
+        let addBillLocalized = String(localized: "bill")
+        addBillButton.setTitle(addBillLocalized, for: .normal)
         addBillButton.setImage(UIImage(systemName: "plus"), for: .normal)
         addBillButton.layer.cornerRadius = 15
         addBillButton.tintColor = Colors.background1
@@ -237,7 +243,7 @@ class MainView: UIView {
 
         // Add main subviews to the main view
         addSubview(mainHeaderStackView)
-        addSubview(userButton)
+//        addSubview(userButton)
         addSubview(peopleSliderView)
         addSubview(shadowContainerView)
         addSubview(archiveButtonShadowContainer)
@@ -248,13 +254,13 @@ class MainView: UIView {
             // Main Header Stack View Constraints
             mainHeaderStackView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 16),
             mainHeaderStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            mainHeaderStackView.trailingAnchor.constraint(lessThanOrEqualTo: userButton.leadingAnchor, constant: -16),
+            mainHeaderStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             
-            // User Button Constraints
-            userButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
-            userButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            userButton.widthAnchor.constraint(equalToConstant: 40),
-            userButton.heightAnchor.constraint(equalToConstant: 40),
+//            // User Button Constraints
+//            userButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
+//            userButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+//            userButton.widthAnchor.constraint(equalToConstant: 40),
+//            userButton.heightAnchor.constraint(equalToConstant: 40),
             
             // People Slider View Constraints
             peopleSliderView.topAnchor.constraint(equalTo: mainHeaderStackView.bottomAnchor, constant: 16),

@@ -81,7 +81,8 @@ class ArchiveActionViewController: UIViewController {
 
         // Settle Button
         archiveButton.translatesAutoresizingMaskIntoConstraints = false
-        archiveButton.setTitle("Archive", for: .normal)
+        let archiveButtonLocalized = String(localized: "archive_button")
+        archiveButton.setTitle(archiveButtonLocalized, for: .normal)
         archiveButton.setTitleColor(.white, for: .normal)
         archiveButton.backgroundColor = Colors.primaryDark
         archiveButton.layer.cornerRadius = 22
@@ -90,7 +91,8 @@ class ArchiveActionViewController: UIViewController {
 
         // Close Button
         closeButton.translatesAutoresizingMaskIntoConstraints = false
-        closeButton.setTitle("Close", for: .normal)
+        let closeButtonLocalized = String(localized: "close_button")
+        closeButton.setTitle(closeButtonLocalized, for: .normal)
         closeButton.setTitleColor(Colors.primaryDark, for: .normal)
         closeButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         closeButton.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
@@ -171,7 +173,7 @@ class ArchiveActionViewController: UIViewController {
     
     // Action to dismiss the view controller
     @objc func closeButtonTapped() {
-//        print("Close button tapped")
+//        // print("Close button tapped")
         dismiss(animated: true, completion: nil)
     }
 
@@ -184,10 +186,10 @@ class ArchiveActionViewController: UIViewController {
     func updateScrollingStatus() {
         let canScroll = scrollView.contentSize.height > scrollView.bounds.height
         if canScroll {
-//            print("Scrolling is possible")
+//            // print("Scrolling is possible")
             // Perform any additional actions, such as showing a scrollbar indicator
         } else {
-//            print("Scrolling is not needed")
+//            // print("Scrolling is not needed")
             // Hide scrollbar indicators or adjust layout if necessary
         }
     }

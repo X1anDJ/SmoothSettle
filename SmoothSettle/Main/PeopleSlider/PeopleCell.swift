@@ -73,7 +73,7 @@ class PeopleCell: UICollectionViewCell {
     func configure(with personId: UUID, name: String?, isSelected: Bool) {
         self.personId = personId
         guard let name = name else {
-            print("Invalid person in cell")
+            // print("Invalid person in cell")
             return
         }
         
@@ -123,7 +123,7 @@ class PeopleCell: UICollectionViewCell {
     }
     
     func showRemoveButton() {
-        print("people cell remove detected")
+        // print("people cell remove detected")
         if personId != nil {
             removePersonButton.isHidden = false
         }

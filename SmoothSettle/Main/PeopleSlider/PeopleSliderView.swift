@@ -138,7 +138,7 @@ extension PeopleSliderView: UICollectionViewDataSource, UICollectionViewDelegate
         } else {
             cell.delegate = self
             let person = people[indexPath.item - 1] // Adjust index for the "plus" button
-            print("Person: \(String(describing: person.name))")
+            // print("Person: \(String(describing: person.name))")
 //            let isSelected = (person == selectedPayer || selectedInvolvers.contains(person))
 //            cell.configure(with: person, isSelected: isSelected) // Highlight if selected
             
@@ -154,7 +154,7 @@ extension PeopleSliderView: UICollectionViewDataSource, UICollectionViewDelegate
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-//        print("Cell tapped at index \(indexPath.item)")
+//        // print("Cell tapped at index \(indexPath.item)")
         
         if indexPath.item == 0 {
             // "plus" button tapped
@@ -186,7 +186,7 @@ extension PeopleSliderView: PeopleCellDelegate {
 
     func didRequestRemovePerson(_ personId: UUID?) {
         // Check if personId is valid, do nothing if it's nil
-        print("Pressed remove")
+        // print("Pressed remove")
         guard let personId = personId else {
             return
         }

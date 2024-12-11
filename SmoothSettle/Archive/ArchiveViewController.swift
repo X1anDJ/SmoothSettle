@@ -57,7 +57,7 @@ class ArchiveViewController: UIViewController {
         let tripsByYear = viewModel.groupTripsByYear(viewModel.archivedTrips)
         
         if tripsByYear.isEmpty {
-            print("tripsByYear is empty")
+            // print("tripsByYear is empty")
             archiveView.showEmptyState(true)  // Show empty state if there are no trips
         } else {
             archiveView.showEmptyState(false)
@@ -108,17 +108,17 @@ class ArchiveViewController: UIViewController {
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
         // Move to Current Trip action
-        let moveToCurrentTripAction = UIAlertAction(title: "Move to Current Trip", style: .default) { [weak self] _ in
+        let moveToCurrentTripAction = UIAlertAction(title: String(localized: "move_to_current"), style: .default) { [weak self] _ in
             self?.moveTripToCurrent(trip)
         }
         
         // Delete Trip action
-        let deleteTripAction = UIAlertAction(title: "Delete Trip", style: .destructive) { [weak self] _ in
+        let deleteTripAction = UIAlertAction(title: String(localized: "delete_trip"), style: .destructive) { [weak self] _ in
             self?.deleteTrip(trip)
         }
         
         // Cancel action
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        let cancelAction = UIAlertAction(title: String(localized: "close_button"), style: .cancel)
         
         // Add actions to the alert controller
         alertController.addAction(moveToCurrentTripAction)

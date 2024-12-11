@@ -170,20 +170,22 @@ class CardView: UIView {
     // MARK: - Configure Method
     func configure(with trip: Trip) {
         cardTitleLabel.text = trip.title
-        
+        let noDateLocalized = String(localized: "no_date")
+        let settledLabelLocalized = String(localized: "settled_label")
+        let unSettledLabelLocalized = String(localized: "unsettled_label")
         // Format date to show only day and month
         if let tripDate = trip.date {
             dateLabel.text = tripDate.formatted(.dateTime.month(.abbreviated).day(.twoDigits))
         } else {
-            dateLabel.text = "No Date"
+            dateLabel.text = noDateLocalized
         }
             
         if trip.settled {
-            archivedLabel.text = "Settled"
+            archivedLabel.text = settledLabelLocalized
             archivedLabel.textColor = Colors.lightGreen
             archivedIconImageView.image = UIImage(systemName: "checkmark.circle")?.withTintColor(Colors.lightGreen, renderingMode: .alwaysOriginal)
         } else {
-            archivedLabel.text = "Unsettled"
+            archivedLabel.text = unSettledLabelLocalized
             archivedLabel.textColor = Colors.accentOrange
             archivedIconImageView.image = UIImage(systemName: "minus.circle")?.withTintColor(Colors.accentOrange, renderingMode: .alwaysOriginal)
         }

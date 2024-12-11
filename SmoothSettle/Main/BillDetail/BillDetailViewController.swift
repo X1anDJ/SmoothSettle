@@ -273,7 +273,7 @@ extension BillDetailViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return section == 0 ? "Payer" : "Involvers"
+        return section == 0 ? String(localized: "payer") : String(localized: "participants")
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -296,7 +296,7 @@ extension BillDetailViewController: UITableViewDataSource, UITableViewDelegate {
                 let share = viewModel.getAmount() / Double(involvers.count)
                 cell.configure(with: person, amount: share, isPayer: false)
             } else {
-                print("Error: Involver index out of range.")
+                // print("Error: Involver index out of range.")
             }
         }
         // configure the cell to be not tappable

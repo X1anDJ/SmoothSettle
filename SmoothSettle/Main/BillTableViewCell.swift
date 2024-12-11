@@ -53,7 +53,8 @@ class BillTableViewCell: UITableViewCell {
         payerCircleView.addSubview(payerInitialsLabel)
         
         // Paid Label
-        paidLabel.text = "Paid for"
+       // paidLabel.text = "Paid for"
+        paidLabel.text = String(localized: "paid_for")
         paidLabel.textAlignment = .center
         paidLabel.font = UIFont.systemFont(ofSize: 14)
         paidLabel.textColor = .darkGray

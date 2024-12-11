@@ -15,8 +15,8 @@ import GoogleSignIn
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-//    let mainViewController = MainViewController()
-    let loginViewController = LoginViewController()
+    let mainViewController = MainViewController()
+//    let loginViewController = LoginViewController()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions:
                          [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -31,8 +31,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.makeKeyAndVisible()
         window?.overrideUserInterfaceStyle = .light
         window?.backgroundColor = Colors.background1
-        loginViewController.delegate = self
-        let loginNavController = UINavigationController(rootViewController: loginViewController)
+//        loginViewController.delegate = self
+//        let loginNavController = UINavigationController(rootViewController: loginViewController)
         setupTabBarController()
         
 //        if Auth.auth().currentUser == nil {
@@ -73,26 +73,26 @@ extension AppDelegate {
     }
 }
 
-extension AppDelegate: LoginViewControllerDelegate {
-    func didLogin() {
-        setupTabBarController()
-    }
-}
+//extension AppDelegate: LoginViewControllerDelegate {
+//    func didLogin() {
+//        setupTabBarController()
+//    }
+//}
+//
 
-
-
-extension AppDelegate: LogoutDelegate {
-    func didLogout() {
-        do {
-            try Auth.auth().signOut()
-            let loginNavController = UINavigationController(rootViewController: loginViewController)
-            setRootViewController(loginNavController)
-        } catch let signOutError as NSError {
-            print("Error signing out: %@", signOutError)
-        }
-    }
-}
-
+//
+//extension AppDelegate: LogoutDelegate {
+//    func didLogout() {
+//        do {
+//            try Auth.auth().signOut()
+//            let loginNavController = UINavigationController(rootViewController: loginViewController)
+//            setRootViewController(loginNavController)
+//        } catch let signOutError as NSError {
+//            // print("Error signing out: %@", signOutError)
+//        }
+//    }
+//}
+//
 
 extension AppDelegate {
     // Function to set up the UITabBarController with the main and archive view controllers
@@ -102,12 +102,13 @@ extension AppDelegate {
         // MainViewController setup
         let mainViewController = MainViewController()
         let mainNavController = UINavigationController(rootViewController: mainViewController)
-        mainViewController.tabBarItem = UITabBarItem(title: "Main", image: UIImage(systemName: "house.fill"), tag: 0)
+        
+        mainViewController.tabBarItem = UITabBarItem(title: String(localized: "main_tab"), image: UIImage(systemName: "house.fill"), tag: 0)
 
         // ArchiveViewController setup
         let archiveViewController = ArchiveViewController()
         let archiveNavController = UINavigationController(rootViewController: archiveViewController)
-        archiveViewController.tabBarItem = UITabBarItem(title: "Archive", image: UIImage(systemName: "archivebox.fill"), tag: 1)
+        archiveViewController.tabBarItem = UITabBarItem(title: String(localized: "archived_tab"), image: UIImage(systemName: "archivebox.fill"), tag: 1)
 
         // Add view controllers to the tab bar
         tabBarController.viewControllers = [mainNavController, archiveNavController]

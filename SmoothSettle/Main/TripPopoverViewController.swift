@@ -55,7 +55,7 @@ class TripPopoverViewController: UIViewController {
 
     // Set up the Add Trip button
     private func setupAddTripButton() {
-        addTripButton.setTitle("Add a Trip", for: .normal)
+        addTripButton.setTitle(String(localized: "add_a_trip"), for: .normal)
         addTripButton.titleLabel?.textColor = Colors.primaryDark
         addTripButton.setTitleColor(Colors.primaryDark, for: .normal)
         addTripButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
@@ -168,11 +168,12 @@ extension TripPopoverViewController: UITableViewDataSource, UITableViewDelegate 
         if editingStyle == .delete {
             let tripToDelete = trips[indexPath.row]
             // Confirm deletion
-            let alert = UIAlertController(title: "Delete Trip",
-                                          message: "Are you sure you want to delete \"\(tripToDelete.title ?? "this trip")\"?",
+            let message = String(localized: "delete_trip_message")
+            let alert = UIAlertController(title: String(localized: "delete_trip"),
+                                          message: "\(message) \"\(tripToDelete.title ?? "this trip")\"?",
                                           preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-            alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { [weak self] _ in
+            alert.addAction(UIAlertAction(title: String(localized: "close_button"), style: .cancel))
+            alert.addAction(UIAlertAction(title: String(localized: "delete"), style: .destructive, handler: { [weak self] _ in
                 self?.viewModel.deleteTrip(by: tripToDelete.id)
             }))
             present(alert, animated: true)

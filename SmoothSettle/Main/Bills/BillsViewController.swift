@@ -39,7 +39,8 @@ class BillsViewController: UIViewController {
         super.viewDidLoad()
 
         view.backgroundColor = Colors.background1
-        title = "Bills"
+        let localizedBillsTitle = String(localized: "Bills")
+        title = localizedBillsTitle
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
         setupSearchBar() // Setup the search bar
@@ -49,7 +50,8 @@ class BillsViewController: UIViewController {
     func setupSearchBar() {
         searchBar.translatesAutoresizingMaskIntoConstraints = false
         searchBar.delegate = self
-        searchBar.placeholder = "Search bills"
+        let localizedsearchBarTitle = String(localized: "search_bills")
+        searchBar.placeholder = localizedsearchBarTitle
         
         // Remove the background/border
         searchBar.searchBarStyle = .minimal
@@ -124,10 +126,11 @@ extension BillsViewController: UITableViewDelegate, UITableViewDataSource {
 
         // Configure the cell using actual data from the bill
         cell.configure(
+            
             billTitle: bill.title ?? "Untitled Bill",
             date: formatDate(bill.date),
             amount: String(format: "%.2f", bill.amount),
-            payerName: bill.payer?.name ?? "Unknown",
+            payerName: bill.payer?.name ?? String(localized: "unknown_person"),
             involversCount: bill.involvers?.count ?? 0
         )
         

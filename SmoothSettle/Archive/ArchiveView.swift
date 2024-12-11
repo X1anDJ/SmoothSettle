@@ -55,7 +55,7 @@ class ArchiveView: UIView {
     func style() {
         // Title Label
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.text = "Archive"
+        titleLabel.text = String(localized: "archived_title")
         titleLabel.font = UIFont.systemFont(ofSize: 36, weight: .bold)
         titleLabel.textAlignment = .left
         
@@ -73,7 +73,7 @@ class ArchiveView: UIView {
         
         // Empty State Label
         emptyStateLabel.translatesAutoresizingMaskIntoConstraints = false
-        emptyStateLabel.text = "No archived trips available."
+        emptyStateLabel.text = String(localized: "no_archived_trips")
         emptyStateLabel.font = UIFont.preferredFont(forTextStyle: .headline)
         emptyStateLabel.textColor = Colors.primaryMedium
         emptyStateLabel.tintColor = Colors.primaryMedium

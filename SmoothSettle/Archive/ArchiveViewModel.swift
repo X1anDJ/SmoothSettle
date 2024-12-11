@@ -29,8 +29,8 @@ class ArchiveViewModel {
             .receive(on: DispatchQueue.main)  // Ensure updates happen on the main thread
             .sink { [weak self] trips in
                 self?.archivedTrips = trips
-//                print("Archived trip count in ArchiveViewModel: \(trips.count)")
-//                print("Their dates are: \(trips.map { $0.date })")
+//                // print("Archived trip count in ArchiveViewModel: \(trips.count)")
+//                // print("Their dates are: \(trips.map { $0.date })")
             }
             .store(in: &cancellables)
     }
@@ -40,10 +40,10 @@ class ArchiveViewModel {
         var groupedTrips = [Int: [Trip]]()
         let calendar = Calendar.current
         
-//        print("Grouping count: \(trips.count)")
+//        // print("Grouping count: \(trips.count)")
         for trip in trips {
             if let tripDate = trip.date {
-//                print("Trip with date: \(tripDate)")
+//                // print("Trip with date: \(tripDate)")
                 let year = calendar.component(.year, from: tripDate)
                 if groupedTrips[year] == nil {
                     groupedTrips[year] = [trip]
@@ -51,11 +51,11 @@ class ArchiveViewModel {
                     groupedTrips[year]?.append(trip)
                 }
             } else {
-//                print("Trip \(trip.title ?? "Unknown Title") has no date!")
+//                // print("Trip \(trip.title ?? "Unknown Title") has no date!")
             }
         }
 //        
-//        print("Grouped trips by year: \(groupedTrips.count)")
+//        // print("Grouped trips by year: \(groupedTrips.count)")
         return groupedTrips
     }
 

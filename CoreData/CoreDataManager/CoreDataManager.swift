@@ -51,9 +51,9 @@ class CoreDataManager {
             do {
                 try persistentStoreCoordinator.destroyPersistentStore(at: storeURL, ofType: NSSQLiteStoreType, options: nil)
                 try persistentStoreCoordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: nil)
-                print("Persistent store reset successfully.")
+                // print("Persistent store reset successfully.")
             } catch {
-                print("Failed to reset persistent store: \(error)")
+                // print("Failed to reset persistent store: \(error)")
             }
         }
     }

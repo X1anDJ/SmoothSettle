@@ -27,7 +27,9 @@ class AddBillViewController: UIViewController,
     
     // Custom View
     let addBillView = AddBillView()
-    
+    let invalidAlertTitle = String(localized: "invalid_alert_title")
+    let fillAllAlertMessage = String(localized: "fill_all_message")
+    let ok = String(localized: "OK")
     // Now store selected payer and involvers by UUID
     var selectedPayerId: UUID?
     var selectedInvolverIds: [UUID] = []
@@ -102,12 +104,12 @@ class AddBillViewController: UIViewController,
     
     private func setup() {
         // Setup Navigation Bar (transparent)
-        navigationItem.title = "Add Bill"
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel",
+        navigationItem.title = String(localized: "add_bill")
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: String(localized: "close_button"),
                                                            style: .plain,
                                                            target: self,
                                                            action: #selector(didTapCancelButton))
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add",
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: String(localized: "add_button"),
                                                             style: .plain,
                                                             target: self,
                                                             action: #selector(didTapConfirmButton))
@@ -163,10 +165,11 @@ class AddBillViewController: UIViewController,
               let amountText = addBillView.amountTextField.text,
               let amount = Double(amountText),
               let payerId = selectedPayerId else {
-            let alert = UIAlertController(title: "Invalid Input",
-                                          message: "Please fill all the required fields.",
+           
+            let alert = UIAlertController(title: invalidAlertTitle,
+                                          message: fillAllAlertMessage,
                                           preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default))
+            alert.addAction(UIAlertAction(title: ok, style: .default))
             present(alert, animated: true)
             return
         }
@@ -206,28 +209,30 @@ class AddBillViewController: UIViewController,
         let alert = UIAlertController(title: nil,
                                       message: message,
                                       preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        alert.addAction(UIAlertAction(title: ok, style: .default))
         present(alert, animated: true)
     }
     
     // Get the image picker menu
     private func getImagePickerMenu() -> UIMenu {
-        let cameraAction = UIAction(title: "Camera",
+        
+        
+        let cameraAction = UIAction(title: String(localized: "camera"),
                                     image: UIImage(systemName: "camera")) { [weak self] (_) in
             self?.presentCamera()
         }
         
-        let galleryAction = UIAction(title: "Gallery",
+        let galleryAction = UIAction(title: String(localized: "Gallery"),
                                      image: UIImage(systemName: "photo.on.rectangle")) { [weak self] (_) in
             self?.presentPhotoPicker()
         }
         
-        return UIMenu(title: "Select Image", children: [cameraAction, galleryAction])
+        return UIMenu(title: String(localized: "select_image"), children: [cameraAction, galleryAction])
     }
     
     func presentCamera() {
         guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
-            showAlert(message: "Camera not available")
+            showAlert(message: String(localized: "camera_not_available"))
             return
         }
         
@@ -352,7 +357,7 @@ extension AddBillViewController: PeopleSliderViewDelegate {
 
     func didSelectPerson(_ personId: UUID?, for tripId: UUID?, context: SliderContext) {
         guard let personId = personId else {
-            print("Person ID is nil, no action taken.")
+            // print("Person ID is nil, no action taken.")
             return
         }
 

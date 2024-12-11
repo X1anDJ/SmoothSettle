@@ -52,7 +52,8 @@ class ArchiveTripController: UIViewController {
         
         // No Transactions Label
         noTransactionsLabel.translatesAutoresizingMaskIntoConstraints = false
-        noTransactionsLabel.text = "No transactions available for this trip."
+        let noTransaction = String(localized: "no_transactions")
+        noTransactionsLabel.text = noTransaction
         noTransactionsLabel.textColor = .systemGray
         noTransactionsLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         noTransactionsLabel.textAlignment = .center
@@ -67,7 +68,8 @@ class ArchiveTripController: UIViewController {
         
         // Settle Button
         settleButton.translatesAutoresizingMaskIntoConstraints = false
-        settleButton.setTitle("Settle All", for: .normal)
+        let settleAllLocalized = String(localized: "settle_all")
+        settleButton.setTitle(settleAllLocalized, for: .normal)
         settleButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         settleButton.setImage(UIImage(systemName: "checkmark.circle"), for: .normal)
         settleButton.layer.cornerRadius = 15
@@ -239,7 +241,8 @@ struct OwesChartView: View {
     var body: some View {
         VStack {
             HStack {
-                Text("Expenses by person")
+                let expensesByPersonLocalized = String(localized: "expenses_by_person")
+                Text(expensesByPersonLocalized)
                     .font(.title2)
                     .fontWeight(.semibold)
                     .padding(.bottom, 16) // Increased padding for better spacing
@@ -253,7 +256,8 @@ struct OwesChartView: View {
                 Spacer()
             }
             if data.isEmpty {
-                Text("No expenses to display.")
+                let noExpensesLocalized = String(localized: "no_expenses")
+                Text(noExpensesLocalized)
                     .foregroundColor(Color(.darkGray))
                     .padding()
             } else {
@@ -289,7 +293,8 @@ struct OwesChartView: View {
                             Spacer()
                             // total amount label
                             VStack(spacing: 8) {
-                                Text("Total")
+                                
+                                Text(String(localized: "Total"))
                                     .font(.footnote)
                                     .foregroundColor(.primary)
                                     .padding(.top, 16)

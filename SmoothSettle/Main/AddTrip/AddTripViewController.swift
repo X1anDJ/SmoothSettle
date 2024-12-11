@@ -74,7 +74,8 @@ extension AddTripViewController {
         view.backgroundColor = Colors.background1 // Light gray background
         
         // Title TextField
-        titleTextField.placeholder = "Enter trip title"
+        let enterTripTitleLocalized = String(localized: "enter_trip_title")
+        titleTextField.placeholder = enterTripTitleLocalized
         titleTextField.borderStyle = .roundedRect
         titleTextField.translatesAutoresizingMaskIntoConstraints = false
         
@@ -88,9 +89,11 @@ extension AddTripViewController {
         datePicker.translatesAutoresizingMaskIntoConstraints = false
         
         // Setup Navigation Bar (without a separate background and separator)
-        let navItem = UINavigationItem(title: "New Trip")
-        let cancelItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(didTapCancelButton))
-        let addItem = UIBarButtonItem(title: "Add", style: .plain, target: self, action: #selector(didTapAddButton))
+        let navItemLocalized = String(localized: "new_trip")
+        let navItem = UINavigationItem(title: navItemLocalized)
+        let cancelItem = UIBarButtonItem(title: String(localized: "close_button"), style: .plain, target: self, action: #selector(didTapCancelButton))
+        let addTripLocalized = String(localized: "add_button")
+        let addItem = UIBarButtonItem(title: addTripLocalized, style: .plain, target: self, action: #selector(didTapAddButton))
         navItem.leftBarButtonItem = cancelItem
         navItem.rightBarButtonItem = addItem
         
@@ -102,17 +105,21 @@ extension AddTripViewController {
         navigationBar.translatesAutoresizingMaskIntoConstraints = false
         
         // Section Titles
-        titleSectionLabel.text = "Trip Title"
+        
+        
+
+        
+        titleSectionLabel.text = String(localized: "trip_title")
         titleSectionLabel.font = UIFont.systemFont(ofSize: 14)
         titleSectionLabel.textColor = .gray
         titleSectionLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        peopleSectionLabel.text = "People"
+        peopleSectionLabel.text = String(localized: "people")
         peopleSectionLabel.font = UIFont.systemFont(ofSize: 14)
         peopleSectionLabel.textColor = .gray
         peopleSectionLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        dateSectionLabel.text = "Date"
+        dateSectionLabel.text = String(localized: "enter_date")
         dateSectionLabel.font = UIFont.systemFont(ofSize: 14)
         dateSectionLabel.textColor = .gray
         dateSectionLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -190,11 +197,14 @@ extension AddTripViewController: PeopleSliderViewDelegate {
 
 
     func didTapAddPerson(for tripId: UUID?) {
-        let alert = UIAlertController(title: "Add Person", message: "Enter the name of the person", preferredStyle: .alert)
+        let addPersonAlert = String(localized: "add_person_alert_title")
+        let addPersonMessageAlert = String(localized: "add_person_alert_message")
+        let personNameLocalized = String(localized: "person_name_placeholder")
+        let alert = UIAlertController(title: addPersonAlert, message: addPersonMessageAlert, preferredStyle: .alert)
         alert.addTextField { textField in
             textField.placeholder = "Person Name"
         }
-        alert.addAction(UIAlertAction(title: "Add", style: .default, handler: { [weak self] _ in
+        alert.addAction(UIAlertAction(title: String(localized: "add_button"), style: .default, handler: { [weak self] _ in
             if let name = alert.textFields?.first?.text, !name.isEmpty {
                 // Create a new Person object in the CoreData context
                 let person = Person(context: CoreDataManager.shared.context)

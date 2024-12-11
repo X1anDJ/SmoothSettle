@@ -79,7 +79,7 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
     // Load transactions from the repository and organize into sections
     func loadTransactions() {
         guard let tripId = currentTrip, let repository = tripRepository else {
-            print("Current trip ID or repository not set.")
+            // print("Current trip ID or repository not set.")
             return
         }
 
@@ -120,7 +120,7 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
         
         // Reload the table view to display the new transactions
         self.reloadData()
-        print("Loaded \(sections.count) sections with \(transactions.count) transactions for tripId: \(tripId)")
+        // print("Loaded \(sections.count) sections with \(transactions.count) transactions for tripId: \(tripId)")
         
         // Select the rows that are already settled
         for indexPath in selectedIndexPaths {
@@ -131,7 +131,7 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
         if transactions.allSatisfy({ $0.settled }) {
             // All transactions are settled, mark the trip as settled
             repository.markTripAsSettled(tripId: tripId)
-            print("All transactions settled. Trip \(tripId) marked as settled.")
+            // print("All transactions settled. Trip \(tripId) marked as settled.")
         }
     }
     
@@ -190,10 +190,12 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
         headerView.backgroundColor = .clear
 
         let fromPerson = sections[section].fromPerson
-        let fromName = fromPerson.name ?? "Unknown"
+        let fromPersonLocalized = String(localized: "unknown_person")
+        let fromName = fromPerson.name ?? fromPersonLocalized
 
         let label = UILabel()
-        label.text = "\(fromName) owes"
+        let localizedOwes = String(localized: "owes")
+        label.text = "\(fromName) \(localizedOwes)"
         label.font = UIFont.boldSystemFont(ofSize: 16)
         label.textColor = .darkGray
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -219,7 +221,7 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
     // Handle cell selection to toggle the symbol and mark transaction as settled
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard isSelectable, let repository = tripRepository, let tripId = currentTrip else {
-            print("Selection not allowed or repository/tripId not set.")
+            // print("Selection not allowed or repository/tripId not set.")
             return
         }
 
@@ -228,7 +230,7 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
         // Toggle the settled status
         transaction.settled.toggle()
         repository.saveContext()
-        print("Transaction \(transaction.id) settled status is now \(transaction.settled)")
+        // print("Transaction \(transaction.id) settled status is now \(transaction.settled)")
         
         if transaction.settled {
             selectedIndexPaths.insert(indexPath)
@@ -247,7 +249,7 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
         if allSettled {
             // All transactions are settled, mark the trip as settled
             repository.markTripAsSettled(tripId: tripId)
-            print("All transactions settled. Trip \(tripId) marked as settled.")
+            // print("All transactions settled. Trip \(tripId) marked as settled.")
         } else {
             repository.markTripAsNotSettled(tripId: tripId)
         }
@@ -256,7 +258,7 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
     // Optionally handle deselection if multiple selection is allowed
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         guard isSelectable, let repository = tripRepository, let tripId = currentTrip else {
-            print("Deselection not allowed or repository/tripId not set.")
+            // print("Deselection not allowed or repository/tripId not set.")
             return
         }
         
@@ -265,7 +267,7 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
         // Toggle the settled status
         transaction.settled.toggle()
         repository.saveContext()
-        print("Transaction \(transaction.id) settled status is now \(transaction.settled)")
+        // print("Transaction \(transaction.id) settled status is now \(transaction.settled)")
         
         if transaction.settled {
             selectedIndexPaths.insert(indexPath)
@@ -284,7 +286,7 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
         if allSettled {
             // All transactions are settled, mark the trip as settled
             repository.markTripAsSettled(tripId: tripId)
-            print("All transactions settled. Trip \(tripId) marked as settled.")
+            // print("All transactions settled. Trip \(tripId) marked as settled.")
         } else {
             repository.markTripAsNotSettled(tripId: tripId)
         }

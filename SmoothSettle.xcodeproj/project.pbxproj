@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DC360EA12D08E70600569A2D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = DC360EA02D08E70600569A2D /* Localizable.xcstrings */; };
 		DC4C9EB12C9FFCCB00ADEA13 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4C9EB02C9FFCCB00ADEA13 /* AppDelegate.swift */; };
 		DC4C9EB52C9FFCCB00ADEA13 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4C9EB42C9FFCCB00ADEA13 /* MainViewController.swift */; };
 		DC4C9EBB2C9FFCCB00ADEA13 /* SmoothSettle.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DC4C9EB92C9FFCCB00ADEA13 /* SmoothSettle.xcdatamodeld */; };
@@ -35,30 +36,6 @@
 		DC6DE6EF2CB9F5300050F6EF /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = DC6DE6EE2CB9F5300050F6EF /* FirebaseCore */; };
 		DC6DE6F12CB9F5300050F6EF /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = DC6DE6F02CB9F5300050F6EF /* FirebaseDatabase */; };
 		DC6DE6F32CB9F5300050F6EF /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = DC6DE6F22CB9F5300050F6EF /* FirebaseFirestore */; };
-		DC6DE71E2CB9FC3F0050F6EF /* MethodExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE7112CB9FC3F0050F6EF /* MethodExtensions.swift */; };
-		DC6DE71F2CB9FC3F0050F6EF /* DummyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE6F72CB9FC3F0050F6EF /* DummyViewController.swift */; };
-		DC6DE7202CB9FC3F0050F6EF /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE6F62CB9FC3F0050F6EF /* LoginView.swift */; };
-		DC6DE7212CB9FC3F0050F6EF /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE6F52CB9FC3F0050F6EF /* LoginViewController.swift */; };
-		DC6DE7222CB9FC3F0050F6EF /* AuthenticationButtonsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE6F82CB9FC3F0050F6EF /* AuthenticationButtonsView.swift */; };
-		DC6DE7232CB9FC3F0050F6EF /* DataGlobal.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE70C2CB9FC3F0050F6EF /* DataGlobal.swift */; };
-		DC6DE7242CB9FC3F0050F6EF /* SMSCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE71A2CB9FC3F0050F6EF /* SMSCodeViewController.swift */; };
-		DC6DE7252CB9FC3F0050F6EF /* PhoneNumberViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE6FB2CB9FC3F0050F6EF /* PhoneNumberViewContainer.swift */; };
-		DC6DE7262CB9FC3F0050F6EF /* PhoneNumberViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE7032CB9FC3F0050F6EF /* PhoneNumberViewController.swift */; };
-		DC6DE7272CB9FC3F0050F6EF /* VerificationCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE7062CB9FC3F0050F6EF /* VerificationCodeViewController.swift */; };
-		DC6DE7282CB9FC3F0050F6EF /* CountryCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE7092CB9FC3F0050F6EF /* CountryCodeViewController.swift */; };
-		DC6DE7292CB9FC3F0050F6EF /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE7052CB9FC3F0050F6EF /* MainTabBarController.swift */; };
-		DC6DE72A2CB9FC3F0050F6EF /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE70E2CB9FC3F0050F6EF /* ViewExtensions.swift */; };
-		DC6DE72B2CB9FC3F0050F6EF /* UITextFieldExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE7122CB9FC3F0050F6EF /* UITextFieldExtensions.swift */; };
-		DC6DE72C2CB9FC3F0050F6EF /* PhoneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE7192CB9FC3F0050F6EF /* PhoneViewController.swift */; };
-		DC6DE72D2CB9FC3F0050F6EF /* TableViewCellExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE7102CB9FC3F0050F6EF /* TableViewCellExtensions.swift */; };
-		DC6DE72E2CB9FC3F0050F6EF /* Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE7162CB9FC3F0050F6EF /* Country.swift */; };
-		DC6DE72F2CB9FC3F0050F6EF /* VerificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE7072CB9FC3F0050F6EF /* VerificationController.swift */; };
-		DC6DE7302CB9FC3F0050F6EF /* VerificationViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE6FD2CB9FC3F0050F6EF /* VerificationViewContainer.swift */; };
-		DC6DE7312CB9FC3F0050F6EF /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE7142CB9FC3F0050F6EF /* ThemeManager.swift */; };
-		DC6DE7322CB9FC3F0050F6EF /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE7182CB9FC3F0050F6EF /* AuthManager.swift */; };
-		DC6DE7332CB9FC3F0050F6EF /* ProfileViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE6FF2CB9FC3F0050F6EF /* ProfileViewContainer.swift */; };
-		DC6DE7342CB9FC3F0050F6EF /* DividerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE6F92CB9FC3F0050F6EF /* DividerView.swift */; };
-		DC6DE7352CB9FC3F0050F6EF /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DE70F2CB9FC3F0050F6EF /* Utilities.swift */; };
 		DC6DE7372CB9FC8D0050F6EF /* CallingCodes.plist in Resources */ = {isa = PBXBuildFile; fileRef = DC6DE7362CB9FC8D0050F6EF /* CallingCodes.plist */; };
 		DC6DE73C2CBA00880050F6EF /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = DC6DE73B2CBA00880050F6EF /* GoogleSignIn */; };
 		DC6DE73E2CBA00880050F6EF /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = DC6DE73D2CBA00880050F6EF /* GoogleSignInSwift */; };
@@ -90,6 +67,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		DC360E9F2D08E6A400569A2D /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
+		DC360EA02D08E70600569A2D /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		DC4C9EAD2C9FFCCB00ADEA13 /* SmoothSettle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmoothSettle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC4C9EB02C9FFCCB00ADEA13 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DC4C9EB42C9FFCCB00ADEA13 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
@@ -117,30 +96,6 @@
 		DC531B122CA24FF40053DC24 /* PeopleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleCell.swift; sourceTree = "<group>"; };
 		DC6DE6E62CB9F0F90050F6EF /* SimplifyDebts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplifyDebts.swift; sourceTree = "<group>"; };
 		DC6DE6F42CB9F7E70050F6EF /* SmoothSettle.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SmoothSettle.entitlements; sourceTree = "<group>"; };
-		DC6DE6F52CB9FC3F0050F6EF /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
-		DC6DE6F62CB9FC3F0050F6EF /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
-		DC6DE6F72CB9FC3F0050F6EF /* DummyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DummyViewController.swift; sourceTree = "<group>"; };
-		DC6DE6F82CB9FC3F0050F6EF /* AuthenticationButtonsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationButtonsView.swift; sourceTree = "<group>"; };
-		DC6DE6F92CB9FC3F0050F6EF /* DividerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DividerView.swift; sourceTree = "<group>"; };
-		DC6DE6FB2CB9FC3F0050F6EF /* PhoneNumberViewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneNumberViewContainer.swift; sourceTree = "<group>"; };
-		DC6DE6FD2CB9FC3F0050F6EF /* VerificationViewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationViewContainer.swift; sourceTree = "<group>"; };
-		DC6DE6FF2CB9FC3F0050F6EF /* ProfileViewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewContainer.swift; sourceTree = "<group>"; };
-		DC6DE7032CB9FC3F0050F6EF /* PhoneNumberViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneNumberViewController.swift; sourceTree = "<group>"; };
-		DC6DE7052CB9FC3F0050F6EF /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
-		DC6DE7062CB9FC3F0050F6EF /* VerificationCodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationCodeViewController.swift; sourceTree = "<group>"; };
-		DC6DE7072CB9FC3F0050F6EF /* VerificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationController.swift; sourceTree = "<group>"; };
-		DC6DE7092CB9FC3F0050F6EF /* CountryCodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryCodeViewController.swift; sourceTree = "<group>"; };
-		DC6DE70C2CB9FC3F0050F6EF /* DataGlobal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataGlobal.swift; sourceTree = "<group>"; };
-		DC6DE70E2CB9FC3F0050F6EF /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
-		DC6DE70F2CB9FC3F0050F6EF /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
-		DC6DE7102CB9FC3F0050F6EF /* TableViewCellExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCellExtensions.swift; sourceTree = "<group>"; };
-		DC6DE7112CB9FC3F0050F6EF /* MethodExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MethodExtensions.swift; sourceTree = "<group>"; };
-		DC6DE7122CB9FC3F0050F6EF /* UITextFieldExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextFieldExtensions.swift; sourceTree = "<group>"; };
-		DC6DE7142CB9FC3F0050F6EF /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
-		DC6DE7162CB9FC3F0050F6EF /* Country.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Country.swift; sourceTree = "<group>"; };
-		DC6DE7182CB9FC3F0050F6EF /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
-		DC6DE7192CB9FC3F0050F6EF /* PhoneViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneViewController.swift; sourceTree = "<group>"; };
-		DC6DE71A2CB9FC3F0050F6EF /* SMSCodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMSCodeViewController.swift; sourceTree = "<group>"; };
 		DC6DE7362CB9FC8D0050F6EF /* CallingCodes.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = CallingCodes.plist; sourceTree = "<group>"; };
 		DC6DE7412CBA50140050F6EF /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		DC6DE7432CBA530A0050F6EF /* UserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewController.swift; sourceTree = "<group>"; };
@@ -186,6 +141,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DC360E9E2D08E60F00569A2D /* Localization */ = {
+			isa = PBXGroup;
+			children = (
+				DC360EA02D08E70600569A2D /* Localizable.xcstrings */,
+			);
+			path = Localization;
+			sourceTree = "<group>";
+		};
 		DC4C9EA42C9FFCCB00ADEA13 = {
 			isa = PBXGroup;
 			children = (
@@ -206,7 +169,7 @@
 		DC4C9EAF2C9FFCCB00ADEA13 /* SmoothSettle */ = {
 			isa = PBXGroup;
 			children = (
-				DC6DE71C2CB9FC3F0050F6EF /* Login */,
+				DC360E9E2D08E60F00569A2D /* Localization */,
 				DC531AFB2CA1FA590053DC24 /* CoreData */,
 				DC4C9EE12CA1297500ADEA13 /* Main */,
 				DC6DE7872CBE0AE90050F6EF /* Archive */,
@@ -323,149 +286,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		DC6DE6FA2CB9FC3F0050F6EF /* MainLogin */ = {
-			isa = PBXGroup;
-			children = (
-				DC6DE6F52CB9FC3F0050F6EF /* LoginViewController.swift */,
-				DC6DE6F62CB9FC3F0050F6EF /* LoginView.swift */,
-				DC6DE6F72CB9FC3F0050F6EF /* DummyViewController.swift */,
-				DC6DE6F82CB9FC3F0050F6EF /* AuthenticationButtonsView.swift */,
-				DC6DE6F92CB9FC3F0050F6EF /* DividerView.swift */,
-			);
-			path = MainLogin;
-			sourceTree = "<group>";
-		};
-		DC6DE6FC2CB9FC3F0050F6EF /* PhoneNumber */ = {
-			isa = PBXGroup;
-			children = (
-				DC6DE6FB2CB9FC3F0050F6EF /* PhoneNumberViewContainer.swift */,
-			);
-			path = PhoneNumber;
-			sourceTree = "<group>";
-		};
-		DC6DE6FE2CB9FC3F0050F6EF /* Verification */ = {
-			isa = PBXGroup;
-			children = (
-				DC6DE6FD2CB9FC3F0050F6EF /* VerificationViewContainer.swift */,
-			);
-			path = Verification;
-			sourceTree = "<group>";
-		};
-		DC6DE7002CB9FC3F0050F6EF /* Profile */ = {
-			isa = PBXGroup;
-			children = (
-				DC6DE6FF2CB9FC3F0050F6EF /* ProfileViewContainer.swift */,
-			);
-			path = Profile;
-			sourceTree = "<group>";
-		};
-		DC6DE7012CB9FC3F0050F6EF /* Containers */ = {
-			isa = PBXGroup;
-			children = (
-				DC6DE6FC2CB9FC3F0050F6EF /* PhoneNumber */,
-				DC6DE6FE2CB9FC3F0050F6EF /* Verification */,
-				DC6DE7002CB9FC3F0050F6EF /* Profile */,
-			);
-			path = Containers;
-			sourceTree = "<group>";
-		};
-		DC6DE7042CB9FC3F0050F6EF /* PhoneNumber */ = {
-			isa = PBXGroup;
-			children = (
-				DC6DE7032CB9FC3F0050F6EF /* PhoneNumberViewController.swift */,
-			);
-			path = PhoneNumber;
-			sourceTree = "<group>";
-		};
-		DC6DE7082CB9FC3F0050F6EF /* Verification */ = {
-			isa = PBXGroup;
-			children = (
-				DC6DE7062CB9FC3F0050F6EF /* VerificationCodeViewController.swift */,
-				DC6DE7072CB9FC3F0050F6EF /* VerificationController.swift */,
-			);
-			path = Verification;
-			sourceTree = "<group>";
-		};
-		DC6DE70A2CB9FC3F0050F6EF /* Country */ = {
-			isa = PBXGroup;
-			children = (
-				DC6DE7092CB9FC3F0050F6EF /* CountryCodeViewController.swift */,
-			);
-			path = Country;
-			sourceTree = "<group>";
-		};
-		DC6DE70B2CB9FC3F0050F6EF /* Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				DC6DE7042CB9FC3F0050F6EF /* PhoneNumber */,
-				DC6DE7052CB9FC3F0050F6EF /* MainTabBarController.swift */,
-				DC6DE7082CB9FC3F0050F6EF /* Verification */,
-				DC6DE70A2CB9FC3F0050F6EF /* Country */,
-			);
-			path = Controllers;
-			sourceTree = "<group>";
-		};
-		DC6DE70D2CB9FC3F0050F6EF /* Database */ = {
-			isa = PBXGroup;
-			children = (
-				DC6DE70C2CB9FC3F0050F6EF /* DataGlobal.swift */,
-			);
-			path = Database;
-			sourceTree = "<group>";
-		};
-		DC6DE7132CB9FC3F0050F6EF /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				DC6DE70E2CB9FC3F0050F6EF /* ViewExtensions.swift */,
-				DC6DE70F2CB9FC3F0050F6EF /* Utilities.swift */,
-				DC6DE7102CB9FC3F0050F6EF /* TableViewCellExtensions.swift */,
-				DC6DE7112CB9FC3F0050F6EF /* MethodExtensions.swift */,
-				DC6DE7122CB9FC3F0050F6EF /* UITextFieldExtensions.swift */,
-			);
-			path = Extensions;
-			sourceTree = "<group>";
-		};
-		DC6DE7152CB9FC3F0050F6EF /* Managers */ = {
-			isa = PBXGroup;
-			children = (
-				DC6DE7142CB9FC3F0050F6EF /* ThemeManager.swift */,
-			);
-			path = Managers;
-			sourceTree = "<group>";
-		};
-		DC6DE7172CB9FC3F0050F6EF /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				DC6DE7162CB9FC3F0050F6EF /* Country.swift */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
-		DC6DE71B2CB9FC3F0050F6EF /* PhoneLogin */ = {
-			isa = PBXGroup;
-			children = (
-				DC6DE7012CB9FC3F0050F6EF /* Containers */,
-				DC6DE70B2CB9FC3F0050F6EF /* Controllers */,
-				DC6DE70D2CB9FC3F0050F6EF /* Database */,
-				DC6DE7132CB9FC3F0050F6EF /* Extensions */,
-				DC6DE7152CB9FC3F0050F6EF /* Managers */,
-				DC6DE7172CB9FC3F0050F6EF /* Models */,
-				DC6DE7182CB9FC3F0050F6EF /* AuthManager.swift */,
-				DC6DE7192CB9FC3F0050F6EF /* PhoneViewController.swift */,
-				DC6DE71A2CB9FC3F0050F6EF /* SMSCodeViewController.swift */,
-			);
-			path = PhoneLogin;
-			sourceTree = "<group>";
-		};
-		DC6DE71C2CB9FC3F0050F6EF /* Login */ = {
-			isa = PBXGroup;
-			children = (
-				DC6DE6FA2CB9FC3F0050F6EF /* MainLogin */,
-				DC6DE71B2CB9FC3F0050F6EF /* PhoneLogin */,
-			);
-			path = Login;
-			sourceTree = "<group>";
-		};
 		DC6DE7782CBBB7C10050F6EF /* Settle */ = {
 			isa = PBXGroup;
 			children = (
@@ -568,6 +388,7 @@
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hans",
 			);
 			mainGroup = DC4C9EA42C9FFCCB00ADEA13;
 			packageReferences = (
@@ -589,6 +410,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DC6DE7372CB9FC8D0050F6EF /* CallingCodes.plist in Resources */,
+				DC360EA12D08E70600569A2D /* Localizable.xcstrings in Resources */,
 				DC6DE7422CBA50140050F6EF /* GoogleService-Info.plist in Resources */,
 				DC4C9EC02C9FFCCC00ADEA13 /* LaunchScreen.storyboard in Resources */,
 				DC4C9EBD2C9FFCCC00ADEA13 /* Assets.xcassets in Resources */,
@@ -626,42 +448,18 @@
 				DC6DF9932CFF9F4D00EB8E3A /* TripPopoverViewController.swift in Sources */,
 				DC531AFD2CA201350053DC24 /* Trip+Convenience.swift in Sources */,
 				DC531AF62CA1FA530053DC24 /* Person+CoreDataProperties.swift in Sources */,
-				DC6DE71E2CB9FC3F0050F6EF /* MethodExtensions.swift in Sources */,
 				DC6DF9912CFF9A0F00EB8E3A /* TripSelectionViewController.swift in Sources */,
-				DC6DE71F2CB9FC3F0050F6EF /* DummyViewController.swift in Sources */,
-				DC6DE7202CB9FC3F0050F6EF /* LoginView.swift in Sources */,
 				DC6DE7752CBB58AF0050F6EF /* TransactionCell.swift in Sources */,
 				DC6DE77D2CBD12030050F6EF /* BillDetailViewController.swift in Sources */,
-				DC6DE7212CB9FC3F0050F6EF /* LoginViewController.swift in Sources */,
-				DC6DE7222CB9FC3F0050F6EF /* AuthenticationButtonsView.swift in Sources */,
-				DC6DE7232CB9FC3F0050F6EF /* DataGlobal.swift in Sources */,
-				DC6DE7242CB9FC3F0050F6EF /* SMSCodeViewController.swift in Sources */,
-				DC6DE7252CB9FC3F0050F6EF /* PhoneNumberViewContainer.swift in Sources */,
 				DC6DE76D2CBB0D1D0050F6EF /* BillsViewController.swift in Sources */,
-				DC6DE7262CB9FC3F0050F6EF /* PhoneNumberViewController.swift in Sources */,
-				DC6DE7272CB9FC3F0050F6EF /* VerificationCodeViewController.swift in Sources */,
-				DC6DE7282CB9FC3F0050F6EF /* CountryCodeViewController.swift in Sources */,
 				DC6DE77A2CBD09240050F6EF /* AddBillView.swift in Sources */,
-				DC6DE7292CB9FC3F0050F6EF /* MainTabBarController.swift in Sources */,
 				DC6DE7772CBB58C20050F6EF /* TransactionsTableView.swift in Sources */,
-				DC6DE72A2CB9FC3F0050F6EF /* ViewExtensions.swift in Sources */,
 				DC6DE76F2CBB27730050F6EF /* ArchiveActionViewController.swift in Sources */,
-				DC6DE72B2CB9FC3F0050F6EF /* UITextFieldExtensions.swift in Sources */,
-				DC6DE72C2CB9FC3F0050F6EF /* PhoneViewController.swift in Sources */,
 				DC6DE7832CBD190D0050F6EF /* BillDetailViewModel.swift in Sources */,
-				DC6DE72D2CB9FC3F0050F6EF /* TableViewCellExtensions.swift in Sources */,
 				DC6DE7892CBE0AFB0050F6EF /* ArchiveViewModel.swift in Sources */,
-				DC6DE72E2CB9FC3F0050F6EF /* Country.swift in Sources */,
 				DC6DE7442CBA530A0050F6EF /* UserViewController.swift in Sources */,
 				DC6DF98C2CFE652900EB8E3A /* Transaction+CoreDataClass.swift in Sources */,
 				DC6DF98D2CFE652900EB8E3A /* Transaction+CoreDataProperties.swift in Sources */,
-				DC6DE72F2CB9FC3F0050F6EF /* VerificationController.swift in Sources */,
-				DC6DE7302CB9FC3F0050F6EF /* VerificationViewContainer.swift in Sources */,
-				DC6DE7312CB9FC3F0050F6EF /* ThemeManager.swift in Sources */,
-				DC6DE7322CB9FC3F0050F6EF /* AuthManager.swift in Sources */,
-				DC6DE7332CB9FC3F0050F6EF /* ProfileViewContainer.swift in Sources */,
-				DC6DE7342CB9FC3F0050F6EF /* DividerView.swift in Sources */,
-				DC6DE7352CB9FC3F0050F6EF /* Utilities.swift in Sources */,
 				DC6DE78B2CBE0B100050F6EF /* ArchiveViewController.swift in Sources */,
 				DC6DE7712CBB47A40050F6EF /* UserCircleView.swift in Sources */,
 				DC4C9EB52C9FFCCB00ADEA13 /* MainViewController.swift in Sources */,
@@ -682,6 +480,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				DC4C9EBF2C9FFCCC00ADEA13 /* Base */,
+				DC360E9F2D08E6A400569A2D /* zh-Hans */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -694,6 +493,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -748,6 +548,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -757,6 +558,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -804,6 +606,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
