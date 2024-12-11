@@ -105,21 +105,35 @@ class TripRepository {
         }
     }
     
-    // Create a new trip with title, people, and date
-    func createTrip(title: String, people: [Person], date: Date) -> Trip {
+    /// Create a new trip with title, people, date, and optional currency
+    /// - Parameters:
+    ///   - title: The title of the trip
+    ///   - people: An array of `Person` objects involved in the trip
+    ///   - date: The date of the trip
+    ///   - currency: Optional currency code (e.g., "USD", "EUR"). If nil, defaults to user's locale currency
+    /// - Returns: The newly created `Trip` object
+    func createTrip(title: String, people: [Person], date: Date, currency: String? = nil) -> Trip {
         let trip = Trip(context: context)
-        trip.id = UUID()  // Assign a unique UUID
+        trip.id = UUID()
         trip.title = title
         trip.date = date
         trip.archived = false
         trip.settled = false
-        // Add people to the trip
+        
+        // Set currency if provided, else default to user's locale currency
+        if let currency = currency {
+            trip.currency = currency
+        } else {
+            trip.currency = Locale.current.currencyCode
+        }
+        
         trip.addToPeople(NSSet(array: people))
         
         saveContext()
         
         return trip
     }
+
     
 //    // Delete a trip
 //    func deleteTrip(by id: UUID) {
@@ -198,8 +212,15 @@ class TripRepository {
   //          // print("Trip with id \(id) not found")
         }
     }
-
     
+
+    func fetchAmount(_ amount: Double, by tripID: UUID) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.currencyCode = fetchTrip(by: tripID)?.currency ?? Locale.current.currencyCode ?? "USD" // Fallback to USD
+        
+        return formatter.string(from: NSNumber(value: amount)) ?? "\(amount)"
+    }
     
     // Save any changes to CoreData
     func saveContext() {

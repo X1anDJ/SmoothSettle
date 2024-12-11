@@ -281,20 +281,19 @@ extension BillDetailViewController: UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: "BillDetailCell", for: indexPath) as! BillDetailTableViewCell
         
         cell.backgroundColor = .clear
-        
+        let payerAmount = viewModel.getFormattedPayerAmount()
+        let involversAmount = viewModel.getShareFormattedAmount()
         if indexPath.section == 0 {
             // Payer
             if let payer = viewModel.getPayer() {
-                let amount = viewModel.getAmount()
-                cell.configure(with: payer, amount: amount, isPayer: true)
+                cell.configure(with: payer, amount: payerAmount, isPayer: true)
             }
         } else {
             // Involvers
             let involvers = viewModel.getInvolvers()
             if indexPath.row < involvers.count {
                 let person = involvers[indexPath.row]
-                let share = viewModel.getAmount() / Double(involvers.count)
-                cell.configure(with: person, amount: share, isPayer: false)
+                cell.configure(with: person, amount: involversAmount, isPayer: false)
             } else {
                 // print("Error: Involver index out of range.")
             }

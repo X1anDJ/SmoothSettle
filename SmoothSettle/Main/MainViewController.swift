@@ -139,7 +139,7 @@ class MainViewController: UIViewController, TripPopoverDelegate, UIPopoverPresen
     
     func updateTotalAmount(with bills: [Bill]?) {
         let totalAmount = bills?.reduce(0, { $0 + $1.amount }) ?? 0
-        mainView.totalAmountLabel.text = "$\(String(format: "%.2f", totalAmount))"
+        mainView.totalAmountLabel.text = viewModel.getAmount(for: totalAmount)
     }
     
 //    func setupTripDropdownMenu() {
@@ -371,7 +371,8 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         cell.configure(
             billTitle: bill.title ?? "Untitled Bill",
             date: formatDate(bill.date),
-            amount: String(format: "%.2f", bill.amount),
+            //amount: String(format: "%.2f", bill.amount),
+            amount: viewModel.getAmount(for: bill.amount),
             payerName: bill.payer?.name ?? "Unknown",
             involversCount: bill.involvers?.count ?? 0
         )
@@ -407,9 +408,10 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
 
 // MARK: - AddTripViewControllerDelegate
 extension MainViewController: AddTripViewControllerDelegate {
-    func didAddTrip(title: String, people: [Person], date: Date) {
+
+    func didAddTrip(title: String, people: [Person], date: Date, currency: String) {
         // Pass full Person instances, not UUIDs
-        viewModel.addNewTrip(title: title, people: people, date: date)
+        viewModel.addNewTrip(title: title, people: people, date: date, currency: currency)
     }
 }
 

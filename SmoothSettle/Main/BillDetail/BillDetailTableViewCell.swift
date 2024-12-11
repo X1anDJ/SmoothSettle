@@ -86,11 +86,11 @@ class BillDetailTableViewCell: UITableViewCell {
     }
     
     // MARK: - Configuration Method
-    func configure(with person: Person, amount: Double, isPayer: Bool) {
+    func configure(with person: Person, amount: String, isPayer: Bool) {
         nameLabel.text = person.name
         
         // Set amount label with "$" and the amount formatted to two decimal places
-        amountLabel.text = String(format: "$%.2f", amount)
+        amountLabel.text = amount
         
         // Set circle properties based on whether the person is the payer or an involver
         if isPayer {

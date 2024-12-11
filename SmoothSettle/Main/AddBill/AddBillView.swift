@@ -154,16 +154,10 @@ class AddBillView: UIView {
             amountSectionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             amountSectionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             
-//            // Currency Button
-//            currencyButton.centerYAnchor.constraint(equalTo: amountTextField.centerYAnchor),
-//            currencyButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-//            currencyButton.widthAnchor.constraint(equalToConstant: 60),
-//            currencyButton.heightAnchor.constraint(equalToConstant: 44),
-            
             // Amount TextField
             amountTextField.topAnchor.constraint(equalTo: amountSectionLabel.bottomAnchor, constant: 8),
             amountTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            amountTextField.trailingAnchor.constraint(equalTo: leadingAnchor, constant: -8),
+            amountTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             amountTextField.heightAnchor.constraint(equalToConstant: 44),
             
             // Payer Section

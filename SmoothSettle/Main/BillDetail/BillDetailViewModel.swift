@@ -73,6 +73,25 @@ class BillDetailViewModel {
         return bill.amount
     }
     
+    func getFormattedPayerAmount() -> String {
+        return getFormatAmount(bill.amount)
+    }
+    
+    func getShareFormattedAmount() -> String {
+        let totalAmount = bill.amount / Double(getInvolvers().count)
+        return getFormatAmount(totalAmount)
+        
+    }
+    
+    func getFormatAmount(_ amount: Double) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.currencyCode = bill.trip?.currency ?? Locale.current.currencyCode ?? "USD" // Fallback to USD
+        
+        return formatter.string(from: NSNumber(value: amount)) ?? "\(amount)"
+    }
+
+    
 //    func printBillDetails() {
 //        // print("----- Bill Details -----")
 //        // print("ID: \(bill.id)")

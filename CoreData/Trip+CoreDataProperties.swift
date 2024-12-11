@@ -24,7 +24,8 @@ extension Trip {
     @NSManaged public var bills: NSSet?
     @NSManaged public var people: NSSet?
     @NSManaged public var transactions: NSSet?
-    
+    @NSManaged public var currency: String?
+
 }
 
 

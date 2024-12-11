@@ -216,9 +216,9 @@
 				DC7FAA1F2CC1F024004593E4 /* Bills */,
 				DC531B052CA2097E0053DC24 /* PeopleSlider */,
 				DC4C9EB42C9FFCCB00ADEA13 /* MainViewController.swift */,
+				DC4C9EE22CA1298100ADEA13 /* MainViewModel.swift */,
 				DC531B092CA22AED0053DC24 /* BillTableViewCell.swift */,
 				DC6DE7452CBA5BCF0050F6EF /* MainView.swift */,
-				DC4C9EE22CA1298100ADEA13 /* MainViewModel.swift */,
 				DC6DF9902CFF9A0F00EB8E3A /* TripSelectionViewController.swift */,
 				DC6DF9922CFF9F4D00EB8E3A /* TripPopoverViewController.swift */,
 			);

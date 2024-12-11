@@ -103,9 +103,9 @@ class TransactionCell: UITableViewCell {
     }
     
     // Method to configure the cell and apply rounded corners
-    func configure(toName: String, amount: Double, isFirst: Bool, isLast: Bool, showSymbol: Bool, isSettled: Bool) {
+    func configure(toName: String, amount: String, isFirst: Bool, isLast: Bool, showSymbol: Bool, isSettled: Bool) {
         toNameLabel.text = toName
-        amountLabel.text = String(format: "$%.2f", amount)
+        amountLabel.text = amount
 
         // Reset corners before applying new ones
         self.layer.cornerRadius = 0

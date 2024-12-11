@@ -14,7 +14,7 @@ class ArchiveTripController: UIViewController {
     private let contentView = UIView()
     private let transactionsTableView = TransactionsTableView()
     private let noTransactionsLabel = UILabel() // Placeholder label
-    private let chartHostingController = UIHostingController(rootView: OwesChartView(data: [], timePeriod: "")) // Initial empty chart
+    private let chartHostingController = UIHostingController(rootView: OwesChartView(data: [], timePeriod: "", totalAmount: "")) // Initial empty chart
     
     // New Settle Button
     private let settleButton = UIButton(type: .system)
@@ -156,16 +156,17 @@ class ArchiveTripController: UIViewController {
     private func updateChartData(timePeriod: String) {
         guard let trip = trip,
               let tripRepository = tripRepository else {
-            chartHostingController.rootView = OwesChartView(data: [], timePeriod: "")
+            chartHostingController.rootView = OwesChartView(data: [], timePeriod: "", totalAmount: "")
             return
         }
         
         // Fetch the total amounts per person
         let chartData = transactionsTableView.calculateTotalAmountsPerPerson()
-        
+      //  let tripTotalAmount = chartData.
+        let totalFormattedAmount = tripRepository.fetchAmount(chartData.reduce(0) { $0 + $1.owes }, by: trip.id)
         // Update the chart's data on the main thread
         DispatchQueue.main.async {
-            self.chartHostingController.rootView = OwesChartView(data: chartData, timePeriod: timePeriod)
+            self.chartHostingController.rootView = OwesChartView(data: chartData, timePeriod: timePeriod, totalAmount: totalFormattedAmount)
         }
         
         // Handle visibility of transactions table and no transactions label
@@ -212,12 +213,14 @@ struct ChartData: Identifiable {
     let id = UUID()
     let name: String
     let owes: Double
+    let formattedOwes: String
 }
 
 // MARK: - SwiftUI Chart View
 struct OwesChartView: View {
     var data: [ChartData]
     var timePeriod: String
+    var totalAmount: String
 
     // Define a color palette to assign consistent colors to each person
     private let colorPalette: [Color] = [
@@ -274,7 +277,9 @@ struct OwesChartView: View {
                                 .annotation(position: .overlay) {
                                     // Optional: Add labels inside the pie slices
                                     // set text to bold
-                                    Text(String(format: "$%.0f", entry.owes))
+                                    
+                                   // Text(String(format: "$%.0f", entry.owes))
+                                    Text(entry.formattedOwes)
                                         .font(.caption)
                                         .fontWeight(.bold)
                                         .foregroundColor(.white)
@@ -299,7 +304,8 @@ struct OwesChartView: View {
                                     .foregroundColor(.primary)
                                     .padding(.top, 16)
                                     
-                                Text(String(format: "$%.2f", data.reduce(0) { $0 + $1.owes }))
+                               // Text(String(format: "$%.2f", data.reduce(0) { $0 + $1.owes }))
+                                Text(totalAmount)
                                     .font(.body)
                                     .fontWeight(.bold)
                                     .foregroundColor(Color(Colors.accentOrange))

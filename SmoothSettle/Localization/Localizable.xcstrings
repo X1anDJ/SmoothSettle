@@ -30,7 +30,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "新增账单"
+            "value" : "新增支出"
           }
         }
       }
@@ -165,7 +165,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "账单"
+            "value" : "支出"
           }
         }
       }
@@ -182,7 +182,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "账单标题"
+            "value" : "支出标题"
           }
         }
       }
@@ -199,7 +199,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "所有账单"
+            "value" : "所有支出"
           }
         }
       }
@@ -234,6 +234,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "相机不可用"
+          }
+        }
+      }
+    },
+    "cancel" : {
+      "comment" : "Cancel action",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消"
           }
         }
       }
@@ -306,6 +323,22 @@
         }
       }
     },
+    "currency" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Currency"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "货币单位"
+          }
+        }
+      }
+    },
     "delete" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -352,7 +385,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你确定要移除吗"
+            "value" : "确定要移除此行程吗"
           }
         }
       }
@@ -386,7 +419,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "输入账单标题"
+            "value" : "输入支出标题"
           }
         }
       }
@@ -453,7 +486,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "填写所有信息"
+            "value" : "请填写所有信息"
           }
         }
       }
@@ -508,13 +541,29 @@
         }
       }
     },
+    "invalid_enter_title_message" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please fill in the title"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请填写标题"
+          }
+        }
+      }
+    },
     "invalidAlertTitle" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please fill all the required fields."
+            "value" : "Please fill all the required fields"
           }
         },
         "zh-Hans" : {
@@ -657,6 +706,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "此行程无支出"
+          }
+        }
+      }
+    },
+    "ok" : {
+      "comment" : "OK",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "确认"
           }
         }
       }
@@ -825,7 +891,24 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "搜索账单"
+            "value" : "搜索支出"
+          }
+        }
+      }
+    },
+    "select_currency" : {
+      "comment" : "Prompt to select currency",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select Currency"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择货币单位"
           }
         }
       }

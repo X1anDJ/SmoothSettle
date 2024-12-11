@@ -194,7 +194,7 @@ extension TripPopoverViewController: UITableViewDataSource, UITableViewDelegate 
 }
 
 extension TripPopoverViewController: AddTripViewControllerDelegate {
-    func didAddTrip(title: String, people: [Person], date: Date) {
-        viewModel.addNewTrip(title: title, people: people, date: date)
+    func didAddTrip(title: String, people: [Person], date: Date, currency: String) {
+        viewModel.addNewTrip(title: title, people: people, date: date, currency: currency)
     }
 }

@@ -69,7 +69,7 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
             let totalAmount = section.transactions.reduce(0.0) { $0 + $1.amount }
             let personName = fromPerson.name ?? "Unnamed"
             
-            let data = ChartData(name: personName, owes: totalAmount)
+            let data = ChartData(name: personName, owes: totalAmount, formattedOwes: (tripRepository?.fetchAmount(totalAmount, by: currentTrip ?? UUID()))!)
             chartData.append(data)
         }
         
@@ -172,7 +172,7 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
         // Configure the cell with rounded corners where necessary and symbol visibility
         cell.configure(
             toName: toName,
-            amount: transaction.amount,
+            amount: tripRepository?.fetchAmount(transaction.amount, by: currentTrip!) ?? "0" ,
             isFirst: isFirst,
             isLast: isLast,
             showSymbol: isSelectable,

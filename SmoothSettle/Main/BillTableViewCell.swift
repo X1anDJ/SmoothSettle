@@ -136,7 +136,7 @@ class BillTableViewCell: UITableViewCell {
     func configure(billTitle: String, date: String, amount: String, payerName: String, involversCount: Int) {
         billTitleLabel.text = billTitle
         dateLabel.text = date
-        amountLabel.text = "$\(amount)"
+        amountLabel.text = amount
         payerInitialsLabel.text = getInitials(from: payerName)
         storedInvolversCount = involversCount
         

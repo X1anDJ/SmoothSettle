@@ -56,12 +56,12 @@ class MainViewModel: ObservableObject {
             bills = []
         }
     }
-
-
+    
+    
     
     // MARK: - Methods to Load Data
     
-
+    
     // Load all unarchived trips from the repository
     func loadAllUnarchivedTrips() {
         trips = tripRepository.fetchUnarchivedTrips()
@@ -81,8 +81,8 @@ class MainViewModel: ObservableObject {
     }
     
     // Add a new trip with title, people, and date
-    func addNewTrip(title: String, people: [Person], date: Date) {
-        let newTrip = tripRepository.createTrip(title: title, people: people, date: date)
+    func addNewTrip(title: String, people: [Person], date: Date, currency: String) {
+        let newTrip = tripRepository.createTrip(title: title, people: people, date: date, currency: currency)
         trips.append(newTrip)
         selectTrip(by: newTrip.id) // Automatically select the new trip using UUID
     }
@@ -91,19 +91,19 @@ class MainViewModel: ObservableObject {
         tripRepository.deleteTrip(by: tripId)
         // No need to manually remove the trip from the array; the Combine publisher will handle it.
         
-//        // Check if the deleted trip was the current trip
-//        if currentTripId == tripId {
-//            if let firstTrip = trips.first {
-//                selectTrip(by: firstTrip.id)
-//            } else {
-//                // No trips left; reset state
-//                currentTripId = nil
-//                people = []
-//                bills = []
-//            }
-//        }
+        //        // Check if the deleted trip was the current trip
+        //        if currentTripId == tripId {
+        //            if let firstTrip = trips.first {
+        //                selectTrip(by: firstTrip.id)
+        //            } else {
+        //                // No trips left; reset state
+        //                currentTripId = nil
+        //                people = []
+        //                bills = []
+        //            }
+        //        }
     }
-
+    
     
     // Add a new person to the current trip
     func addPersonToCurrentTrip(name: String) {
@@ -121,7 +121,7 @@ class MainViewModel: ObservableObject {
             bills = tripRepository.fetchBills(for: currentTripId)
         }
     }
-
+    
     
     func deleteBill(by billId: UUID) {
         guard let currentTripId = currentTripId else { return }
@@ -153,13 +153,13 @@ class MainViewModel: ObservableObject {
             // print("No current trip selected.")
             return
         }
-
+        
         // Archive the trip using the repository
         tripRepository.archiveTrip(by: currentTripId)
         
         // Reset the state before reloading the trips
         resetState()
-
+        
         // Reload unarchived trips after settling the current trip
         loadAllUnarchivedTrips()
     }
@@ -185,5 +185,9 @@ class MainViewModel: ObservableObject {
         }
         
         return wasRemoved
+    }
+    
+    func getAmount(for amount: Double) -> String {
+        tripRepository.fetchAmount(amount, by: currentTripId ?? UUID())
     }
 }
