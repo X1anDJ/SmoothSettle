@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		DC360EA12D08E70600569A2D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = DC360EA02D08E70600569A2D /* Localizable.xcstrings */; };
+		DC360EA32D0B80FC00569A2D /* OwesChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC360EA22D0B80FC00569A2D /* OwesChartView.swift */; };
 		DC4C9EB12C9FFCCB00ADEA13 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4C9EB02C9FFCCB00ADEA13 /* AppDelegate.swift */; };
 		DC4C9EB52C9FFCCB00ADEA13 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4C9EB42C9FFCCB00ADEA13 /* MainViewController.swift */; };
 		DC4C9EBB2C9FFCCB00ADEA13 /* SmoothSettle.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DC4C9EB92C9FFCCB00ADEA13 /* SmoothSettle.xcdatamodeld */; };
@@ -69,6 +70,7 @@
 /* Begin PBXFileReference section */
 		DC360E9F2D08E6A400569A2D /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		DC360EA02D08E70600569A2D /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		DC360EA22D0B80FC00569A2D /* OwesChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OwesChartView.swift; sourceTree = "<group>"; };
 		DC4C9EAD2C9FFCCB00ADEA13 /* SmoothSettle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmoothSettle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC4C9EB02C9FFCCB00ADEA13 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DC4C9EB42C9FFCCB00ADEA13 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
@@ -326,6 +328,7 @@
 				DC6DE78E2CBE0B830050F6EF /* ArchiveView.swift */,
 				DC7FAA202CC3971E004593E4 /* ArchiveTripController.swift */,
 				DC6DF98E2CFE9A8800EB8E3A /* DonutChartView.swift */,
+				DC360EA22D0B80FC00569A2D /* OwesChartView.swift */,
 			);
 			path = Archive;
 			sourceTree = "<group>";
@@ -453,6 +456,7 @@
 				DC6DE77D2CBD12030050F6EF /* BillDetailViewController.swift in Sources */,
 				DC6DE76D2CBB0D1D0050F6EF /* BillsViewController.swift in Sources */,
 				DC6DE77A2CBD09240050F6EF /* AddBillView.swift in Sources */,
+				DC360EA32D0B80FC00569A2D /* OwesChartView.swift in Sources */,
 				DC6DE7772CBB58C20050F6EF /* TransactionsTableView.swift in Sources */,
 				DC6DE76F2CBB27730050F6EF /* ArchiveActionViewController.swift in Sources */,
 				DC6DE7832CBD190D0050F6EF /* BillDetailViewModel.swift in Sources */,
@@ -631,7 +635,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = dajun.SmoothSettle;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -660,7 +664,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = dajun.SmoothSettle;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

@@ -124,12 +124,13 @@ extension BillsViewController: UITableViewDelegate, UITableViewDataSource {
 
         let bill = isFiltering ? filteredBills[indexPath.row] : viewModel.bills[indexPath.row]
 
+        let formattedAmount = viewModel.getAmount(for: bill.amount)
         // Configure the cell using actual data from the bill
         cell.configure(
             
             billTitle: bill.title ?? "Untitled Bill",
             date: formatDate(bill.date),
-            amount: String(format: "%.2f", bill.amount),
+            amount: formattedAmount,
             payerName: bill.payer?.name ?? String(localized: "unknown_person"),
             involversCount: bill.involvers?.count ?? 0
         )

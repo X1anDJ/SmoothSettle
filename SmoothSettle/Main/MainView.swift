@@ -105,6 +105,7 @@ class MainView: UIView {
         currentTripButton.contentHorizontalAlignment = .left
 
         peopleSliderView.translatesAutoresizingMaskIntoConstraints = false
+        peopleSliderView.sliderType = .mainPage
         
         // -------------------------------------- Card --------------------------------------
         

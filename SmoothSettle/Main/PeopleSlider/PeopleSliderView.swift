@@ -11,10 +11,16 @@ enum SliderContext {
     case involver
 }
 
+enum SliderType {
+    case mainPage
+    case addPage
+}
+
 class PeopleSliderView: UIView {
     
+    var sliderType: SliderType = .addPage
     var context: SliderContext?
-    
+    let cellSpacing: CGFloat = 4
     // Collection View to show the circular cells
     private var collectionView: UICollectionView
     
@@ -118,8 +124,12 @@ extension PeopleSliderView: UICollectionViewDataSource, UICollectionViewDelegate
         if people.count == 0 {
             return 2
         } else {
-            
-            return people.count + 1 // +1 for the "plus" button
+            switch sliderType {
+            case .mainPage:
+                return people.count + 1 // +1 for the "plus" button
+            case .addPage:
+                return people.count
+            }
         }
         
     }
@@ -132,13 +142,22 @@ extension PeopleSliderView: UICollectionViewDataSource, UICollectionViewDelegate
             return cell
         }
 
-        if indexPath.item == 0 {
+        if indexPath.item == 0 && sliderType == .mainPage {
             // First cell is always the "plus" button for adding new people
+            print("IndexPath = \(indexPath.item)")
             cell.configureAsAddButton()
         } else {
+            print("IndexPath = \(indexPath.item)")
             cell.delegate = self
-            let person = people[indexPath.item - 1] // Adjust index for the "plus" button
-            // print("Person: \(String(describing: person.name))")
+            let path: Int
+            switch sliderType {
+            case .mainPage:
+                path = indexPath.item - 1 // Adjust index for the "plus" button
+            case .addPage:
+                path = indexPath.item
+            }
+            let person = people[path] // Adjust index for the "plus" button
+            print("Person: \(String(describing: person.name))")
 //            let isSelected = (person == selectedPayer || selectedInvolvers.contains(person))
 //            cell.configure(with: person, isSelected: isSelected) // Highlight if selected
             
@@ -156,14 +175,14 @@ extension PeopleSliderView: UICollectionViewDataSource, UICollectionViewDelegate
         
 //        // print("Cell tapped at index \(indexPath.item)")
         
-        if indexPath.item == 0 {
+        if indexPath.item == 0 && sliderType == .mainPage {
             // "plus" button tapped
             delegate?.didTapAddPerson(for: tripId) // Trigger delegate method for adding a new person
-        } else if people.count == 0 && indexPath.item == 1 {
+        } else if people.count == 0 && indexPath.item == 1 && sliderType == .mainPage {
             delegate?.didTapAddPerson(for: tripId)
         } else {
             // A person was tapped, trigger delegate for person selection
-            let person = people[indexPath.item - 1]
+            let person = people[indexPath.item]
             if allowSelection {
                 delegate?.didSelectPerson(person.id, for: tripId, context: context ?? .payer) // Pass person.id and tripId
             }
@@ -178,7 +197,7 @@ extension PeopleSliderView: UICollectionViewDataSource, UICollectionViewDelegate
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return -8
+        return -cellSpacing
     }
 }
 

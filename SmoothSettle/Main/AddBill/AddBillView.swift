@@ -166,7 +166,7 @@ class AddBillView: UIView {
             payerSectionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             
             payerSliderView.topAnchor.constraint(equalTo: payerSectionLabel.bottomAnchor, constant: 8),
-            payerSliderView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            payerSliderView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16 ),
             payerSliderView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             payerSliderView.heightAnchor.constraint(equalToConstant: 80),
             

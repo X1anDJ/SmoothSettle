@@ -6,6 +6,10 @@
 //
 import UIKit
 
+protocol TransactionsTableViewDelegate: AnyObject {
+    func transactionsTableView(_ tableView: TransactionsTableView, didChangeSettlementStatus hasUnsettledTransactions: Bool)
+}
+
 class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSource {
     
     // Data structure to hold the grouped transactions
@@ -14,6 +18,7 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
         let transactions: [Transaction]
     }
 
+    weak var transactionsDelegate: TransactionsTableViewDelegate?
     
     // Array to store grouped and sorted transactions
     var sections: [Section] = []
@@ -60,6 +65,17 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
         self.separatorStyle = .none
         self.backgroundColor = .clear
     }
+    
+    private func updateSettlementStatus() {
+        // Check if there are any unsettled transactions
+        let hasUnsettled = sections.contains { section in
+            section.transactions.contains { !$0.settled }
+        }
+        print("Has unsettled transactions: \(hasUnsettled)")
+        // Notify the delegate about the current settlement status
+        transactionsDelegate?.transactionsTableView(self, didChangeSettlementStatus: hasUnsettled)
+    }
+    
     
     func calculateTotalAmountsPerPerson() -> [ChartData] {
         var chartData: [ChartData] = []
@@ -241,6 +257,9 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
         // Reload the specific row to update the symbol
         tableView.reloadRows(at: [indexPath], with: .automatic)
         
+        // Update the settlement status for the delegate to enable/disable the settle button
+        updateSettlementStatus()
+        
         // Check if all transactions are settled
         let allSettled = sections.allSatisfy { section in
             section.transactions.allSatisfy { $0.settled }
@@ -278,6 +297,9 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
         // Reload the specific row to update the symbol
         tableView.reloadRows(at: [indexPath], with: .automatic)
         
+        // Update the settlement status for the delegate to enable/disable the settle button
+        updateSettlementStatus()
+        
         // Check if all transactions are settled
         let allSettled = sections.allSatisfy { section in
             section.transactions.allSatisfy { $0.settled }
@@ -286,6 +308,7 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
         if allSettled {
             // All transactions are settled, mark the trip as settled
             repository.markTripAsSettled(tripId: tripId)
+            
             // print("All transactions settled. Trip \(tripId) marked as settled.")
         } else {
             repository.markTripAsNotSettled(tripId: tripId)

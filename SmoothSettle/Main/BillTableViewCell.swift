@@ -54,7 +54,8 @@ class BillTableViewCell: UITableViewCell {
         
         // Paid Label
        // paidLabel.text = "Paid for"
-        paidLabel.text = String(localized: "paid_for")
+        //paidLabel.text = String(localized: "paid_for")
+        paidLabel.text = ""
         paidLabel.textAlignment = .center
         paidLabel.font = UIFont.systemFont(ofSize: 14)
         paidLabel.textColor = .darkGray
@@ -108,7 +109,7 @@ class BillTableViewCell: UITableViewCell {
         NSLayoutConstraint.activate([
             paidLabel.centerYAnchor.constraint(equalTo: payerCircleView.centerYAnchor),
             paidLabel.leadingAnchor.constraint(equalTo: payerCircleView.trailingAnchor, constant: 8),
-            paidLabel.widthAnchor.constraint(equalToConstant: 60),
+            paidLabel.widthAnchor.constraint(equalToConstant: 16),
         ])
         
         // Amount Label Constraints

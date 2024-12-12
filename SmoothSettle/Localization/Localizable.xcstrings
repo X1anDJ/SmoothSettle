@@ -13,7 +13,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "新增行程"
+            "value" : "添加行程"
           }
         }
       }
@@ -30,7 +30,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "新增支出"
+            "value" : "添加支出"
           }
         }
       }
@@ -41,13 +41,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Add"
+            "value" : "Confirm"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "添加"
+            "value" : "确认"
           }
         }
       }
@@ -81,7 +81,23 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "新增人员"
+            "value" : "添加参与人"
+          }
+        }
+      }
+    },
+    "All transactions have been settled." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All debts have been settled"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "所有债务标记为已结清"
           }
         }
       }
@@ -149,6 +165,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已归档"
+          }
+        }
+      }
+    },
+    "Are you sure you want to settle all transactions?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Are you sure to settle all debts?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "确定全部标记为已结清吗？"
           }
         }
       }
@@ -255,6 +287,22 @@
         }
       }
     },
+    "Cancel" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消"
+          }
+        }
+      }
+    },
     "cant_remove_message" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -319,6 +367,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "统计"
+          }
+        }
+      }
+    },
+    "Confirm Settlement" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirm Settlement"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "确认结清"
           }
         }
       }
@@ -642,6 +706,16 @@
         }
       }
     },
+    "No Transactions" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前无债务"
+          }
+        }
+      }
+    },
     "no_archived_trips" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -767,13 +841,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Paid for"
+            "value" : "——"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "付给"
+            "value" : "——"
           }
         }
       }
@@ -824,7 +898,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "人员"
+            "value" : "参与人"
           }
         }
       }
@@ -941,7 +1015,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "全部结清"
+            "value" : "全部标记为结清"
           }
         }
       }
@@ -963,6 +1037,26 @@
         }
       }
     },
+    "Success" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已结清"
+          }
+        }
+      }
+    },
+    "There are no unsettled transactions to settle." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前无债务"
+          }
+        }
+      }
+    },
     "Total" : {
       "localizations" : {
         "en" : {
@@ -975,6 +1069,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "总额"
+          }
+        }
+      }
+    },
+    "transactions" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Debt Checklist"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "债务表"
           }
         }
       }
@@ -1026,6 +1136,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "未结清"
+          }
+        }
+      }
+    },
+    "Yes" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "确认"
           }
         }
       }

@@ -132,6 +132,7 @@ class AddBillViewController: UIViewController,
                                            for: .touchUpInside)
         addBillView.cameraButton.menu = getImagePickerMenu()
         addBillView.cameraButton.showsMenuAsPrimaryAction = true
+        
     }
     
     private func setupActions() {
@@ -369,6 +370,7 @@ extension AddBillViewController: PeopleSliderViewDelegate {
             } else {
                 selectedPayerId = personId
             }
+            
             addBillView.payerSliderView.selectedPayerId = selectedPayerId
             addBillView.payerSliderView.reload()
 

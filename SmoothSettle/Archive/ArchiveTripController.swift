@@ -5,13 +5,14 @@
 //
 import UIKit
 import SwiftUI
-import Charts // Ensure you have imported the Charts framework
+
 
 class ArchiveTripController: UIViewController {
     
     // MARK: - UI Elements
     private let scrollView = UIScrollView()
     private let contentView = UIView()
+    private let transactionTableTitleLabel = UILabel()
     private let transactionsTableView = TransactionsTableView()
     private let noTransactionsLabel = UILabel() // Placeholder label
     private let chartHostingController = UIHostingController(rootView: OwesChartView(data: [], timePeriod: "", totalAmount: "")) // Initial empty chart
@@ -43,10 +44,21 @@ class ArchiveTripController: UIViewController {
         contentView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.addSubview(contentView)
         
+        // Transactions Table Title Label
+        transactionTableTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        let transactionsLocalized = String(localized: "transactions")
+        transactionTableTitleLabel.text = transactionsLocalized
+        //set font as .title2 and semibold
+        transactionTableTitleLabel.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
+        //set color as primaryDark
+        transactionTableTitleLabel.textColor = Colors.primaryDark
+        contentView.addSubview(transactionTableTitleLabel)
+        
         // Transactions Table View
         transactionsTableView.translatesAutoresizingMaskIntoConstraints = false
         transactionsTableView.isScrollEnabled = false // Disable internal scrolling
         transactionsTableView.isSelectable = true
+        transactionsTableView.transactionsDelegate = self
         
         contentView.addSubview(transactionsTableView)
         
@@ -74,7 +86,7 @@ class ArchiveTripController: UIViewController {
         settleButton.setImage(UIImage(systemName: "checkmark.circle"), for: .normal)
         settleButton.layer.cornerRadius = 15
         settleButton.tintColor = Colors.background1
-        settleButton.setTitleColor(Colors.background1, for: .normal)
+        settleButton.titleLabel?.tintColor = Colors.background1
         settleButton.backgroundColor = Colors.primaryDark
         settleButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         settleButton.imageView?.contentMode = .scaleAspectFit
@@ -113,8 +125,14 @@ class ArchiveTripController: UIViewController {
             chartHostingController.view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             chartHostingController.view.heightAnchor.constraint(equalToConstant: 300), // Adjust height as needed
             
+            // Transactions Table Title Label Constraints
+            transactionTableTitleLabel.topAnchor.constraint(equalTo: chartHostingController.view.bottomAnchor, constant: 16),
+            transactionTableTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            transactionTableTitleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            
+            
             // Transactions Table View Constraints
-            transactionsTableView.topAnchor.constraint(equalTo: chartHostingController.view.bottomAnchor, constant: 24),
+            transactionsTableView.topAnchor.constraint(equalTo: transactionTableTitleLabel.bottomAnchor),
             transactionsTableView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             transactionsTableView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             // Remove the bottom constraint to contentView
@@ -183,183 +201,88 @@ class ArchiveTripController: UIViewController {
     
     // MARK: - Actions
     @objc private func settleButtonTapped() {
+        // Create the alert controller
+        let alert = UIAlertController(
+            title: String(localized: "Confirm Settlement"),
+            message: String(localized: "Are you sure you want to settle all transactions?"),
+            preferredStyle: .alert
+        )
+        
+        // "Yes" action
+        let yesAction = UIAlertAction(title: String(localized: "Yes"), style: .default) { [weak self] _ in
+            self?.performSettlement()
+        }
+        
+        // "Cancel" action
+        let cancelAction = UIAlertAction(title: String(localized: "Cancel"), style: .cancel, handler: nil)
+        
+        // Add actions to the alert
+        alert.addAction(yesAction)
+        alert.addAction(cancelAction)
+        
+        // Present the alert
+        present(alert, animated: true, completion: nil)
+    }
+
+    // MARK: - Settlement Logic
+    private func performSettlement() {
         guard let tripId = trip?.id, let repository = tripRepository else { return }
         
-        // Fetch all transactions for the trip
-        let transactions = repository.fetchAllTransactions(for: tripId)
+        // Fetch all unsettled transactions for the trip
+        let transactions = repository.fetchAllTransactions(for: tripId).filter { !$0.settled }
+        
+        // Check if there are transactions to settle
+        guard !transactions.isEmpty else {
+            let noTransactionsAlert = UIAlertController(
+                title: String(localized: "No Transactions"),
+                message: String(localized: "There are no unsettled transactions to settle."),
+                preferredStyle: .alert
+            )
+            noTransactionsAlert.addAction(UIAlertAction(title: "OK", style: .default))
+            present(noTransactionsAlert, animated: true)
+            return
+        }
         
         // Mark all transactions as settled
         for transaction in transactions {
             transaction.settled = true
         }
         
-        // Save changes
+        // Save changes to the repository
         repository.saveContext()
         
         // Reload the transactions table view
         transactionsTableView.loadTransactions()
         
-        // Optionally, update the UI to reflect the changes
-        // For example, navigate back or show an alert
-        let alert = UIAlertController(title: "Success", message: "All transactions have been settled.", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
-    }
-}
-
-
-// MARK: - Chart Data Model
-struct ChartData: Identifiable {
-    let id = UUID()
-    let name: String
-    let owes: Double
-    let formattedOwes: String
-}
-
-// MARK: - SwiftUI Chart View
-struct OwesChartView: View {
-    var data: [ChartData]
-    var timePeriod: String
-    var totalAmount: String
-
-    // Define a color palette to assign consistent colors to each person
-    private let colorPalette: [Color] = [
-        Color(UIColor(hex: "ba3133")), // Color 1
-        Color(UIColor(hex: "f94144")), // Color 2
-        Color(UIColor(hex: "f3722c")), // Color 3
-        Color(UIColor(hex: "f8961e")), // Color 4
-        Color(UIColor(hex: "f9c74f")), // Color 5
-        Color(UIColor(hex: "90be6d")), // Color 6
-        Color(UIColor(hex: "43aa8b")), // Color 7
-        Color(UIColor(hex: "4d908e")), // Color 8
-        Color(UIColor(hex: "577590")), // Color 9
-        Color(UIColor(hex: "4d94b2"))  // Color 10
-    ]
-    
-    // Function to assign a color to each person based on their index
-    private func color(for index: Int) -> Color {
-        return colorPalette[index % colorPalette.count]
-    }
-    
-    var body: some View {
-        VStack {
-            HStack {
-                let expensesByPersonLocalized = String(localized: "expenses_by_person")
-                Text(expensesByPersonLocalized)
-                    .font(.title2)
-                    .fontWeight(.semibold)
-                    .padding(.bottom, 16) // Increased padding for better spacing
-                    .foregroundColor(Color(Colors.primaryDark))
-                Spacer()
-            }
-            HStack {
-                Text(timePeriod)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                Spacer()
-            }
-            if data.isEmpty {
-                let noExpensesLocalized = String(localized: "no_expenses")
-                Text(noExpensesLocalized)
-                    .foregroundColor(Color(.darkGray))
-                    .padding()
-            } else {
-                GeometryReader { geometry in
-                    HStack(spacing: 0) {
-                        Chart {
-                            ForEach(Array(data.enumerated()), id: \.element.id) { index, entry in
-                                SectorMark(
-                                    angle: .value("Amount", entry.owes),
-                                    innerRadius: .ratio(0.4),
-                                    angularInset: 1
-                                )
-                                .foregroundStyle(color(for: index))
-                                .annotation(position: .overlay) {
-                                    // Optional: Add labels inside the pie slices
-                                    // set text to bold
-                                    
-                                   // Text(String(format: "$%.0f", entry.owes))
-                                    Text(entry.formattedOwes)
-                                        .font(.caption)
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.white)
-                                        .rotationEffect(.degrees(0))
-                                }
-                            }
-                        }
-                        .chartLegend(.hidden) // Hide default legend
-                        .frame(width: geometry.size.width * 2 / 3.4 , height: geometry.size.width * 2 / 3.4)
-                        
-                        Spacer()
-                        
-                        VStack {
-                            LegendView(data: data, colorPalette: colorPalette)
-
-                            Spacer()
-                            // total amount label
-                            VStack(spacing: 8) {
-                                
-                                Text(String(localized: "Total"))
-                                    .font(.footnote)
-                                    .foregroundColor(.primary)
-                                    .padding(.top, 16)
-                                    
-                               // Text(String(format: "$%.2f", data.reduce(0) { $0 + $1.owes }))
-                                Text(totalAmount)
-                                    .font(.body)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(Color(Colors.accentOrange))
-                                    .padding(.bottom, 16)
-                            }
-                            .frame(width: geometry.size.width / 3 )
-                            .background(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color(Colors.background1))
-//                                    .shadow(radius: 1, x: 0, y: 2)
-                            )
-
-                        
-                        }
-                        .frame(width: geometry.size.width / 3 )
-
-                    }
-                }
-            }
+        // Update the chart data
+        if let trip = trip {
+            let timePeriod = tripRepository?.getTimePeriod(for: trip) ?? ""
+            updateChartData(timePeriod: timePeriod)
         }
         
+        // Show success alert
+        let successAlert = UIAlertController(
+            title: String(localized: "Success"),
+            message: String(localized: "All transactions have been settled."),
+            preferredStyle: .alert
+        )
+        successAlert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(successAlert, animated: true)
+        // disable settle button
+        settleButton.isEnabled = false
     }
+
 }
 
-
-// MARK: - Legend View
-struct LegendView: View {
-    var data: [ChartData]
-    var colorPalette: [Color]
-    
-    // Function to assign a color to each person based on their index
-    private func color(for index: Int) -> Color {
-        return colorPalette[index % colorPalette.count]
-    }
-    
-    var body: some View {
-        VStack(spacing: 8) {
-            ForEach(Array(data.enumerated()), id: \.element.id) { index, entry in
-                HStack {
-                    Circle()
-                        .fill(color(for: index))
-                        .frame(width: 12, height: 12)
-                    Text(entry.name)
-                        .font(.caption)
-                        .foregroundColor(.primary)
-                    Spacer()
-                }
-            }
+extension ArchiveTripController: TransactionsTableViewDelegate {
+    func transactionsTableView(_ tableView: TransactionsTableView, didChangeSettlementStatus hasUnsettledTransactions: Bool) {
+        DispatchQueue.main.async { [weak self] in
+            self?.settleButton.isEnabled = hasUnsettledTransactions
+            print("settlebutton status: \(String(describing: self?.settleButton.isEnabled))")
+//            self?.settleButton.alpha = !hasUnsettledTransactions ? 1.0 : 0.5 // Optional: Visual feedback
         }
-        .padding(8)
-        .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(Color(Colors.background1))
-//                .shadow(radius: 1, x: 0, y: 2)
-        )
     }
+    
+    
+    
 }

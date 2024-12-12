@@ -19,7 +19,7 @@ class AddTripViewController: UIViewController {
     // UI Elements
     let titleTextField = UITextField()
     let peopleSliderView = PeopleSliderView()
-    let datePicker = UIDatePicker()
+   // let datePicker = UIDatePicker()
     let navigationBar = UINavigationBar()
     
     let titleSectionLabel = UILabel()
@@ -58,7 +58,7 @@ class AddTripViewController: UIViewController {
         if let defaultCurrency = Locale.current.currencyCode {
             selectedCurrency = defaultCurrency
             if let currencyName = Locale.current.localizedString(forCurrencyCode: defaultCurrency) {
-                currencyButton.setTitle("\(defaultCurrency) - \(currencyName)", for: .normal)
+                currencyButton.setTitle("\(defaultCurrency)", for: .normal)
             } else {
                 currencyButton.setTitle(defaultCurrency, for: .normal)
             }
@@ -80,7 +80,7 @@ class AddTripViewController: UIViewController {
         
         // Ensure a currency is selected or default to user's locale currency
         let currency = selectedCurrency ?? Locale.current.currencyCode ?? "USD"
-        delegate?.didAddTrip(title: title, people: people, date: datePicker.date, currency: currency)
+        delegate?.didAddTrip(title: title, people: people, date: Date(), currency: currency)
         dismiss(animated: true, completion: nil)
     }
     
@@ -103,7 +103,8 @@ class AddTripViewController: UIViewController {
         for (code, name) in currencies {
             let action = UIAlertAction(title: "\(code) - \(name)", style: .default) { [weak self] _ in
                 self?.selectedCurrency = code
-                self?.currencyButton.setTitle("\(code) - \(name)", for: .normal)
+                //self?.currencyButton.setTitle("\(code) - \(name)", for: .normal)
+                self?.currencyButton.setTitle("\(code)", for: .normal)
             }
             alert.addAction(action)
         }
@@ -137,10 +138,10 @@ extension AddTripViewController {
         peopleSliderView.translatesAutoresizingMaskIntoConstraints = false
         peopleSliderView.delegate = self
         
-        // Date Picker
-        datePicker.datePickerMode = .date
-        datePicker.contentHorizontalAlignment = .leading
-        datePicker.translatesAutoresizingMaskIntoConstraints = false
+//        // Date Picker
+//        datePicker.datePickerMode = .date
+//        datePicker.contentHorizontalAlignment = .leading
+//        datePicker.translatesAutoresizingMaskIntoConstraints = false
         
         // Setup Navigation Bar (without a separate background and separator)
         let navItemLocalized = String(localized: "new_trip")
@@ -160,12 +161,12 @@ extension AddTripViewController {
         
         // Section Titles
         titleSectionLabel.text = String(localized: "trip_title")
-        titleSectionLabel.font = UIFont.systemFont(ofSize: 14)
+        titleSectionLabel.font = UIFont.systemFont(ofSize: 14, weight: .bold)
         titleSectionLabel.textColor = .gray
         titleSectionLabel.translatesAutoresizingMaskIntoConstraints = false
         
         peopleSectionLabel.text = String(localized: "people")
-        peopleSectionLabel.font = UIFont.systemFont(ofSize: 14)
+        peopleSectionLabel.font = UIFont.systemFont(ofSize: 14, weight: .bold)
         peopleSectionLabel.textColor = .gray
         peopleSectionLabel.translatesAutoresizingMaskIntoConstraints = false
         
@@ -176,19 +177,21 @@ extension AddTripViewController {
         
         // Currency Section Label
         currencySectionLabel.text = String(localized: "currency")
-        currencySectionLabel.font = UIFont.systemFont(ofSize: 14)
+        currencySectionLabel.font = UIFont.systemFont(ofSize: 14, weight: .bold)
         currencySectionLabel.textColor = .gray
         currencySectionLabel.translatesAutoresizingMaskIntoConstraints = false
         
         // Currency Button
         currencyButton.setTitle(String(localized: "select_currency"), for: .normal)
-        currencyButton.setTitleColor(.systemBlue, for: .normal)
-        currencyButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        currencyButton.layer.borderColor = UIColor.systemBlue.cgColor
-        currencyButton.layer.borderWidth = 1
+        currencyButton.tintColor = Colors.background1
+        currencyButton.setTitleColor(Colors.background1, for: .normal)
+        currencyButton.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+        currencyButton.backgroundColor = Colors.primaryMedium
+//        currencyButton.layer.borderColor = UIColor.systemBlue.cgColor
+//        currencyButton.layer.borderWidth = 1
         currencyButton.layer.cornerRadius = 8
-        currencyButton.contentHorizontalAlignment = .left
-        currencyButton.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 0)
+//        currencyButton.contentHorizontalAlignment = .left
+//        currencyButton.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 0)
         currencyButton.translatesAutoresizingMaskIntoConstraints = false
         
         // Add action to the button
@@ -201,8 +204,8 @@ extension AddTripViewController {
         view.addSubview(titleTextField)
         view.addSubview(peopleSectionLabel)
         view.addSubview(peopleSliderView)
-        view.addSubview(dateSectionLabel)
-        view.addSubview(datePicker)
+//        view.addSubview(dateSectionLabel)
+//        view.addSubview(datePicker)
         
         // Add Currency Section
         view.addSubview(currencySectionLabel)
@@ -236,25 +239,26 @@ extension AddTripViewController {
             peopleSliderView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             peopleSliderView.heightAnchor.constraint(equalToConstant: 80),
             
-            // Date Section Label Constraints
-            dateSectionLabel.topAnchor.constraint(equalTo: peopleSliderView.bottomAnchor, constant: 16),
-            dateSectionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            dateSectionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            
-            // Date Picker Constraints
-            datePicker.topAnchor.constraint(equalTo: dateSectionLabel.bottomAnchor, constant: 8),
-            datePicker.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            datePicker.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            
+//            // Date Section Label Constraints
+//            dateSectionLabel.topAnchor.constraint(equalTo: peopleSliderView.bottomAnchor, constant: 16),
+//            dateSectionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+//            dateSectionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+//            
+//            // Date Picker Constraints
+//            datePicker.topAnchor.constraint(equalTo: dateSectionLabel.bottomAnchor, constant: 8),
+//            datePicker.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+//            datePicker.widthAnchor.constraint(equalTo: titleTextField.widthAnchor),
+//            datePicker.heightAnchor.constraint(equalToConstant: 44),
+//            
             // Currency Section Label Constraints
-            currencySectionLabel.topAnchor.constraint(equalTo: datePicker.bottomAnchor, constant: 16),
+            currencySectionLabel.topAnchor.constraint(equalTo: peopleSliderView.bottomAnchor, constant: 16),
             currencySectionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             currencySectionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
             // Currency Button Constraints
             currencyButton.topAnchor.constraint(equalTo: currencySectionLabel.bottomAnchor, constant: 8),
             currencyButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            currencyButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            currencyButton.widthAnchor.constraint(equalToConstant: 160),
             currencyButton.heightAnchor.constraint(equalToConstant: 44),
 //            
 //            // Settle Button Constraints
