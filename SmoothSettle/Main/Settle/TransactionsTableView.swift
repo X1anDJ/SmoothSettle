@@ -47,7 +47,7 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
     
     // Initializer
     init() {
-        super.init(frame: .zero, style: .plain)
+        super.init(frame: .zero, style: .grouped)
         // selected indexPaths based on whether transaction is settled
         setupTableView()
     }
@@ -64,6 +64,12 @@ class TransactionsTableView: UITableView, UITableViewDelegate, UITableViewDataSo
         self.register(TransactionCell.self, forCellReuseIdentifier: "TransactionCell")
         self.separatorStyle = .none
         self.backgroundColor = .clear
+    }
+    
+    var hasUnsettled: Bool {
+        return sections.contains { section in
+            section.transactions.contains { !$0.settled }
+        }
     }
     
     private func updateSettlementStatus() {

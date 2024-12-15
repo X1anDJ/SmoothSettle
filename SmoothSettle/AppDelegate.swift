@@ -17,7 +17,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     let mainViewController = MainViewController()
 //    let loginViewController = LoginViewController()
-
+    var tabBarController: UITabBarController?
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions:
                          [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
@@ -40,6 +41,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        } else {
 //            setupTabBarController()
 //        }
+   //     UserDefaults.standard.set(false, forKey: "hasCreatedMockData")
         TripRepository.shared.createMockData()
         return true
     }
@@ -103,7 +105,7 @@ extension AppDelegate {
         let mainViewController = MainViewController()
         let mainNavController = UINavigationController(rootViewController: mainViewController)
         
-        mainViewController.tabBarItem = UITabBarItem(title: String(localized: "main_tab"), image: UIImage(systemName: "house.fill"), tag: 0)
+        mainViewController.tabBarItem = UITabBarItem(title: String(localized: "main_title"), image: UIImage(systemName: "house.fill"), tag: 0)
 
         // ArchiveViewController setup
         let archiveViewController = ArchiveViewController()
@@ -113,15 +115,17 @@ extension AppDelegate {
         // Add view controllers to the tab bar
         tabBarController.viewControllers = [mainNavController, archiveNavController]
 
-        // Set the appearance of the tab bar items
-        tabBarController.tabBar.tintColor = Colors.primaryDark // Selected item color
-        tabBarController.tabBar.unselectedItemTintColor = .systemGray3 // Unselected item color
+
 
         // Set up the appearance for the tab bar
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground() // Ensures the background is opaque
-    //    appearance.backgroundEffect = UIBlurEffect(style: .systemUltraThinMaterial)
+        appearance.backgroundEffect = UIBlurEffect(style: .systemUltraThinMaterial)
         appearance.backgroundColor = UIColor.clear
+        appearance.shadowColor = UIColor.systemGray
+        appearance.shadowImage = UIImage()
+        appearance.stackedLayoutAppearance.selected.iconColor = Colors.primaryDark
+        appearance.stackedLayoutAppearance.normal.iconColor = .lightGray
 
 
         // Apply the appearance to both standard and scroll edge appearances
@@ -130,13 +134,19 @@ extension AppDelegate {
             tabBarController.tabBar.scrollEdgeAppearance = appearance
         }
 
-        // Set up the shadow for the tab bar
-        tabBarController.tabBar.layer.shadowColor = UIColor.systemGray.cgColor
-        tabBarController.tabBar.layer.shadowOpacity = 0.2
-        tabBarController.tabBar.layer.shadowOffset = CGSize(width: 0, height: -2) // Negative height to apply shadow above the tab bar
-        tabBarController.tabBar.layer.shadowRadius = 5
-        tabBarController.tabBar.layer.masksToBounds = false
-
+//        // Set the appearance of the tab bar items
+        tabBarController.tabBar.tintColor = Colors.primaryDark // Selected item color
+ //       tabBarController.tabBar.unselectedItemTintColor = UIColor.red.withAlphaComponent(0.1) // Unselected item color
+//        // Set up the shadow for the tab bar
+//        tabBarController.tabBar.layer.shadowColor = UIColor.systemGray.cgColor
+//        tabBarController.tabBar.layer.shadowOpacity = 0.1
+//        tabBarController.tabBar.layer.shadowOffset = CGSize(width: 0, height: -2) // Negative height to apply shadow above the tab bar
+//        tabBarController.tabBar.layer.shadowRadius = 5
+//        tabBarController.tabBar.layer.masksToBounds = false
+//        tabBarController.hidesBottomBarWhenPushed = true
+//        tabBarController.tabBar.clipsToBounds = false
+        
+        self.tabBarController = tabBarController
         // Set the tab bar controller as the root view controller
         window?.rootViewController = tabBarController
         window?.makeKeyAndVisible()

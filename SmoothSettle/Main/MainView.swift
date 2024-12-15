@@ -105,7 +105,8 @@ class MainView: UIView {
         currentTripButton.contentHorizontalAlignment = .left
 
         peopleSliderView.translatesAutoresizingMaskIntoConstraints = false
-        peopleSliderView.sliderType = .mainPage
+        peopleSliderView.sliderType = .withAddButton
+        peopleSliderView.setupLongpress()
         
         // -------------------------------------- Card --------------------------------------
         
@@ -150,7 +151,7 @@ class MainView: UIView {
 
         // Table
         customTableView.translatesAutoresizingMaskIntoConstraints = false
-        customTableView.register(UITableViewCell.self, forCellReuseIdentifier: "BillCell")
+        customTableView.register(BillTableViewCell.self, forCellReuseIdentifier: "BillCell")
         customTableView.backgroundColor = .clear
 
         // Separator 2

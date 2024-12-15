@@ -1,6 +1,38 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "access_denied_message" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open setting to configure privacy setting"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请在设置中允许访问"
+          }
+        }
+      }
+    },
+    "access_denied_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Access Denied"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法使用"
+          }
+        }
+      }
+    },
     "add_a_trip" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -118,6 +150,23 @@
         }
       }
     },
+    "archive_action_title" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Results"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "计算结果"
+          }
+        }
+      }
+    },
     "archive_button" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -130,7 +179,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "归档"
+            "value" : "归档行程"
           }
         }
       }
@@ -198,6 +247,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "支出"
+          }
+        }
+      }
+    },
+    "bill_amount" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amount"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "金额"
+          }
+        }
+      }
+    },
+    "bill_payer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Payer"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "付款人"
           }
         }
       }
@@ -337,6 +418,38 @@
         }
       }
     },
+    "chart" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Statistics"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "数据"
+          }
+        }
+      }
+    },
+    "checklist" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checklist"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "记账"
+          }
+        }
+      }
+    },
     "close_button" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -360,13 +473,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Compute"
+            "value" : "Split"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "统计"
+            "value" : "分账"
           }
         }
       }
@@ -420,6 +533,38 @@
         }
       }
     },
+    "delete_bill_message" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Are you sure to delete"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你确定要移除"
+          }
+        }
+      }
+    },
+    "delete_bill_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Bill"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除支出"
+          }
+        }
+      }
+    },
     "delete_trip" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -443,13 +588,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Are you sure you want to delete"
+            "value" : "Are you sure to delete"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "确定要移除此行程吗"
+            "value" : "确定要移除"
           }
         }
       }
@@ -528,13 +673,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Share by Participant"
+            "value" : "Total Owes per Person"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "分摊概览"
+            "value" : "每人总欠额"
           }
         }
       }
@@ -544,7 +689,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please fill all the required fields"
+            "value" : "aaa"
           }
         },
         "zh-Hans" : {
@@ -572,18 +717,18 @@
         }
       }
     },
-    "Gallery" : {
+    "has_been_moved_to_current_trips" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gallery"
+            "value" : "has been moved to current trips"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "相册"
+            "value" : "已被移到当前行程"
           }
         }
       }
@@ -627,7 +772,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please fill all the required fields"
+            "value" : "Wait"
           }
         },
         "zh-Hans" : {
@@ -668,6 +813,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "当前行程"
+          }
+        }
+      }
+    },
+    "missing_info" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Missing"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "请补充"
           }
         }
       }
@@ -728,7 +890,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "无归档行程"
+            "value" : "无已归档行程"
           }
         }
       }
@@ -762,7 +924,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "当前无支出"
+            "value" : "无支出"
           }
         }
       }
@@ -779,7 +941,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "此行程无支出"
+            "value" : "无支出"
           }
         }
       }
@@ -814,6 +976,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "确认"
+          }
+        }
+      }
+    },
+    "open_settings" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开设置"
           }
         }
       }
@@ -914,7 +1086,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "人名"
+            "value" : "名字"
           }
         }
       }
@@ -931,7 +1103,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "人名"
+            "value" : "名字"
           }
         }
       }
@@ -949,6 +1121,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "成功移除"
+          }
+        }
+      }
+    },
+    "satistics" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Satistics"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "统计"
           }
         }
       }
@@ -1057,6 +1246,23 @@
         }
       }
     },
+    "Today" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今天"
+          }
+        }
+      }
+    },
     "Total" : {
       "localizations" : {
         "en" : {
@@ -1073,18 +1279,28 @@
         }
       }
     },
-    "transactions" : {
+    "trip" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "行程"
+          }
+        }
+      }
+    },
+    "trip_moved" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Debt Checklist"
+            "value" : "Trip Moved"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "债务表"
+            "value" : "你成功了！"
           }
         }
       }
@@ -1102,6 +1318,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "行程名"
+          }
+        }
+      }
+    },
+    "unexpected_error_message" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unexpected Error"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未知错误"
           }
         }
       }

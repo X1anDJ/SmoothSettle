@@ -20,6 +20,7 @@ class AddBillView: UIView {
 //    let currencyButton = UIButton()
     
     // Date Picker
+    let dateLabel = UILabel()
     let datePicker = UIDatePicker()
     
     // Section labels
@@ -43,27 +44,32 @@ class AddBillView: UIView {
     }
     
     private func style() {
-        backgroundColor = Colors.background1
-        layer.cornerRadius = 16
+        backgroundColor = Colors.background0
+        layer.cornerRadius = 14
         clipsToBounds = true
+        
+        let titleSize = CGFloat(16)
         
         // Bill Title Section Label
         billTitleSectionLabel.text = String(localized: "bill_title")
-        billTitleSectionLabel.font = UIFont.systemFont(ofSize: 14)
-        billTitleSectionLabel.textColor = .gray
+        billTitleSectionLabel.font = UIFont.systemFont(ofSize: titleSize, weight: .semibold)
+        billTitleSectionLabel.textColor = Colors.primaryDark
         billTitleSectionLabel.translatesAutoresizingMaskIntoConstraints = false
         
         // Bill Title TextField
         billTitleTextField.placeholder = String(localized: "enter_bill_title")
         billTitleTextField.borderStyle = .roundedRect
         billTitleTextField.translatesAutoresizingMaskIntoConstraints = false
+        billTitleTextField.autocorrectionType = .no
+        billTitleTextField.autocapitalizationType = .none
+        billTitleTextField.backgroundColor = Colors.background1
         
         // Camera Button
         cameraButton.setImage(UIImage(systemName: "camera"), for: .normal)
-        cameraButton.tintColor = UIColor.systemBlue
+        cameraButton.tintColor = Colors.primaryDark
         cameraButton.translatesAutoresizingMaskIntoConstraints = false
-        cameraButton.layer.cornerRadius = 8
-        cameraButton.backgroundColor = Colors.background0
+        cameraButton.layer.cornerRadius = 5
+        cameraButton.backgroundColor = Colors.background1
         cameraButton.imageView?.contentMode = .scaleAspectFit
         cameraButton.clipsToBounds = true
         
@@ -72,12 +78,17 @@ class AddBillView: UIView {
         if #available(iOS 14.0, *) {
             datePicker.preferredDatePickerStyle = .compact
         }
+        datePicker.addTarget(self, action: #selector(dateChanged), for: .valueChanged)
+        datePicker.backgroundColor = Colors.background0
+        datePicker.layer.cornerRadius = 5
+        datePicker.clipsToBounds = true
         datePicker.translatesAutoresizingMaskIntoConstraints = false
         
+        
         // Amount Section Label
-        amountSectionLabel.text = String(localized: "Amount")
-        amountSectionLabel.font = UIFont.systemFont(ofSize: 14)
-        amountSectionLabel.textColor = .gray
+        amountSectionLabel.text = String(localized: "bill_amount")
+        amountSectionLabel.font = UIFont.systemFont(ofSize: titleSize, weight: .semibold)
+        amountSectionLabel.textColor = Colors.primaryDark
         amountSectionLabel.translatesAutoresizingMaskIntoConstraints = false
         
         // Amount TextField
@@ -85,6 +96,7 @@ class AddBillView: UIView {
         amountTextField.borderStyle = .roundedRect
         amountTextField.keyboardType = .decimalPad
         amountTextField.translatesAutoresizingMaskIntoConstraints = false
+        amountTextField.backgroundColor = Colors.background1
         
 //        // Currency Button
 //        currencyButton.setTitle("USD", for: .normal)
@@ -94,24 +106,39 @@ class AddBillView: UIView {
 //        currencyButton.backgroundColor = Colors.background0
         
         // Payer Section Label
-        let payerSectionLabelLocalized = String(localized: "payer")
+        let payerSectionLabelLocalized = String(localized: "bill_payer")
         payerSectionLabel.text = payerSectionLabelLocalized
-        payerSectionLabel.font = UIFont.systemFont(ofSize: 14)
-        payerSectionLabel.textColor = .gray
+        payerSectionLabel.font = UIFont.systemFont(ofSize: titleSize, weight: .semibold)
+        payerSectionLabel.textColor = Colors.primaryDark
         payerSectionLabel.translatesAutoresizingMaskIntoConstraints = false
         
         // Payer Slider View
         payerSliderView.translatesAutoresizingMaskIntoConstraints = false
+        payerSliderView.sliderType = .noAddButon
         
         // Involvers Section Label
         let involversSectionLabelLocalized = String(localized: "participants")
         involversSectionLabel.text = involversSectionLabelLocalized
-        involversSectionLabel.font = UIFont.systemFont(ofSize: 14)
-        involversSectionLabel.textColor = .gray
+        involversSectionLabel.font = UIFont.systemFont(ofSize: titleSize, weight: .semibold)
+        involversSectionLabel.textColor = Colors.primaryDark
         involversSectionLabel.translatesAutoresizingMaskIntoConstraints = false
         
         // Involvers Slider View
         involversSliderView.translatesAutoresizingMaskIntoConstraints = false
+        involversSliderView.sliderType = .noAddButon
+
+        
+        // Date label styling
+        dateLabel.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        dateLabel.textColor = Colors.primaryDark
+        dateLabel.backgroundColor = Colors.background1
+        dateLabel.layer.cornerRadius = 5
+        dateLabel.clipsToBounds = true
+        dateLabel.textAlignment = .center
+        // Important: label should NOT intercept touches
+        dateLabel.isUserInteractionEnabled = false
+        dateLabel.translatesAutoresizingMaskIntoConstraints = false
+        
     }
     
     private func layout() {
@@ -119,6 +146,7 @@ class AddBillView: UIView {
         addSubview(billTitleTextField)
         addSubview(cameraButton)
         addSubview(datePicker)
+        addSubview(dateLabel)
         addSubview(amountSectionLabel)
         addSubview(amountTextField)
 //        addSubview(currencyButton)
@@ -142,6 +170,13 @@ class AddBillView: UIView {
             // Date Picker
             datePicker.centerYAnchor.constraint(equalTo: billTitleTextField.centerYAnchor),
             datePicker.trailingAnchor.constraint(equalTo: cameraButton.leadingAnchor, constant: -8),
+            datePicker.widthAnchor.constraint(equalToConstant: 120),
+            datePicker.heightAnchor.constraint(equalToConstant: 44),
+            
+            dateLabel.centerYAnchor.constraint(equalTo: billTitleTextField.centerYAnchor),
+            dateLabel.trailingAnchor.constraint(equalTo: cameraButton.leadingAnchor, constant: -8),
+            dateLabel.widthAnchor.constraint(equalToConstant: 120),
+            dateLabel.heightAnchor.constraint(equalToConstant: 44),
             
             // Bill Title TextField
             billTitleTextField.topAnchor.constraint(equalTo: billTitleSectionLabel.bottomAnchor, constant: 8),
@@ -167,8 +202,8 @@ class AddBillView: UIView {
             
             payerSliderView.topAnchor.constraint(equalTo: payerSectionLabel.bottomAnchor, constant: 8),
             payerSliderView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16 ),
-            payerSliderView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            payerSliderView.heightAnchor.constraint(equalToConstant: 80),
+            payerSliderView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
+            payerSliderView.heightAnchor.constraint(equalToConstant: 88),
             
             // Involvers Section
             involversSectionLabel.topAnchor.constraint(equalTo: payerSliderView.bottomAnchor, constant: 16),
@@ -177,8 +212,25 @@ class AddBillView: UIView {
             
             involversSliderView.topAnchor.constraint(equalTo: involversSectionLabel.bottomAnchor, constant: 8),
             involversSliderView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            involversSliderView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            involversSliderView.heightAnchor.constraint(equalToConstant: 80),
+            involversSliderView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
+            involversSliderView.heightAnchor.constraint(equalToConstant: 88),
         ])
+        
+        updateLabelWithDate(datePicker.date)
     }
+    @objc private func dateChanged() {
+        updateLabelWithDate(datePicker.date)
+    }
+    
+    private func updateLabelWithDate(_ date: Date) {
+        let calendar = Calendar.current
+        if calendar.isDateInToday(date) {
+            dateLabel.text = String(localized: "Today")
+        } else {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy/MM/dd"
+            dateLabel.text = formatter.string(from: date)
+        }
+    }
+    
 }

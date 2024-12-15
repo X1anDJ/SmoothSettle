@@ -106,7 +106,7 @@ class PeopleCell: UICollectionViewCell {
         
         // Apply a border if selected, otherwise no border
         if isSelected {
-            circleView.layer.borderWidth = 3.0
+            circleView.layer.borderWidth = 3.5
             circleView.layer.borderColor = Colors.accentOrange.cgColor
         } else {
             circleView.layer.borderWidth = 0

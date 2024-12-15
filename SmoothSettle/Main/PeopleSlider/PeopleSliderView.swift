@@ -12,17 +12,17 @@ enum SliderContext {
 }
 
 enum SliderType {
-    case mainPage
-    case addPage
+    case withAddButton
+    case noAddButon
 }
 
 class PeopleSliderView: UIView {
     
-    var sliderType: SliderType = .addPage
+    var sliderType: SliderType = .noAddButon
     var context: SliderContext?
     let cellSpacing: CGFloat = 4
     // Collection View to show the circular cells
-    private var collectionView: UICollectionView
+    var collectionView: UICollectionView
     
     // Delegate for handling button taps and person selection
     weak var delegate: PeopleSliderViewDelegate?
@@ -63,10 +63,6 @@ class PeopleSliderView: UIView {
         self.addGestureRecognizer(tapGesture)
         tapGesture.isEnabled = false
         
-        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
-        longPressGesture.minimumPressDuration = 0.5
-        collectionView.addGestureRecognizer(longPressGesture)
-        
         collectionView.register(PeopleCell.self, forCellWithReuseIdentifier: "PeopleCell")
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -89,6 +85,12 @@ class PeopleSliderView: UIView {
     
     func reload() {
         collectionView.reloadData()
+    }
+    
+    func setupLongpress() {
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
+        longPressGesture.minimumPressDuration = 0.5
+        collectionView.addGestureRecognizer(longPressGesture)
     }
 
     @objc private func handleLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
@@ -125,9 +127,9 @@ extension PeopleSliderView: UICollectionViewDataSource, UICollectionViewDelegate
             return 2
         } else {
             switch sliderType {
-            case .mainPage:
+            case .withAddButton:
                 return people.count + 1 // +1 for the "plus" button
-            case .addPage:
+            case .noAddButon:
                 return people.count
             }
         }
@@ -142,7 +144,7 @@ extension PeopleSliderView: UICollectionViewDataSource, UICollectionViewDelegate
             return cell
         }
 
-        if indexPath.item == 0 && sliderType == .mainPage {
+        if indexPath.item == 0 && sliderType == .withAddButton {
             // First cell is always the "plus" button for adding new people
             print("IndexPath = \(indexPath.item)")
             cell.configureAsAddButton()
@@ -151,9 +153,9 @@ extension PeopleSliderView: UICollectionViewDataSource, UICollectionViewDelegate
             cell.delegate = self
             let path: Int
             switch sliderType {
-            case .mainPage:
+            case .withAddButton:
                 path = indexPath.item - 1 // Adjust index for the "plus" button
-            case .addPage:
+            case .noAddButon:
                 path = indexPath.item
             }
             let person = people[path] // Adjust index for the "plus" button
@@ -175,15 +177,18 @@ extension PeopleSliderView: UICollectionViewDataSource, UICollectionViewDelegate
         
 //        // print("Cell tapped at index \(indexPath.item)")
         
-        if indexPath.item == 0 && sliderType == .mainPage {
+        if indexPath.item == 0 && sliderType == .withAddButton {
             // "plus" button tapped
             delegate?.didTapAddPerson(for: tripId) // Trigger delegate method for adding a new person
-        } else if people.count == 0 && indexPath.item == 1 && sliderType == .mainPage {
+        } else if people.count == 0 && indexPath.item == 1 && sliderType == .withAddButton {
             delegate?.didTapAddPerson(for: tripId)
         } else {
             // A person was tapped, trigger delegate for person selection
-            let person = people[indexPath.item]
+            print("indexPath.item = \(indexPath.item)")
+            print("people.count = \(people.count)")
+            print("people = \(people.map { $0.name })")
             if allowSelection {
+                let person = people[indexPath.item]
                 delegate?.didSelectPerson(person.id, for: tripId, context: context ?? .payer) // Pass person.id and tripId
             }
         }

@@ -154,7 +154,7 @@ class BillTableViewCell: UITableViewCell {
         let fixedCircleCountThreshold = 6
         
         // Calculate available width for involvers
-        let leftFixedWidths: CGFloat = 16 + 30 + 8 + 60 + 8  // Left margin, payerCircleView, spacing, paidLabel, spacing
+        let leftFixedWidths: CGFloat = 16 + 30 + 8 + 16 + 8  // Left margin, payerCircleView, spacing, paidLabel, spacing
         let rightFixedWidths: CGFloat = 8 + 100 + 16          // spacing, amountLabel, right margin
         let totalFixedWidths = leftFixedWidths + rightFixedWidths
         

@@ -20,9 +20,16 @@ class CardView: UIView {
     let archivedIconImageView = UIImageView()
     let dateLabel = UILabel()
     
-    // Tap Action
+    // Tap and Long Press Actions
     var onCardTapped: (() -> Void)?
     var onLongPress: (() -> Void)?
+    
+    // Timer for Long Press Detection
+    private var longPressTimer: Timer?
+    private let longPressDuration: TimeInterval = 0.5  // 0.5 seconds
+    
+    // Track if long press was triggered during the current touch sequence
+    private var longPressTriggered = false
     
     // Initialization
     override init(frame: CGRect) {
@@ -43,22 +50,6 @@ class CardView: UIView {
         // Add tap gesture recognizer
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(cardTapped))
         self.addGestureRecognizer(tapGesture)
-        setupLongPressGesture()
-        
-    }
-    
-    private func setupLongPressGesture() {
-        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
-        // Optionally, set minimum press duration
-        longPressGesture.minimumPressDuration = 0.5
-        self.addGestureRecognizer(longPressGesture)
-    }
-    
-    @objc private func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
-        // Ensure the gesture is in the began state to avoid multiple triggers
-        if gesture.state == .began {
-            onLongPress?()
-        }
     }
     
     private func style() {
@@ -94,14 +85,13 @@ class CardView: UIView {
         dateLabel.font = UIFont.preferredFont(forTextStyle: .subheadline)
         dateLabel.textColor = .systemGray
         
-        // archived Label
-                archivedLabel.translatesAutoresizingMaskIntoConstraints = false
-                archivedLabel.font = UIFont.preferredFont(forTextStyle: .subheadline)
+        // Archived Label
+        archivedLabel.translatesAutoresizingMaskIntoConstraints = false
+        archivedLabel.font = UIFont.preferredFont(forTextStyle: .subheadline)
         
-        // archived Icon ImageView
+        // Archived Icon ImageView
         archivedIconImageView.translatesAutoresizingMaskIntoConstraints = false
         archivedIconImageView.contentMode = .scaleAspectFit
-        
     }
     
     private func layout() {
@@ -112,7 +102,7 @@ class CardView: UIView {
         
         cardHeaderView.addSubview(cardTitleLabel)
         cardTrailerView.addSubview(dateLabel)
-        cardTrailerView.addSubview(        archivedLabel)
+        cardTrailerView.addSubview(archivedLabel)
         cardTrailerView.addSubview(archivedIconImageView)
         
         NSLayoutConstraint.activate([
@@ -148,24 +138,19 @@ class CardView: UIView {
             dateLabel.leadingAnchor.constraint(equalTo: cardTrailerView.leadingAnchor, constant: 16),
             dateLabel.centerYAnchor.constraint(equalTo: cardTrailerView.centerYAnchor),
             
-            // archived Label
-                    archivedLabel.trailingAnchor.constraint(equalTo: archivedIconImageView.leadingAnchor, constant: -4),
-                    archivedLabel.centerYAnchor.constraint(equalTo: cardTrailerView.centerYAnchor),
+            // Archived Label
+            archivedLabel.trailingAnchor.constraint(equalTo: archivedIconImageView.leadingAnchor, constant: -4),
+            archivedLabel.centerYAnchor.constraint(equalTo: cardTrailerView.centerYAnchor),
             
-            // archived Icon ImageView
+            // Archived Icon ImageView
             archivedIconImageView.trailingAnchor.constraint(equalTo: cardTrailerView.trailingAnchor, constant: -16),
             archivedIconImageView.centerYAnchor.constraint(equalTo: cardTrailerView.centerYAnchor),
             archivedIconImageView.widthAnchor.constraint(equalToConstant: 18),
             archivedIconImageView.heightAnchor.constraint(equalToConstant: 18),
             
-            // Empty space (for future use)
-            // Adjust as needed
             cardHeaderView.bottomAnchor.constraint(equalTo: cardTrailerView.topAnchor)
         ])
     }
-    
-    
-    
     
     // MARK: - Configure Method
     func configure(with trip: Trip) {
@@ -189,10 +174,72 @@ class CardView: UIView {
             archivedLabel.textColor = Colors.accentOrange
             archivedIconImageView.image = UIImage(systemName: "minus.circle")?.withTintColor(Colors.accentOrange, renderingMode: .alwaysOriginal)
         }
+        
+        // Reset flag each time we configure a card
+        longPressTriggered = false
     }
     
     // MARK: - Actions
     @objc private func cardTapped() {
-        onCardTapped?()
+        // Only call the tap action if long press was NOT triggered
+        if !longPressTriggered {
+            onCardTapped?()
+        }
+    }
+    
+    // MARK: - Touch Handling for Instant Animation and Long Press Detection
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        animatePressed(true)
+        
+        // Start the long press timer
+        longPressTimer = Timer.scheduledTimer(timeInterval: longPressDuration, target: self, selector: #selector(longPressDetected), userInfo: nil, repeats: false)
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+        animatePressed(false)
+        
+        // Invalidate the timer
+        longPressTimer?.invalidate()
+        longPressTimer = nil
+        
+        // Reset longPressTriggered to allow new taps after this gesture ends
+        longPressTriggered = false
+    }
+    
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesCancelled(touches, with: event)
+        animatePressed(false)
+        
+        // Invalidate the timer
+        longPressTimer?.invalidate()
+        longPressTimer = nil
+        
+        // Reset longPressTriggered to allow new taps after this gesture ends
+        longPressTriggered = false
+    }
+    
+    @objc private func longPressDetected() {
+        longPressTriggered = true
+        onLongPress?()
+    }
+    
+    private func animatePressed(_ pressed: Bool) {
+        let scale: CGFloat = pressed ? 0.95 : 1.0
+        let shadowOpacity: Float = pressed ? 0.15 : 0.1
+        let shadowRadius: CGFloat = pressed ? 4 : 3
+        let animationDuration: TimeInterval = pressed ? 0.2 : 0.3  // Increased duration for touchesEnded
+        
+        UIView.animate(withDuration: animationDuration,
+                       delay: 0,
+                       usingSpringWithDamping: 0.7,
+                       initialSpringVelocity: 20,
+                       options: [.allowUserInteraction, .curveEaseInOut],
+                       animations: {
+            self.containerView.transform = CGAffineTransform(scaleX: scale, y: scale)
+            self.shadowContainerView.layer.shadowOpacity = shadowOpacity
+            self.shadowContainerView.layer.shadowRadius = shadowRadius
+        }, completion: nil)
     }
 }

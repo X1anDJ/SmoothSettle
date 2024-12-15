@@ -126,18 +126,21 @@ class AddTripViewController: UIViewController {
 extension AddTripViewController {
     
     private func style() {
-        view.backgroundColor = Colors.background1 // Light gray background
+        view.backgroundColor = Colors.background0 // Light gray background
+        let titleSize = CGFloat(16)
         
         // Title TextField
         let enterTripTitleLocalized = String(localized: "enter_trip_title")
         titleTextField.placeholder = enterTripTitleLocalized
         titleTextField.borderStyle = .roundedRect
         titleTextField.translatesAutoresizingMaskIntoConstraints = false
+        titleTextField.backgroundColor = Colors.background1
         titleTextField.autocorrectionType = .no
         // People Slider View
         peopleSliderView.translatesAutoresizingMaskIntoConstraints = false
         peopleSliderView.delegate = self
-        
+        peopleSliderView.sliderType = .withAddButton
+        peopleSliderView.allowSelection = false
 //        // Date Picker
 //        datePicker.datePickerMode = .date
 //        datePicker.contentHorizontalAlignment = .leading
@@ -161,31 +164,31 @@ extension AddTripViewController {
         
         // Section Titles
         titleSectionLabel.text = String(localized: "trip_title")
-        titleSectionLabel.font = UIFont.systemFont(ofSize: 14, weight: .bold)
-        titleSectionLabel.textColor = .gray
+        titleSectionLabel.font = UIFont.systemFont(ofSize: titleSize, weight: .semibold)
+        titleSectionLabel.textColor = Colors.primaryDark
         titleSectionLabel.translatesAutoresizingMaskIntoConstraints = false
         
         peopleSectionLabel.text = String(localized: "people")
-        peopleSectionLabel.font = UIFont.systemFont(ofSize: 14, weight: .bold)
-        peopleSectionLabel.textColor = .gray
+        peopleSectionLabel.font = UIFont.systemFont(ofSize: titleSize, weight: .semibold)
+        peopleSectionLabel.textColor = Colors.primaryDark
         peopleSectionLabel.translatesAutoresizingMaskIntoConstraints = false
         
         dateSectionLabel.text = String(localized: "enter_date")
-        dateSectionLabel.font = UIFont.systemFont(ofSize: 14)
-        dateSectionLabel.textColor = .gray
+        dateSectionLabel.font = UIFont.systemFont(ofSize: titleSize, weight: .semibold)
+        dateSectionLabel.textColor = Colors.primaryDark
         dateSectionLabel.translatesAutoresizingMaskIntoConstraints = false
         
         // Currency Section Label
         currencySectionLabel.text = String(localized: "currency")
-        currencySectionLabel.font = UIFont.systemFont(ofSize: 14, weight: .bold)
-        currencySectionLabel.textColor = .gray
+        currencySectionLabel.font = UIFont.systemFont(ofSize: titleSize, weight: .semibold)
+        currencySectionLabel.textColor = Colors.primaryDark
         currencySectionLabel.translatesAutoresizingMaskIntoConstraints = false
         
         // Currency Button
         currencyButton.setTitle(String(localized: "select_currency"), for: .normal)
         currencyButton.tintColor = Colors.background1
         currencyButton.setTitleColor(Colors.background1, for: .normal)
-        currencyButton.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+        currencyButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         currencyButton.backgroundColor = Colors.primaryMedium
 //        currencyButton.layer.borderColor = UIColor.systemBlue.cgColor
 //        currencyButton.layer.borderWidth = 1
@@ -298,6 +301,8 @@ extension AddTripViewController: PeopleSliderViewDelegate {
         let alert = UIAlertController(title: addPersonAlert, message: addPersonMessageAlert, preferredStyle: .alert)
         alert.addTextField { textField in
             textField.placeholder = personNameLocalized
+            textField.autocorrectionType = .no
+            
         }
         alert.addAction(UIAlertAction(title: String(localized: "add_button"), style: .default, handler: { [weak self] _ in
             if let name = alert.textFields?.first?.text, !name.isEmpty {
@@ -314,6 +319,7 @@ extension AddTripViewController: PeopleSliderViewDelegate {
                 try? CoreDataManager.shared.context.save()
             }
         }))
+        alert.addAction(UIAlertAction(title: String(localized: "close_button"), style: .cancel))
         present(alert, animated: true)
     }
 

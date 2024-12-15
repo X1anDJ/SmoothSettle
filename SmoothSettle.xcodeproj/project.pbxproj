@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		DC360EA12D08E70600569A2D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = DC360EA02D08E70600569A2D /* Localizable.xcstrings */; };
 		DC360EA32D0B80FC00569A2D /* OwesChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC360EA22D0B80FC00569A2D /* OwesChartView.swift */; };
+		DC360EA52D0B8FDE00569A2D /* BillsCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC360EA42D0B8FDE00569A2D /* BillsCardView.swift */; };
+		DC360EA72D0C32F500569A2D /* ArchivedBillsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC360EA62D0C32F500569A2D /* ArchivedBillsViewController.swift */; };
 		DC4C9EB12C9FFCCB00ADEA13 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4C9EB02C9FFCCB00ADEA13 /* AppDelegate.swift */; };
 		DC4C9EB52C9FFCCB00ADEA13 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4C9EB42C9FFCCB00ADEA13 /* MainViewController.swift */; };
 		DC4C9EBB2C9FFCCB00ADEA13 /* SmoothSettle.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DC4C9EB92C9FFCCB00ADEA13 /* SmoothSettle.xcdatamodeld */; };
@@ -71,6 +73,8 @@
 		DC360E9F2D08E6A400569A2D /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		DC360EA02D08E70600569A2D /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		DC360EA22D0B80FC00569A2D /* OwesChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OwesChartView.swift; sourceTree = "<group>"; };
+		DC360EA42D0B8FDE00569A2D /* BillsCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillsCardView.swift; sourceTree = "<group>"; };
+		DC360EA62D0C32F500569A2D /* ArchivedBillsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchivedBillsViewController.swift; sourceTree = "<group>"; };
 		DC4C9EAD2C9FFCCB00ADEA13 /* SmoothSettle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmoothSettle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC4C9EB02C9FFCCB00ADEA13 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DC4C9EB42C9FFCCB00ADEA13 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
@@ -217,10 +221,10 @@
 				DC6DE77B2CBD11EF0050F6EF /* BillDetail */,
 				DC7FAA1F2CC1F024004593E4 /* Bills */,
 				DC531B052CA2097E0053DC24 /* PeopleSlider */,
-				DC4C9EB42C9FFCCB00ADEA13 /* MainViewController.swift */,
 				DC4C9EE22CA1298100ADEA13 /* MainViewModel.swift */,
-				DC531B092CA22AED0053DC24 /* BillTableViewCell.swift */,
 				DC6DE7452CBA5BCF0050F6EF /* MainView.swift */,
+				DC4C9EB42C9FFCCB00ADEA13 /* MainViewController.swift */,
+				DC531B092CA22AED0053DC24 /* BillTableViewCell.swift */,
 				DC6DF9902CFF9A0F00EB8E3A /* TripSelectionViewController.swift */,
 				DC6DF9922CFF9F4D00EB8E3A /* TripPopoverViewController.swift */,
 			);
@@ -329,6 +333,8 @@
 				DC7FAA202CC3971E004593E4 /* ArchiveTripController.swift */,
 				DC6DF98E2CFE9A8800EB8E3A /* DonutChartView.swift */,
 				DC360EA22D0B80FC00569A2D /* OwesChartView.swift */,
+				DC360EA42D0B8FDE00569A2D /* BillsCardView.swift */,
+				DC360EA62D0C32F500569A2D /* ArchivedBillsViewController.swift */,
 			);
 			path = Archive;
 			sourceTree = "<group>";
@@ -428,6 +434,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DC531AF92CA1FA530053DC24 /* Bill+CoreDataClass.swift in Sources */,
+				DC360EA72D0C32F500569A2D /* ArchivedBillsViewController.swift in Sources */,
 				DC531AF82CA1FA530053DC24 /* Trip+CoreDataProperties.swift in Sources */,
 				DC531B022CA201C00053DC24 /* TripRepository.swift in Sources */,
 				DC4C9EDE2CA126D800ADEA13 /* UIColor+Extension.swift in Sources */,
@@ -436,6 +443,7 @@
 				DC531AF52CA1FA530053DC24 /* Person+CoreDataClass.swift in Sources */,
 				DC4C9EE02CA1270500ADEA13 /* Colors.swift in Sources */,
 				DC531B132CA24FF40053DC24 /* PeopleCell.swift in Sources */,
+				DC360EA52D0B8FDE00569A2D /* BillsCardView.swift in Sources */,
 				DC531AFA2CA1FA530053DC24 /* Bill+CoreDataProperties.swift in Sources */,
 				DC531B112CA247400053DC24 /* AddBillViewController.swift in Sources */,
 				DC4C9EBB2C9FFCCB00ADEA13 /* SmoothSettle.xcdatamodeld in Sources */,
@@ -635,7 +643,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 0.9;
 				PRODUCT_BUNDLE_IDENTIFIER = dajun.SmoothSettle;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -664,7 +672,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 0.9;
 				PRODUCT_BUNDLE_IDENTIFIER = dajun.SmoothSettle;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

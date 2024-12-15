@@ -109,7 +109,7 @@ class MainViewController: UIViewController, TripPopoverDelegate, UIPopoverPresen
             .receive(on: DispatchQueue.main)
             .sink { [weak self] people in
                 self?.updatePeopleSlider(with: people)
-                
+                self?.updateComputeAndAddBillButtons()
             }
             .store(in: &cancellables)
         
@@ -141,7 +141,7 @@ class MainViewController: UIViewController, TripPopoverDelegate, UIPopoverPresen
         let totalAmount = bills?.reduce(0, { $0 + $1.amount }) ?? 0
         mainView.totalAmountLabel.text = viewModel.getAmount(for: totalAmount)
     }
-    
+
 //    func setupTripDropdownMenu() {
 //        // Create actions for each existing trip
 //        let tripMenuActions = viewModel.trips.map { trip in
@@ -149,20 +149,20 @@ class MainViewController: UIViewController, TripPopoverDelegate, UIPopoverPresen
 //                self?.viewModel.selectTrip(by: trip.id) // Use UUID to select the trip
 //            }
 //        }
-//        
+//
 //        // Add a special action for adding a new trip
 //        let addTripAction = UIAction(title: "Add a Trip", image: UIImage(systemName: "plus")) { [weak self] _ in
 //            self?.didTapAddTrip() // Call the function to add a new trip
 //        }
-//        
+//
 //        // Create the UIMenu and append the "Add Trip" action as the last item
 //        let tripMenu = UIMenu(title: "Switch Trip", children: tripMenuActions + [addTripAction])
-//        
+//
 //        // Assign the menu to the currentTripButton
 //        mainView.currentTripButton.menu = tripMenu
 //        mainView.currentTripButton.showsMenuAsPrimaryAction = true
 //    }
-
+    
     @objc func didTapCardRightArrowButton() {
         let billsViewController = BillsViewController(viewModel: viewModel)
         navigationController?.pushViewController(billsViewController, animated: true)
@@ -178,7 +178,7 @@ class MainViewController: UIViewController, TripPopoverDelegate, UIPopoverPresen
 //        navigationController.modalPresentationStyle = .fullScreen
 //        present(navigationController, animated: true, completion: nil)
 //    }
-
+    
     @objc func didTapAddTrip() {
         let addTripVC = AddTripViewController()
         addTripVC.delegate = self
@@ -227,20 +227,34 @@ class MainViewController: UIViewController, TripPopoverDelegate, UIPopoverPresen
 
         // Update interactivity and appearance of UI elements
         mainView.peopleSliderView.isUserInteractionEnabled = isEnabled
-        mainView.cardHeaderView.isUserInteractionEnabled = isEnabled
-        mainView.cardRightArrowButton.isUserInteractionEnabled = isEnabled
+        mainView.cardHeaderView.isUserInteractionEnabled = isEnabled && !viewModel.people.isEmpty
+        mainView.cardRightArrowButton.isUserInteractionEnabled = isEnabled && !viewModel.people.isEmpty
         mainView.customTableView.isUserInteractionEnabled = isEnabled
-        mainView.computeButton.isUserInteractionEnabled = isEnabled
-        mainView.addBillButton.isUserInteractionEnabled = isEnabled
+        mainView.computeButton.isUserInteractionEnabled = isEnabled && !viewModel.people.isEmpty
+        mainView.addBillButton.isUserInteractionEnabled = isEnabled && !viewModel.people.isEmpty
+        mainView.totalAmountLabel.alpha = isEnabled ? enabledAlpha : disabledAlpha
 
         // Change alpha to visually indicate disabled state
         mainView.peopleSliderView.alpha = isEnabled ? enabledAlpha : disabledAlpha
         mainView.shadowContainerView.alpha = isEnabled ? enabledAlpha : disabledAlpha
-//        mainView.cardRightArrowButton.alpha = isEnabled ? enabledAlpha : disabledAlpha
-//        mainView.customTableView.alpha = isEnabled ? enabledAlpha : disabledAlpha
-        mainView.computeButton.alpha = isEnabled ? enabledAlpha : disabledAlpha
-        mainView.addBillButton.alpha = isEnabled ? enabledAlpha : disabledAlpha
+        mainView.cardHeaderView.alpha = (isEnabled && !viewModel.people.isEmpty) ? enabledAlpha : disabledAlpha
+        mainView.cardRightArrowButton.alpha = (isEnabled && !viewModel.people.isEmpty) ? enabledAlpha : disabledAlpha
+        mainView.customTableView.alpha = (isEnabled && !viewModel.people.isEmpty) ? enabledAlpha : disabledAlpha
+        mainView.cardContainerView.alpha = (isEnabled && !viewModel.people.isEmpty) ? enabledAlpha : disabledAlpha
+        mainView.computeButton.alpha = (isEnabled && !viewModel.people.isEmpty) ? enabledAlpha : disabledAlpha
+        mainView.addBillButton.alpha = (isEnabled && !viewModel.people.isEmpty) ? enabledAlpha : disabledAlpha
         
+    }
+    
+    func updateComputeAndAddBillButtons() {
+        let isEnabled = viewModel.currentTripId != nil && !viewModel.people.isEmpty
+        mainView.computeButton.isUserInteractionEnabled = isEnabled
+        mainView.addBillButton.isUserInteractionEnabled = isEnabled
+        let disabledAlpha: CGFloat = 0.3
+        let enabledAlpha: CGFloat = 1.0
+        mainView.cardContainerView.alpha = (isEnabled && !viewModel.people.isEmpty) ? enabledAlpha : disabledAlpha
+        mainView.computeButton.alpha = isEnabled ? 1.0 : 0.3
+        mainView.addBillButton.alpha = isEnabled ? 1.0 : 0.3
     }
 
     @objc func didTapAddBill() {
@@ -272,7 +286,7 @@ class MainViewController: UIViewController, TripPopoverDelegate, UIPopoverPresen
 
 }
 
-// Delegate for PeopleSliderView
+ // Delegate for PeopleSliderView
 extension MainViewController: PeopleSliderViewDelegate, PeopleCellDelegate {
     func didRequestRemovePerson(_ personId: UUID?) {
         // Check if personId is valid, do nothing if it's nil
@@ -322,9 +336,11 @@ extension MainViewController: PeopleSliderViewDelegate, PeopleCellDelegate {
         
         // Show alert to add a person
         DispatchQueue.main.async {
-            let alert = UIAlertController(title: String(localized: "add_person_alert_title"), message: String(localized: "add_person_alert_message"), preferredStyle: .alert)
+            let alert = UIAlertController(title: String(localized: "add_person_alert_title"), message: .none, preferredStyle: .alert)
             alert.addTextField { textField in
                 textField.placeholder = String(localized: "person_name_place_holder")
+                textField.autocapitalizationType = .none
+                textField.autocorrectionType = .no
             }
             alert.addAction(UIAlertAction(title: String(localized: "add_button"), style: .default, handler: { [weak self] _ in
                 if let name = alert.textFields?.first?.text, name.isEmpty {
@@ -398,10 +414,19 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let bill = viewModel.bills[indexPath.row]
-            viewModel.deleteBill(by: bill.id)
+            
+            let message = String(localized: "delete_bill_message")
+            let alert = UIAlertController(title: String(localized: "delete_bill_title"), message: "\(message) \"\(bill.title ?? "this bill")\"?", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: String(localized: "close_button"), style: .cancel))
+            alert.addAction(UIAlertAction(title: String(localized: "delete"), style: .destructive) { [weak self] _ in
+                self?.viewModel.deleteBill(by: bill.id)
+                tableView.deleteRows(at: [indexPath], with: .automatic)
+            })
+            present(alert, animated: true)
+//            viewModel.deleteBill(by: bill.id)
             
             // Remove the row from the table view with animation
-            tableView.deleteRows(at: [indexPath], with: .automatic)
+
         }
     }
 }

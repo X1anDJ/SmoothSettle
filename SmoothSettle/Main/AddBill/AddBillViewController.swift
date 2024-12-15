@@ -7,6 +7,7 @@
 
 import UIKit
 import PhotosUI
+import AVFoundation // Needed for camera permission checks
 
 protocol AddBillViewControllerDelegate: AnyObject {
     func didAddBill(title: String,
@@ -27,10 +28,13 @@ class AddBillViewController: UIViewController,
     
     // Custom View
     let addBillView = AddBillView()
-    let invalidAlertTitle = String(localized: "invalid_alert_title")
+    
+    // Localized Strings
+    let invalidAlertTitle = String(localized: "missing_info")
     let fillAllAlertMessage = String(localized: "fill_all_message")
     let ok = String(localized: "OK")
-    // Now store selected payer and involvers by UUID
+    
+    // Store selected payer and involvers by UUID
     var selectedPayerId: UUID?
     var selectedInvolverIds: [UUID] = []
     var selectedImage: UIImage?
@@ -48,18 +52,18 @@ class AddBillViewController: UIViewController,
         setup()
         setupActions()
         
-        //MARK: recognizing the taps on the app screen, not the keyboard...
+        // Recognize taps on the app screen to dismiss the keyboard
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(hideKeyboardOnTap))
         tapRecognizer.cancelsTouchesInView = false
         view.addGestureRecognizer(tapRecognizer)
         
+        // Configure modal presentation style for iOS 15 and above
         if #available(iOS 15.0, *) {
             self.modalPresentationStyle = .pageSheet
             let requiredHeight = calculateRequiredHeight()
-            let customDetent = UISheetPresentationController.Detent
-                .custom(identifier: .init("customHeight")) { _ in
-                    return requiredHeight
-                }
+            let customDetent = UISheetPresentationController.Detent.custom(identifier: .init("customHeight")) { _ in
+                return requiredHeight
+            }
             
             self.sheetPresentationController?.detents = [customDetent]
             self.sheetPresentationController?.prefersGrabberVisible = false
@@ -67,6 +71,7 @@ class AddBillViewController: UIViewController,
             self.modalPresentationStyle = .formSheet
         }
         
+        // Ensure navigation bar appearance consistency
         if #available(iOS 15.0, *) {
             self.navigationController?.navigationBar.scrollEdgeAppearance =
                 self.navigationController?.navigationBar.standardAppearance
@@ -92,7 +97,7 @@ class AddBillViewController: UIViewController,
         addBillView.payerSliderView.people = people
         addBillView.involversSliderView.people = people
         
-        // **Select all involvers by default**
+        // Select all involvers by default
         selectedInvolverIds = people.map { $0.id } // Populate with all UUIDs
         addBillView.involversSliderView.selectedInvolverIds = selectedInvolverIds
         
@@ -101,7 +106,6 @@ class AddBillViewController: UIViewController,
         addBillView.involversSliderView.reload()
     }
 
-    
     private func setup() {
         // Setup Navigation Bar (transparent)
         navigationItem.title = String(localized: "add_bill")
@@ -132,7 +136,6 @@ class AddBillViewController: UIViewController,
                                            for: .touchUpInside)
         addBillView.cameraButton.menu = getImagePickerMenu()
         addBillView.cameraButton.showsMenuAsPrimaryAction = true
-        
     }
     
     private func setupActions() {
@@ -162,13 +165,52 @@ class AddBillViewController: UIViewController,
     
     // Handle confirm button action
     @objc private func didTapConfirmButton() {
-        guard let title = addBillView.billTitleTextField.text, !title.isEmpty,
-              let amountText = addBillView.amountTextField.text,
-              let amount = Double(amountText),
-              let payerId = selectedPayerId else {
-           
+        var missingFields: [String] = []
+        
+        // Validate Title
+        let titleText = addBillView.billTitleTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines)
+        if titleText == nil || titleText!.isEmpty {
+            missingFields.append(String(localized: "bill_title"))
+            print("Invalid title")
+        }
+        
+        // Validate Amount
+        let amountText = addBillView.amountTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines)
+        var amountValue: Double?
+        if let amountStr = amountText, !amountStr.isEmpty, let amount = Double(amountStr) {
+            amountValue = amount
+        } else {
+            missingFields.append(String(localized: "bill_amount"))
+            print("Invalid amount")
+        }
+        
+        // Validate Payer
+        if selectedPayerId == nil {
+            missingFields.append(String(localized: "bill_payer"))
+            print("Invalid payer")
+        }
+        
+        // If any fields are missing, show an alert
+        if !missingFields.isEmpty {
+            print("Missing fields: \(missingFields)")
+            let fields = missingFields.joined(separator: ", ")
+         //   let message = String(format: String(localized: "missing_fields_message"), fields)
+            let message = fields
             let alert = UIAlertController(title: invalidAlertTitle,
-                                          message: fillAllAlertMessage,
+                                          message: message,
+                                          preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: ok, style: .default))
+            present(alert, animated: true)
+            return
+        }
+        
+        // All required fields are present
+        guard let title = titleText,
+              let amount = amountValue,
+              let payerId = selectedPayerId else {
+            // This should never happen, but added for safety
+            let alert = UIAlertController(title: invalidAlertTitle,
+                                          message: String(localized: "unexpected_error_message"),
                                           preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: ok, style: .default))
             present(alert, animated: true)
@@ -193,9 +235,9 @@ class AddBillViewController: UIViewController,
     @objc private func didTapCancelButton() {
         dismiss(animated: true, completion: nil)
     }
-    // MARK: - removing the keyboard from screen...
+    
+    // MARK: - Dismissing the Keyboard
     @objc func hideKeyboardOnTap(){
-        
         view.endEditing(true)
     }
     
@@ -216,14 +258,12 @@ class AddBillViewController: UIViewController,
     
     // Get the image picker menu
     private func getImagePickerMenu() -> UIMenu {
-        
-        
         let cameraAction = UIAction(title: String(localized: "camera"),
                                     image: UIImage(systemName: "camera")) { [weak self] (_) in
             self?.presentCamera()
         }
         
-        let galleryAction = UIAction(title: String(localized: "Gallery"),
+        let galleryAction = UIAction(title: String(localized: "gallery"),
                                      image: UIImage(systemName: "photo.on.rectangle")) { [weak self] (_) in
             self?.presentPhotoPicker()
         }
@@ -237,11 +277,29 @@ class AddBillViewController: UIViewController,
             return
         }
         
-        let imagePicker = UIImagePickerController()
-        imagePicker.delegate = self
-        imagePicker.sourceType = .camera
-        imagePicker.allowsEditing = true
-        present(imagePicker, animated: true)
+        // Check camera authorization status
+        let cameraAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
+        switch cameraAuthorizationStatus {
+        case .notDetermined:
+            // Request permission
+            AVCaptureDevice.requestAccess(for: .video) { granted in
+                DispatchQueue.main.async {
+                    if granted {
+                        self.showImagePicker(sourceType: .camera)
+                    } else {
+                        self.showPermissionDeniedAlert(for: String(localized: "camera"))
+                    }
+                }
+            }
+        case .authorized:
+            // Permission granted
+            showImagePicker(sourceType: .camera)
+        case .denied, .restricted:
+            // Permission denied
+            showPermissionDeniedAlert(for: String(localized: "camera"))
+        @unknown default:
+            break
+        }
     }
     
     func presentPhotoPicker() {
@@ -254,21 +312,45 @@ class AddBillViewController: UIViewController,
         present(picker, animated: true)
     }
     
+    // Show Image Picker Helper Method
+    private func showImagePicker(sourceType: UIImagePickerController.SourceType) {
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        imagePicker.sourceType = sourceType
+        imagePicker.allowsEditing = true
+        present(imagePicker, animated: true)
+    }
+    
+    // Show Permission Denied Alert
+    private func showPermissionDeniedAlert(for resource: String) {
+        let alert = UIAlertController(title: String(localized: "access_denied_title"),
+                                      message: String(format: String(localized: "access_denied_message"), resource.lowercased()),
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: String(localized: "open_settings"), style: .default) { _ in
+            guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else { return }
+            if UIApplication.shared.canOpenURL(settingsURL) {
+                UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
+            }
+        })
+        alert.addAction(UIAlertAction(title: String(localized: "cancel"), style: .cancel, handler: nil))
+        present(alert, animated: true)
+    }
+    
     // Handle UIImagePickerController image selection
     func imagePickerController(_ picker: UIImagePickerController,
                                didFinishPickingMediaWithInfo info:
                                [UIImagePickerController.InfoKey: Any]) {
-        var selectedImage: UIImage?
+        var selectedImageLocal: UIImage?
         
         // Use the edited image if available, otherwise the original image
         if let editedImage = info[.editedImage] as? UIImage {
-            selectedImage = editedImage
+            selectedImageLocal = editedImage
         } else if let originalImage = info[.originalImage] as? UIImage {
-            selectedImage = originalImage
+            selectedImageLocal = originalImage
         }
         
         // Convert the selected image to sRGB color space
-        if let imageToConvert = selectedImage,
+        if let imageToConvert = selectedImageLocal,
            let sRGBImage = convertToSRGB(imageToConvert) {
             self.selectedImage = sRGBImage
             // Update the cameraButton image
@@ -312,8 +394,8 @@ class AddBillViewController: UIViewController,
     func convertToSRGB(_ image: UIImage) -> UIImage? {
         guard let cgImage = image.cgImage else { return nil }
         
-        let colorSpace = CGColorSpace(name: CGColorSpace.sRGB)!
-        let context = CGContext(
+        guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB) else { return nil }
+        guard let context = CGContext(
             data: nil,
             width: cgImage.width,
             height: cgImage.height,
@@ -321,11 +403,11 @@ class AddBillViewController: UIViewController,
             bytesPerRow: 0,
             space: colorSpace,
             bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
-        )
+        ) else { return nil }
         
-        context?.draw(cgImage,
-                      in: CGRect(x: 0, y: 0, width: cgImage.width, height: cgImage.height))
-        if let convertedCGImage = context?.makeImage() {
+        context.draw(cgImage,
+                    in: CGRect(x: 0, y: 0, width: cgImage.width, height: cgImage.height))
+        if let convertedCGImage = context.makeImage() {
             return UIImage(cgImage: convertedCGImage)
         }
         return nil
@@ -358,7 +440,7 @@ extension AddBillViewController: PeopleSliderViewDelegate {
 
     func didSelectPerson(_ personId: UUID?, for tripId: UUID?, context: SliderContext) {
         guard let personId = personId else {
-            // print("Person ID is nil, no action taken.")
+            // No action taken if personId is nil
             return
         }
 

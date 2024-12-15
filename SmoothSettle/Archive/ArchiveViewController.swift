@@ -17,6 +17,7 @@ class ArchiveViewController: UIViewController {
         self.view = archiveView
     }
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         if let navigationController = navigationController {
@@ -101,6 +102,8 @@ class ArchiveViewController: UIViewController {
         
         // Push onto the navigation stack
         navigationController?.pushViewController(archiveTripController, animated: true)
+
+        
     }
     
     private func handleCardLongPress(for trip: Trip) {
@@ -136,16 +139,19 @@ class ArchiveViewController: UIViewController {
         // Call the repository method to unarchive the trip
         viewModel.tripRepository.unarchiveTrip(by: trip.id)
         // Optionally, provide user feedback
-        let alert = UIAlertController(title: "Trip Moved", message: "\(trip.title ?? "Trip") has been moved to current trips.", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        let alert = UIAlertController(title: String(localized: "trip_moved"), message: "\(trip.title ?? String(localized: "trip")) \(String(localized: "has_been_moved_to_current_trips"))", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: String(localized: "OK"), style: .default))
         present(alert, animated: true)
     }
     
     private func deleteTrip(_ trip: Trip) {
         // Confirm deletion
-        let confirmAlert = UIAlertController(title: "Delete Trip", message: "Are you sure you want to delete \(trip.title ?? "this trip")?", preferredStyle: .alert)
-        confirmAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        confirmAlert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
+        let message = String(localized: "delete_trip_message")
+        let confirmAlert = UIAlertController(title: String(localized: "delete_trip"),
+                                             message: "\(message) \"\(trip.title ?? "this trip")\"?",
+                                             preferredStyle: .alert)
+        confirmAlert.addAction(UIAlertAction(title: String(localized: "close_button"), style: .cancel))
+        confirmAlert.addAction(UIAlertAction(title: String(localized: "delete"), style: .destructive) { [weak self] _ in
             self?.viewModel.tripRepository.deleteTrip(by: trip.id)
             // Optionally, provide user feedback
             let deletedAlert = UIAlertController(title: "Trip Deleted", message: "\(trip.title ?? "Trip") has been deleted.", preferredStyle: .alert)

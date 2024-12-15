@@ -100,7 +100,7 @@ class ArchiveView: UIView {
         
         NSLayoutConstraint.activate([
             // Title Label Constraints
-            titleLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 8),
+            titleLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 16),
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             
             // Scroll View Constraints

@@ -62,7 +62,10 @@ struct OwesChartView: View {
             if data.isEmpty {
                 let noExpensesLocalized = String(localized: "no_expenses")
                 Text(noExpensesLocalized)
-                    .foregroundColor(Color(.darkGray))
+                    .foregroundColor(Color(UIColor.systemGray))
+                    .fontWeight(.medium)
+                //set size to 24
+                    .font(.title3)
                     .padding()
             } else {
                 GeometryReader { geometry in
@@ -95,34 +98,37 @@ struct OwesChartView: View {
                         
                         VStack {
                             LegendView(data: data, colorPalette: colorPalette)
-
+                                .frame(width: geometry.size.width / 3 )
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(Color(Colors.background1))
+    //                                    .shadow(radius: 1, x: 0, y: 2)
+                                )
+                            
                             Spacer()
-                            // total amount label
-                            VStack(spacing: 8) {
-                                
-                                Text(String(localized: "Total"))
-                                    .font(.footnote)
-                                    .foregroundColor(.primary)
-                                    .padding(.top, 16)
-                                    
-                               // Text(String(format: "$%.2f", data.reduce(0) { $0 + $1.owes }))
-                                Text(totalAmount)
-                                    .font(.body)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(Color(Colors.accentOrange))
-                                    .padding(.bottom, 16)
-                            }
-                            .frame(width: geometry.size.width / 3 )
-                            .background(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color(Colors.background1))
-//                                    .shadow(radius: 1, x: 0, y: 2)
-                            )
-
-                        
+//                            // total amount label
+//                            VStack(spacing: 8) {
+//                                
+//                                Text(String(localized: "Total"))
+//                                    .font(.footnote)
+//                                    .foregroundColor(.primary)
+//                                    .padding(.top, 16)
+//                                    
+//                               // Text(String(format: "$%.2f", data.reduce(0) { $0 + $1.owes }))
+//                                Text(totalAmount)
+//                                    .font(.body)
+//                                    .fontWeight(.bold)
+//                                    .foregroundColor(Color(Colors.accentOrange))
+//                                    .padding(.bottom, 16)
+//                            }
+//                            .frame(width: geometry.size.width / 3 )
+//                            .background(
+//                                RoundedRectangle(cornerRadius: 12)
+//                                    .fill(Color(Colors.background1))
+////                                    .shadow(radius: 1, x: 0, y: 2)
+//                            )
                         }
                         .frame(width: geometry.size.width / 3 )
-
                     }
                 }
             }

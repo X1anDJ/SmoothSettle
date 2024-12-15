@@ -661,13 +661,20 @@ extension TripRepository {
 extension TripRepository {
     // Method to create mock data for testing with more country leaders, trips, and entertaining bills
     func createMockData() {
-        CoreDataManager.shared.resetPersistentStore()
 
-        // First, check if mock data already exists to avoid duplicate entries
-        if !fetchAllTrips().isEmpty {
-            // print("Mock data already exists.")
+//        CoreDataManager.shared.resetPersistentStore()
+        let userDefaults = UserDefaults.standard
+        let mockDataKey = "hasCreatedMockData"
+//        userDefaults.set(false, forKey: mockDataKey)
+
+
+        // Check if mock data has already been created
+        if userDefaults.bool(forKey: mockDataKey) {
+            print("Userdefaults has created, mock data already exists.")
             return
         }
+        
+        let context = CoreDataManager.shared.persistentContainer.viewContext
         
         // Create People (Country Leaders)
         let person1 = Person(context: context)
@@ -737,24 +744,38 @@ extension TripRepository {
         
 
         // Mock trip #1: Archived Trip (Hawaii Surfing Retreat)
-        let trip1 = createTrip(title: "Midnight in Paris", people: [person1, person2, person3, person5, person9, person10, person12], date: Date().addingTimeInterval(-86400 * 2)) // 10 days ago
-        addBill(to: trip1.id, title: "Hotel Le Meurice", amount: 1250.00, date: Date().addingTimeInterval(-86400 * 9), payerId: person9.id, involversIds: [person5.id, person9.id, person10.id, person12.id], image: nil)
-        addBill(to: trip1.id, title: "Le Pre Catlan", amount: 2200.00, date: Date().addingTimeInterval(-86400 * 8), payerId: person2.id, involversIds: [person1.id, person2.id, person3.id, person10.id], image: nil)
-        addBill(to: trip1.id, title: "LECLAIREUR", amount: 4000.00, date: Date().addingTimeInterval(-86400 * 7), payerId: person1.id, involversIds: [person1.id, person3.id, person5.id, person9.id, person10.id, person12.id], image: nil)
-        addBill(to: trip1.id, title: "Cafe Du Monde", amount: 1800.00, date: Date().addingTimeInterval(-86400 * 6), payerId: person3.id, involversIds: [person1.id, person2.id, person3.id, person12.id], image: nil)
-
+        let trip1 = createTrip(title: "Midnight in Paris (sample)", people: [person1, person2, person3, person4, person5, person6, person7], date: Date().addingTimeInterval(-86400 * 2)) // 10 days ago
+        addBill(to: trip1.id, title: "Hotel Le Meurice", amount: 3250.00, date: Date().addingTimeInterval(-86400 * 9), payerId: person1.id, involversIds: [person2.id, person4.id, person5.id, person7.id], image: nil)
+        addBill(to: trip1.id, title: "Le Pre Catlan", amount: 2200.00, date: Date().addingTimeInterval(-86400 * 8), payerId: person3.id, involversIds: [person1.id, person3.id, person6.id, person7.id], image: nil)
+        addBill(to: trip1.id, title: "LECLAIREUR", amount: 4000.00, date: Date().addingTimeInterval(-86400 * 7), payerId: person6.id, involversIds: [person2.id, person3.id, person4.id, person5.id, person6.id, person7.id], image: nil)
+        addBill(to: trip1.id, title: "Hotel Le Bristol", amount: 7140.00, date: Date().addingTimeInterval(-86400 * 6), payerId: person2.id, involversIds: [person1.id, person2.id, person3.id, person4.id, person5.id, person6.id, person7.id], image: nil)
+        addBill(to: trip1.id, title: "MUSÉE DE L'ORANGERIE", amount: 1370.00, date: Date().addingTimeInterval(-86400 * 5), payerId: person4.id, involversIds: [person3.id, person4.id, person5.id, person6.id], image: nil)
+        addBill(to: trip1.id, title: "Faubourg St Honoré", amount: 3200.00, date: Date().addingTimeInterval(-86400 * 1), payerId: person5.id, involversIds: [person1.id, person2.id], image: nil)
+        addBill(to: trip1.id, title: "Maxim’s", amount: 4800.00, date: Date().addingTimeInterval(-86400 * 2), payerId: person5.id, involversIds: [person1.id, person2.id, person3.id, person5.id], image: nil)
 
         // Mock trip #6: Archived Trip (Russia Winter Festival)
-        let trip6 = createTrip(title: "Russia Winter Festival", people: [person3, person10, person6, person4], date: Date().addingTimeInterval(-86400 * 90)) // 90 days ago
-        addBill(to: trip6.id, title: "Vodka and Vodka", amount: 200.00, date: Date().addingTimeInterval(-86400 * 89), payerId: person3.id, involversIds: [person3.id, person10.id], image: nil)
-        addBill(to: trip6.id, title: "Ice Sculpting", amount: 150.00, date: Date().addingTimeInterval(-86400 * 88), payerId: person10.id, involversIds: [person3.id, person10.id], image: nil)
-        addBill(to: trip6.id, title: "DJI Drone", amount: 300, date: Date().addingTimeInterval(-86400 * 85), payerId: person6.id, involversIds: [person4.id, person6.id, person10.id] , image: nil)
-        
+        let trip6 = createTrip(title: "Stranger in Moscow (sample)", people: [person8, person9, person10, person11, person12, person13], date: Date().addingTimeInterval(-86400 * 90)); // 90 days ago
+        addBill(to: trip6.id, title: "Vodka Bath", amount: 200.00, date: Date().addingTimeInterval(-86400 * 89), payerId: person12.id, involversIds: [person8.id, person10.id], image: nil);
+        addBill(to: trip6.id, title: "Bear Petting", amount: 150.00, date: Date().addingTimeInterval(-86400 * 88), payerId: person13.id, involversIds: [person8.id, person10.id], image: nil);
+        addBill(to: trip6.id, title: "Another Vodka Bath", amount: 300, date: Date().addingTimeInterval(-86400 * 85), payerId: person9.id, involversIds: [person9.id, person11.id, person10.id] , image: nil);
+        addBill(to: trip6.id, title: "Corn Feast", amount: 420, date: Date().addingTimeInterval(-86400 * 65), payerId: person10.id, involversIds: [person8.id, person9.id, person11.id, person10.id] , image: nil);
+        addBill(to: trip6.id, title: "Ice Skating", amount: 250.00, date: Date().addingTimeInterval(-86400 * 64), payerId: person12.id, involversIds: [person8.id, person9.id, person11.id, person12.id, person10.id], image: nil);
+        addBill(to: trip6.id, title: "Adult Doll Workshop", amount: 100.00, date: Date().addingTimeInterval(-86400 * 63), payerId: person11.id, involversIds: [person11.id, person9.id], image: nil);
+        addBill(to: trip6.id, title: "Borscht Tasting", amount: 80.00, date: Date().addingTimeInterval(-86400 * 62), payerId: person10.id, involversIds: [person8.id, person10.id], image: nil);
+        addBill(to: trip6.id, title: "Ballet Class", amount: 500.00, date: Date().addingTimeInterval(-86400 * 60), payerId: person8.id, involversIds: [person11.id, person12.id, person13.id, person10.id], image: nil);
+        addBill(to: trip6.id, title: "Vodka Shower", amount: 450.00, date: Date().addingTimeInterval(-86400 * 59), payerId: person11.id, involversIds: [person8.id, person9.id, person11.id, person12.id], image: nil);
+        addBill(to: trip6.id, title: "Caviar Sampling", amount: 300.00, date: Date().addingTimeInterval(-86400 * 58), payerId: person11.id, involversIds: [person8.id, person9.id, person10.id], image: nil);
+
+        addBill(to: trip6.id, title: "Stolen", amount: 40.00, date: Date().addingTimeInterval(-86400 * 56), payerId: person11.id, involversIds: [person13.id, person12.id, person11.id], image: nil);
+
+
+
         archiveTrip(by: trip6.id)
 
         // Save the context to store the mock data
         saveContext()
         
+        userDefaults.set(true, forKey: mockDataKey)
         // print("Mock data created with \(fetchAllTrips().count) trips.")
     }
 

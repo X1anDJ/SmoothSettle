@@ -1,28 +1,53 @@
+//
 //  ArchiveTripController.swift
 //  SmoothSettle
 //
 //  Created by Dajun Xian on 2024/10/18.
 //
+
 import UIKit
 import SwiftUI
-
 
 class ArchiveTripController: UIViewController {
     
     // MARK: - UI Elements
-    private let scrollView = UIScrollView()
-    private let contentView = UIView()
-    private let transactionTableTitleLabel = UILabel()
+    // Removed scrollView and contentView
+    
+    // Segmented Control
+    private let segmentedControl: UISegmentedControl = {
+        let sc = UISegmentedControl(items: [String(localized: "checklist"), String(localized: "chart")])
+        sc.selectedSegmentIndex = 0 // Default selection
+        sc.translatesAutoresizingMaskIntoConstraints = false
+        sc.backgroundColor = Colors.background1
+        sc.selectedSegmentTintColor = Colors.primaryDark
+        sc.setTitleTextAttributes([.foregroundColor: UIColor.white], for: .selected)
+        sc.setTitleTextAttributes([.foregroundColor: UIColor.gray], for: .normal)
+        return sc
+    }()
+    
+    // Transactions Section
     private let transactionsTableView = TransactionsTableView()
     private let noTransactionsLabel = UILabel() // Placeholder label
+    
+    // Chart Section
     private let chartHostingController = UIHostingController(rootView: OwesChartView(data: [], timePeriod: "", totalAmount: "")) // Initial empty chart
     
-    // New Settle Button
+    // Bills Card View
+    private let billsCardView = BillsCardView()
+    
+    // Settle Button
     private let settleButton = UIButton(type: .system)
+    
+    // Container views for segmentation
+    private let chartContainerView = UIView()
+    private let checklistContainerView = UIView()
     
     // MARK: - Data
     var trip: Trip? // The trip to display
     var tripRepository: TripRepository? // Reference to the repository
+    
+    // Bills Data
+    private var bills: [Bill] = []
     
     // MARK: - Lifecycle Methods
     override func viewDidLoad() {
@@ -32,51 +57,41 @@ class ArchiveTripController: UIViewController {
         setupViews()
         setupConstraints()
         configureView()
+        setupSegmentedControl()
+        
+        // Add the action for the billsCardView arrow button
+        billsCardView.onRightArrowTapped = { [weak self] in
+            guard let self = self, let trip = self.trip, let tripRepository = self.tripRepository else { return }
+            let archivedBillsVC = ArchivedBillsViewController(tripRepository: tripRepository, trip: trip)
+            self.navigationController?.pushViewController(archivedBillsVC, animated: true)
+        }
+        
+        print("Settle Button Enabled: 73 \(settleButton.isEnabled)")
     }
     
     // MARK: - Setup Methods
     private func setupViews() {
-        // Scroll View
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(scrollView)
+        // Add Segmented Control at the top
+        view.addSubview(segmentedControl)
         
-        // Content View
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.addSubview(contentView)
-        
-        // Transactions Table Title Label
-        transactionTableTitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        let transactionsLocalized = String(localized: "transactions")
-        transactionTableTitleLabel.text = transactionsLocalized
-        //set font as .title2 and semibold
-        transactionTableTitleLabel.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
-        //set color as primaryDark
-        transactionTableTitleLabel.textColor = Colors.primaryDark
-        contentView.addSubview(transactionTableTitleLabel)
-        
-        // Transactions Table View
+        // Configure TransactionsTableView
         transactionsTableView.translatesAutoresizingMaskIntoConstraints = false
-        transactionsTableView.isScrollEnabled = false // Disable internal scrolling
+        transactionsTableView.isScrollEnabled = true // Enable scrolling in the table
         transactionsTableView.isSelectable = true
         transactionsTableView.transactionsDelegate = self
         
-        contentView.addSubview(transactionsTableView)
-        
-        // No Transactions Label
         noTransactionsLabel.translatesAutoresizingMaskIntoConstraints = false
         let noTransaction = String(localized: "no_transactions")
         noTransactionsLabel.text = noTransaction
         noTransactionsLabel.textColor = .systemGray
-        noTransactionsLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        noTransactionsLabel.font = UIFont.systemFont(ofSize: 24, weight: .medium)
         noTransactionsLabel.textAlignment = .center
-        noTransactionsLabel.isHidden = true // Initially hidden
-        contentView.addSubview(noTransactionsLabel)
+        noTransactionsLabel.isHidden = true
         
-        // Add the chart's hosting controller as a child view controller
-        addChild(chartHostingController)
-        chartHostingController.view.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(chartHostingController.view)
-        chartHostingController.didMove(toParent: self)
+        // CheckList Container (for "CheckList" segment)
+        checklistContainerView.translatesAutoresizingMaskIntoConstraints = false
+        checklistContainerView.addSubview(transactionsTableView)
+        checklistContainerView.addSubview(noTransactionsLabel)
         
         // Settle Button
         settleButton.translatesAutoresizingMaskIntoConstraints = false
@@ -86,69 +101,113 @@ class ArchiveTripController: UIViewController {
         settleButton.setImage(UIImage(systemName: "checkmark.circle"), for: .normal)
         settleButton.layer.cornerRadius = 15
         settleButton.tintColor = Colors.background1
-        settleButton.titleLabel?.tintColor = Colors.background1
         settleButton.backgroundColor = Colors.primaryDark
-        settleButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         settleButton.imageView?.contentMode = .scaleAspectFit
-        settleButton.heightAnchor.constraint(equalToConstant: 50).isActive = true // Adjust height as needed
-        
-        // Adjust image and title position
+        settleButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
         settleButton.semanticContentAttribute = .forceLeftToRight
         settleButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: -8, bottom: 0, right: 0)
-        
-        // Add action for the button
         settleButton.addTarget(self, action: #selector(settleButtonTapped), for: .touchUpInside)
         
-        contentView.addSubview(settleButton)
+        view.addSubview(settleButton)
+        
+        // Checklist Container Constraints
+        // We will set constraints for transactionsTableView and noTransactionsLabel later
+        
+        // Chart Container (for "Chart" segment)
+        chartContainerView.translatesAutoresizingMaskIntoConstraints = false
+        addChild(chartHostingController)
+        chartHostingController.view.translatesAutoresizingMaskIntoConstraints = false
+        chartContainerView.addSubview(chartHostingController.view)
+        chartHostingController.didMove(toParent: self)
+        
+        // Bills Card View
+        billsCardView.translatesAutoresizingMaskIntoConstraints = false
+        billsCardView.configure(
+            title: String(localized: "Bills"),
+            total: "$0.00",
+            tableViewDelegate: self,
+            tableViewDataSource: self
+        )
+        chartContainerView.addSubview(billsCardView)
+        
+        // Add container views to main view
+        view.addSubview(chartContainerView)
+        view.addSubview(checklistContainerView)
+        
+        // Initially show checklist view, hide chart view
+        chartContainerView.isHidden = true
+        checklistContainerView.isHidden = false
     }
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            // Scroll View Constraints
-            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            
-            // Content View Constraints
-            contentView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
-            contentView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
-            
-            // Content View Width Constraint
-            contentView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
-            
-            // Chart Hosting Controller Constraints
-            chartHostingController.view.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
-            chartHostingController.view.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            chartHostingController.view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            chartHostingController.view.heightAnchor.constraint(equalToConstant: 300), // Adjust height as needed
-            
-            // Transactions Table Title Label Constraints
-            transactionTableTitleLabel.topAnchor.constraint(equalTo: chartHostingController.view.bottomAnchor, constant: 16),
-            transactionTableTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            transactionTableTitleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            
-            
-            // Transactions Table View Constraints
-            transactionsTableView.topAnchor.constraint(equalTo: transactionTableTitleLabel.bottomAnchor),
-            transactionsTableView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            transactionsTableView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            // Remove the bottom constraint to contentView
-            // transactionsTableView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -24),
+            // Segmented Control Constraints
+            segmentedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
+            segmentedControl.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            segmentedControl.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            segmentedControl.heightAnchor.constraint(equalToConstant: 32),
             
             // Settle Button Constraints
-            settleButton.topAnchor.constraint(equalTo: transactionsTableView.bottomAnchor, constant: 24),
-            settleButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            settleButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            settleButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -24),
+            settleButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            settleButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            settleButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            settleButton.heightAnchor.constraint(equalToConstant: 50),
         ])
+        
+        // Checklist Container Constraints
+        NSLayoutConstraint.activate([
+            checklistContainerView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 16),
+            checklistContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            checklistContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            checklistContainerView.bottomAnchor.constraint(equalTo: settleButton.topAnchor, constant: -16),
+        ])
+        
+        // Transactions Table View Constraints
+        NSLayoutConstraint.activate([
+            transactionsTableView.topAnchor.constraint(equalTo: checklistContainerView.topAnchor),
+            transactionsTableView.leadingAnchor.constraint(equalTo: checklistContainerView.leadingAnchor),
+            transactionsTableView.trailingAnchor.constraint(equalTo: checklistContainerView.trailingAnchor),
+            transactionsTableView.bottomAnchor.constraint(equalTo: settleButton.topAnchor, constant: -16),
+        ])
+        
+        // No Transactions Label Constraints
+        NSLayoutConstraint.activate([
+            noTransactionsLabel.centerXAnchor.constraint(equalTo: checklistContainerView.centerXAnchor),
+            noTransactionsLabel.centerYAnchor.constraint(equalTo: checklistContainerView.centerYAnchor),
+            noTransactionsLabel.leadingAnchor.constraint(equalTo: checklistContainerView.leadingAnchor),
+            noTransactionsLabel.trailingAnchor.constraint(equalTo: checklistContainerView.trailingAnchor),
+        ])
+        
+        // Chart Container Constraints
+        NSLayoutConstraint.activate([
+            chartContainerView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 16),
+            chartContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            chartContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            chartContainerView.bottomAnchor.constraint(equalTo: settleButton.topAnchor, constant: -16),
+        ])
+        
+        // Chart Hosting Controller Constraints
+        NSLayoutConstraint.activate([
+            chartHostingController.view.topAnchor.constraint(equalTo: chartContainerView.topAnchor),
+            chartHostingController.view.leadingAnchor.constraint(equalTo: chartContainerView.leadingAnchor),
+            chartHostingController.view.trailingAnchor.constraint(equalTo: chartContainerView.trailingAnchor),
+            chartHostingController.view.heightAnchor.constraint(equalToConstant: 300),
+            
+            billsCardView.topAnchor.constraint(equalTo: chartHostingController.view.bottomAnchor, constant: 16),
+            billsCardView.leadingAnchor.constraint(equalTo: chartContainerView.leadingAnchor),
+            billsCardView.trailingAnchor.constraint(equalTo: chartContainerView.trailingAnchor),
+         //   billsCardView.bottomAnchor.constraint(equalTo: chartContainerView.bottomAnchor),
+            billsCardView.heightAnchor.constraint(equalToConstant: 260),
+        ])
+    }
+    
+    private func setupSegmentedControl() {
+        segmentedControl.addTarget(self, action: #selector(segmentChanged(_:)), for: .valueChanged)
+        updateViewForSelectedSegment()
     }
     
     private func configureView() {
         guard let trip = trip else {
-            // Optionally, handle the case where trip is nil
             transactionsTableView.tripRepository = nil
             transactionsTableView.currentTrip = nil
             transactionsTableView.sections = []
@@ -156,18 +215,44 @@ class ArchiveTripController: UIViewController {
             return
         }
         
-        // Set the navigation bar title to the trip's title
         self.title = trip.title ?? "Trip Details"
         
         // Configure TransactionsTableView
         transactionsTableView.tripRepository = tripRepository
         transactionsTableView.currentTrip = trip.id
         transactionsTableView.loadTransactions()
+        settleButton.isEnabled = transactionsTableView.hasUnsettled
+        print("transactionTableView.section.transactions: \(transactionsTableView.sections.count)")
+        print("transactionsTableView.hasUnsettled: \(transactionsTableView.hasUnsettled)")
+        print("line 240 Settle Button Enabled: \(settleButton.isEnabled)")
         
-        // Get the time period
+        // Load Bills
+        loadBills()
+        
         let timePeriod = tripRepository?.getTimePeriod(for: trip) ?? ""
         
         updateChartData(timePeriod: timePeriod)
+    }
+    
+    // MARK: - Load Bills Data
+    private func loadBills() {
+        guard let trip = trip, let tripRepository = tripRepository else { return }
+        bills = tripRepository.fetchBills(for: trip.id)
+        billsCardView.totalAmountLabel.text = getTotalAmount()
+        billsCardView.customTableView.reloadData()
+        
+    }
+    
+    private func getTotalAmount() -> String {
+        let total = bills.reduce(0) { $0 + $1.amount }
+        return viewModelGetAmount(for: total)
+    }
+    
+    // Helper function to format amount
+    private func viewModelGetAmount(for amount: Double) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        return formatter.string(from: NSNumber(value: amount)) ?? "$0.00"
     }
     
     // MARK: - Chart Data Update
@@ -175,63 +260,70 @@ class ArchiveTripController: UIViewController {
         guard let trip = trip,
               let tripRepository = tripRepository else {
             chartHostingController.rootView = OwesChartView(data: [], timePeriod: "", totalAmount: "")
+            billsCardView.configure(title: String(localized: "Bills"), total: "$0.00", tableViewDelegate: self, tableViewDataSource: self)
             return
         }
         
-        // Fetch the total amounts per person
         let chartData = transactionsTableView.calculateTotalAmountsPerPerson()
-      //  let tripTotalAmount = chartData.
         let totalFormattedAmount = tripRepository.fetchAmount(chartData.reduce(0) { $0 + $1.owes }, by: trip.id)
-        // Update the chart's data on the main thread
+        
         DispatchQueue.main.async {
             self.chartHostingController.rootView = OwesChartView(data: chartData, timePeriod: timePeriod, totalAmount: totalFormattedAmount)
         }
         
-        // Handle visibility of transactions table and no transactions label
+        loadBills()
+        
         if chartData.isEmpty {
             transactionsTableView.isHidden = true
             noTransactionsLabel.isHidden = false
-            settleButton.isHidden = true // Hide the settle button if there are no transactions
+            settleButton.isHidden = true
         } else {
             transactionsTableView.isHidden = false
             noTransactionsLabel.isHidden = true
-            settleButton.isHidden = false // Show the settle button
+            settleButton.isHidden = false
+            settleButton.isEnabled = transactionsTableView.hasUnsettled
         }
+    }
+    
+    // MARK: - Segmented Control Action
+    @objc private func segmentChanged(_ sender: UISegmentedControl) {
+        updateViewForSelectedSegment()
+    }
+    
+    private func updateViewForSelectedSegment() {
+        let isChecklistSelected = segmentedControl.selectedSegmentIndex == 0
+        chartContainerView.isHidden = isChecklistSelected
+        checklistContainerView.isHidden = !isChecklistSelected
+        
+        // Adjust visibility of settleButton based on segment
+        settleButton.isHidden = !isChecklistSelected
     }
     
     // MARK: - Actions
     @objc private func settleButtonTapped() {
-        // Create the alert controller
         let alert = UIAlertController(
             title: String(localized: "Confirm Settlement"),
             message: String(localized: "Are you sure you want to settle all transactions?"),
             preferredStyle: .alert
         )
         
-        // "Yes" action
         let yesAction = UIAlertAction(title: String(localized: "Yes"), style: .default) { [weak self] _ in
             self?.performSettlement()
         }
         
-        // "Cancel" action
         let cancelAction = UIAlertAction(title: String(localized: "Cancel"), style: .cancel, handler: nil)
         
-        // Add actions to the alert
         alert.addAction(yesAction)
         alert.addAction(cancelAction)
         
-        // Present the alert
         present(alert, animated: true, completion: nil)
     }
 
-    // MARK: - Settlement Logic
     private func performSettlement() {
         guard let tripId = trip?.id, let repository = tripRepository else { return }
         
-        // Fetch all unsettled transactions for the trip
         let transactions = repository.fetchAllTransactions(for: tripId).filter { !$0.settled }
         
-        // Check if there are transactions to settle
         guard !transactions.isEmpty else {
             let noTransactionsAlert = UIAlertController(
                 title: String(localized: "No Transactions"),
@@ -243,24 +335,19 @@ class ArchiveTripController: UIViewController {
             return
         }
         
-        // Mark all transactions as settled
         for transaction in transactions {
             transaction.settled = true
         }
         
-        // Save changes to the repository
         repository.saveContext()
         
-        // Reload the transactions table view
         transactionsTableView.loadTransactions()
         
-        // Update the chart data
         if let trip = trip {
             let timePeriod = tripRepository?.getTimePeriod(for: trip) ?? ""
             updateChartData(timePeriod: timePeriod)
         }
         
-        // Show success alert
         let successAlert = UIAlertController(
             title: String(localized: "Success"),
             message: String(localized: "All transactions have been settled."),
@@ -268,21 +355,68 @@ class ArchiveTripController: UIViewController {
         )
         successAlert.addAction(UIAlertAction(title: "OK", style: .default))
         present(successAlert, animated: true)
-        // disable settle button
+        
         settleButton.isEnabled = false
     }
 
 }
 
+// MARK: - TransactionsTableViewDelegate
 extension ArchiveTripController: TransactionsTableViewDelegate {
     func transactionsTableView(_ tableView: TransactionsTableView, didChangeSettlementStatus hasUnsettledTransactions: Bool) {
         DispatchQueue.main.async { [weak self] in
             self?.settleButton.isEnabled = hasUnsettledTransactions
-            print("settlebutton status: \(String(describing: self?.settleButton.isEnabled))")
-//            self?.settleButton.alpha = !hasUnsettledTransactions ? 1.0 : 0.5 // Optional: Visual feedback
         }
     }
+}
+
+// MARK: - UITableViewDelegate and UITableViewDataSource for BillsCardView
+extension ArchiveTripController: UITableViewDelegate, UITableViewDataSource {
     
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        guard tableView == billsCardView.customTableView else { return 0 }
+        return bills.count
+    }
     
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+
+        guard tableView == billsCardView.customTableView else {
+            return UITableViewCell()
+        }
+
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "BillCell", for: indexPath) as? BillTableViewCell else {
+            return UITableViewCell()
+        }
+
+        let bill = bills[indexPath.row]
+        
+        cell.configure(
+            billTitle: bill.title ?? "Untitled Bill",
+            date: formatDate(bill.date),
+            amount: viewModelGetAmount(for: bill.amount),
+            payerName: bill.payer?.name ?? "Unknown",
+            involversCount: bill.involvers?.count ?? 0
+        )
+        return cell
+    }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard tableView == billsCardView.customTableView else { return }
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        let selectedBill = bills[indexPath.row]
+        let billDetailVC = BillDetailViewController()
+        let billDetailViewModel = BillDetailViewModel(tripRepository: tripRepository!, bill: selectedBill)
+        billDetailVC.viewModel = billDetailViewModel
+        navigationController?.pushViewController(billDetailVC, animated: true)
+    }
+    
+    private func formatDate(_ date: Date?) -> String {
+        guard let date = date else { return "Unknown Date" }
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .none
+        return dateFormatter.string(from: date)
+    }
 }

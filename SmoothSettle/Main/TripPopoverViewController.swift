@@ -175,6 +175,7 @@ extension TripPopoverViewController: UITableViewDataSource, UITableViewDelegate 
             alert.addAction(UIAlertAction(title: String(localized: "close_button"), style: .cancel))
             alert.addAction(UIAlertAction(title: String(localized: "delete"), style: .destructive, handler: { [weak self] _ in
                 self?.viewModel.deleteTrip(by: tripToDelete.id)
+              //  tableView.deleteRows(at: [indexPath], with: .automatic)
             }))
             present(alert, animated: true)
         }

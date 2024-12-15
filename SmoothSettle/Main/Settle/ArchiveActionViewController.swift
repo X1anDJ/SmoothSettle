@@ -10,187 +10,281 @@ import Combine
 
 class ArchiveActionViewController: UIViewController {
 
-    // UI Elements
-    let scrollView = UIScrollView()  // Scroll view to hold the content
-    let contentView = UIView()  // Content view inside the scroll view
     let circleLayoutView = CircleLayoutView()  // Custom circle layout view
     let transactionsTableView = TransactionsTableView() // Transactions table view
     let archiveButton = UIButton(type: .system)
     let closeButton = UIButton(type: .system)
     let buttonsView = UIStackView()
+    let lowerBackgroundView = UIView()
     
-    // Reference to the MainViewModel
+    // New Label for No Transactions
+    let noTransactionsLabel = UILabel()
+    
     var viewModel: MainViewModel?
-
-    // Add a PassthroughSubject to notify MainViewController
     var archiveSubject = PassthroughSubject<Void, Never>()
+    
+    // Constraints for initial and final states
+    private var initialCircleCenterYConstraint: NSLayoutConstraint!
+    private var finalCircleTopConstraint: NSLayoutConstraint!
+    
+    private var initialLowerBgCenterYConstraint: NSLayoutConstraint!
+    private var initialLowerBgWidthConstraint: NSLayoutConstraint!
+    private var initialLowerBgHeightConstraint: NSLayoutConstraint!
+    private var finalLowerBgTopConstraint: NSLayoutConstraint!
+    private var finalLowerBgLeadingConstraint: NSLayoutConstraint!
+    private var finalLowerBgTrailingConstraint: NSLayoutConstraint!
+    private var finalLowerBgBottomConstraint: NSLayoutConstraint!
+    
+    // Final Constraints Storage
+    private var finalConstraints: [NSLayoutConstraint] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Set up the view background and style
-        view.backgroundColor = Colors.background0
+        // Set view's background with appearance of thick material
+        let blurEffect = UIBlurEffect(style: .systemUltraThinMaterial)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        
+        blurEffectView.frame = view.bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        view.insertSubview(blurEffectView, at: 0)
 
         setupViews()
-        setupConstraints()
+        setupInitialConstraints()
+        setupFinalConstraints()
 
-        // Fetch the people in the trip and pass their UUIDs to the CircleLayoutView
+        // Only activate initial constraints at start
+        activateInitialConstraints()
+        
+        // Disable archive button initially
+        archiveButton.isEnabled = false
+        
+        // Hide transactions table initially
+        transactionsTableView.alpha = 0.0
+        lowerBackgroundView.alpha = 0.6
+        archiveButton.alpha = 0.3
+        noTransactionsLabel.isHidden = true  // Initially hidden
+        
+        // Fetch data
         if let viewModel = viewModel, let currentTripId = viewModel.currentTripId {
-            // Fetch the current trip from the repository using the currentTripId
             if let currentTrip = viewModel.tripRepository.fetchTrip(by: currentTripId) {
-                let userIds = currentTrip.peopleArray.compactMap { $0.id }  // Get UUIDs of people
-                circleLayoutView.userIds = userIds  // Set the UUIDs to the custom view
+                let userIds = currentTrip.peopleArray.compactMap { $0.id }
+                circleLayoutView.userIds = userIds
 
-                // Pass the repository and current trip to the TransactionsTableView
                 transactionsTableView.tripRepository = viewModel.tripRepository
                 transactionsTableView.currentTrip = currentTripId
                 transactionsTableView.isSelectable = false
-                // Load transactions and pass them to CircleLayoutView via the completion handler
-//                transactionsTableView.loadTransactions { [weak self] sections in
-//                    self?.circleLayoutView.transactions = sections
-//                }
                 transactionsTableView.loadTransactions()
                 self.circleLayoutView.transactions = transactionsTableView.sections
             }
         }
+        
+        // Layout with initial state applied
+        view.layoutIfNeeded()
     }
 
-    // Function to check if scrolling is needed
-    func scrollingIsNeeded() -> Bool {
-        return scrollView.contentSize.height > scrollView.bounds.height
-    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
 
-    // Setup UI elements
+        // After 1.8 seconds, animate to final layout
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {
+            self.animateToFinalState()
+        }
+    }
+    
     func setupViews() {
-        // Scroll View
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(scrollView)
-
-        // Content View
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.addSubview(contentView)
-
-        // Circle Layout View
         circleLayoutView.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(circleLayoutView)
-
-        // Transactions Table View
         transactionsTableView.translatesAutoresizingMaskIntoConstraints = false
-        transactionsTableView.isScrollEnabled = false  // Disable scrolling within the table to avoid conflicts
-        contentView.addSubview(transactionsTableView)
+        transactionsTableView.isScrollEnabled = true
+        
+        lowerBackgroundView.translatesAutoresizingMaskIntoConstraints = false
+        lowerBackgroundView.backgroundColor = Colors.background0
+        lowerBackgroundView.layer.cornerRadius = 8
+        lowerBackgroundView.clipsToBounds = true
 
-        // Settle Button
+        // Archive Button
         archiveButton.translatesAutoresizingMaskIntoConstraints = false
         let archiveButtonLocalized = String(localized: "archive_button")
         archiveButton.setTitle(archiveButtonLocalized, for: .normal)
+        archiveButton.tintColor = .white
         archiveButton.setTitleColor(.white, for: .normal)
         archiveButton.backgroundColor = Colors.primaryDark
-        archiveButton.layer.cornerRadius = 22
+        archiveButton.layer.cornerRadius = 15
         archiveButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         archiveButton.addTarget(self, action: #selector(didTapArchiveTrip), for: .touchUpInside)
 
         // Close Button
-        closeButton.translatesAutoresizingMaskIntoConstraints = false
         let closeButtonLocalized = String(localized: "close_button")
+        closeButton.translatesAutoresizingMaskIntoConstraints = false
         closeButton.setTitle(closeButtonLocalized, for: .normal)
         closeButton.setTitleColor(Colors.primaryDark, for: .normal)
         closeButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        closeButton.backgroundColor = .clear
+        closeButton.layer.cornerRadius = 15
         closeButton.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
         
-        // Buttons View
         buttonsView.translatesAutoresizingMaskIntoConstraints = false
         buttonsView.axis = .vertical
         buttonsView.spacing = 8
-        buttonsView.distribution = .fillProportionally  // Or .fill depending on desired behavior
+        buttonsView.distribution = .fillEqually
         buttonsView.addArrangedSubview(archiveButton)
         buttonsView.addArrangedSubview(closeButton)
+        view.addSubview(lowerBackgroundView)
+        lowerBackgroundView.addSubview(transactionsTableView)
+        view.addSubview(circleLayoutView)
+
+        view.addSubview(buttonsView)
         
-        contentView.addSubview(buttonsView)
-    }
-
-    // Setup layout constraints
-    func setupConstraints() {
+        // Setup No Transactions Label
+        noTransactionsLabel.translatesAutoresizingMaskIntoConstraints = false
+        let noTransactionText = String(localized: "no_transactions")
+        noTransactionsLabel.text = noTransactionText
+        noTransactionsLabel.textColor = .systemGray
+        noTransactionsLabel.font = UIFont.systemFont(ofSize: 24, weight: .medium)
+        noTransactionsLabel.textAlignment = .center
+        noTransactionsLabel.isHidden = true  // Initially hidden
+        lowerBackgroundView.addSubview(noTransactionsLabel)
+        
+        // Constraints for No Transactions Label
         NSLayoutConstraint.activate([
-            // Scroll View Constraints
-            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-
-            // Content View Constraints (using contentLayoutGuide)
-            contentView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
-            contentView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
-            
-            // Content View Width Constraint (using frameLayoutGuide)
-            contentView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
-            
-            // **Ensure contentView's height is at least as tall as scrollView's frame**
-            contentView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.frameLayoutGuide.heightAnchor),
-            
-            // Circle Layout View Constraints
-            circleLayoutView.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 24),
-            circleLayoutView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            circleLayoutView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.6),
-            circleLayoutView.heightAnchor.constraint(equalTo: circleLayoutView.widthAnchor),  // Make it a square
-
-            // Transactions Table View Constraints
-            transactionsTableView.topAnchor.constraint(equalTo: circleLayoutView.bottomAnchor, constant: 24),
-            transactionsTableView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            transactionsTableView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-
-            // Buttons View Constraints
-            buttonsView.topAnchor.constraint(equalTo: transactionsTableView.bottomAnchor, constant: 24),
-            buttonsView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            buttonsView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.6),
-
-            // **Remove** the fixed height constraint on buttonsView
-            // buttonsView.heightAnchor.constraint(equalToConstant: 48),
-            
-            // Maintain a bottom constraint to contentView
-            buttonsView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -24),
-
-            // Set buttons' heights
-            archiveButton.heightAnchor.constraint(equalToConstant: 44),
-            closeButton.heightAnchor.constraint(equalToConstant: 44)
+            noTransactionsLabel.centerXAnchor.constraint(equalTo: lowerBackgroundView.centerXAnchor),
+            noTransactionsLabel.centerYAnchor.constraint(equalTo: lowerBackgroundView.centerYAnchor),
+            noTransactionsLabel.leadingAnchor.constraint(greaterThanOrEqualTo: lowerBackgroundView.leadingAnchor, constant: 16),
+            noTransactionsLabel.trailingAnchor.constraint(lessThanOrEqualTo: lowerBackgroundView.trailingAnchor, constant: -16)
         ])
     }
 
-    // Action to archive the trip
+    func setupInitialConstraints() {
+        // Initial: CircleLayoutView in center
+        initialCircleCenterYConstraint = circleLayoutView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        
+        // Initial: LowerBackgroundView behind circle, centered, and sized relative to circle
+        initialLowerBgCenterYConstraint = lowerBackgroundView.centerYAnchor.constraint(equalTo: circleLayoutView.centerYAnchor)
+        initialLowerBgWidthConstraint = lowerBackgroundView.widthAnchor.constraint(equalTo: circleLayoutView.widthAnchor, multiplier: 1.0)
+        initialLowerBgHeightConstraint = lowerBackgroundView.heightAnchor.constraint(equalTo: circleLayoutView.heightAnchor, multiplier: 1.0)
+        
+        NSLayoutConstraint.activate([
+            circleLayoutView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            initialCircleCenterYConstraint,
+            circleLayoutView.heightAnchor.constraint(equalToConstant: 300),
+            circleLayoutView.widthAnchor.constraint(equalToConstant: 300),
+            
+            lowerBackgroundView.centerXAnchor.constraint(equalTo: circleLayoutView.centerXAnchor),
+            initialLowerBgCenterYConstraint,
+            initialLowerBgWidthConstraint,
+            initialLowerBgHeightConstraint,
+            
+            buttonsView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            buttonsView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            buttonsView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            buttonsView.heightAnchor.constraint(equalToConstant: 88 + 8),
+        ])
+        
+        // We'll not add transaction table constraints here, they will be handled in final constraints setup
+        // but we must ensure transactionsTableView is contained in lowerBackgroundView for final state.
+    }
+
+    func setupFinalConstraints() {
+        // Final: Circle on top
+        finalCircleTopConstraint = circleLayoutView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16)
+        
+        // Final: LowerBackgroundView anchors
+        finalLowerBgTopConstraint = lowerBackgroundView.topAnchor.constraint(equalTo: circleLayoutView.bottomAnchor, constant: 24)
+        finalLowerBgLeadingConstraint = lowerBackgroundView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16)
+        finalLowerBgTrailingConstraint = lowerBackgroundView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
+        finalLowerBgBottomConstraint = lowerBackgroundView.bottomAnchor.constraint(equalTo: buttonsView.topAnchor, constant: -16)
+        
+        // Transaction TableView final constraints inside lowerBackgroundView
+        let transactionsConstraints = [
+            transactionsTableView.topAnchor.constraint(equalTo: lowerBackgroundView.topAnchor, constant: 16),
+            transactionsTableView.leadingAnchor.constraint(equalTo: lowerBackgroundView.leadingAnchor, constant: 16),
+            transactionsTableView.trailingAnchor.constraint(equalTo: lowerBackgroundView.trailingAnchor, constant: -16),
+            transactionsTableView.bottomAnchor.constraint(equalTo: lowerBackgroundView.bottomAnchor, constant: -16)
+        ]
+        
+        // We'll activate these final constraints after the animation.
+        // For now, keep them deactivated. We'll store them for later use.
+        NSLayoutConstraint.deactivate([
+            finalCircleTopConstraint,
+            finalLowerBgTopConstraint,
+            finalLowerBgLeadingConstraint,
+            finalLowerBgTrailingConstraint,
+            finalLowerBgBottomConstraint
+        ] + transactionsConstraints)
+        
+        // Store them in a property, or we can just remember them here and activate them later.
+        finalConstraints = [
+            finalCircleTopConstraint,
+            finalLowerBgTopConstraint,
+            finalLowerBgLeadingConstraint,
+            finalLowerBgTrailingConstraint,
+            finalLowerBgBottomConstraint
+        ] + transactionsConstraints
+    }
+
+    private func activateInitialConstraints() {
+        // We already activated initial constraints in setupInitialConstraints.
+        // Just ensure final constraints are off.
+        NSLayoutConstraint.deactivate(finalConstraints)
+    }
+
+    private func animateToFinalState() {
+        // Deactivate initial constraints that conflict with final state
+        NSLayoutConstraint.deactivate([
+            initialCircleCenterYConstraint,
+            initialLowerBgCenterYConstraint,
+            initialLowerBgWidthConstraint,
+            initialLowerBgHeightConstraint
+        ])
+        
+        // Activate final constraints
+        NSLayoutConstraint.activate(finalConstraints)
+
+        // Determine if there are any bills/transactions
+        var hasTransactions = false
+        if let viewModel = viewModel, let currentTripId = viewModel.currentTripId {
+            if let currentTrip = viewModel.tripRepository.fetchTrip(by: currentTripId) {
+                hasTransactions = !currentTrip.billsArray.isEmpty
+            }
+        }
+        
+        UIView.animate(withDuration: 0.5, delay: 0, options: [.curveEaseOut], animations: {
+            // Fade in transaction table or no transactions label
+            self.lowerBackgroundView.alpha = 1.0
+            self.archiveButton.alpha = 1.0
+            self.archiveButton.isEnabled = true
+            
+            if hasTransactions {
+                self.transactionsTableView.alpha = 1.0
+                self.noTransactionsLabel.isHidden = true
+            } else {
+                self.transactionsTableView.alpha = 0.0
+                self.noTransactionsLabel.isHidden = false
+            }
+            
+            // Re-layout the view with the final constraints
+            self.view.layoutIfNeeded()
+        }, completion: nil)
+    }
+
     @objc func didTapArchiveTrip() {
         guard let viewModel = viewModel else { return }
         
-        // archive the current trip
         viewModel.archiveCurrentTrip()
-        
-        // Notify MainViewController about the trip archive
         archiveSubject.send(())
-        
-        // Dismiss this view controller
-        dismiss(animated: true, completion: nil)
-    }
-    
-    // Action to dismiss the view controller
-    @objc func closeButtonTapped() {
-//        // print("Close button tapped")
-        dismiss(animated: true, completion: nil)
-    }
 
-    // Update scrolling status after layout
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        updateScrollingStatus()
+        dismiss(animated: true) {
+            // Get a reference to the AppDelegate
+            DispatchQueue.main.async {
+                if let appDelegate = UIApplication.shared.delegate as? AppDelegate,
+                   let tabBarController = appDelegate.tabBarController {
+                    tabBarController.selectedIndex = 1
+                }
+            }
+        }
     }
     
-    func updateScrollingStatus() {
-        let canScroll = scrollView.contentSize.height > scrollView.bounds.height
-        if canScroll {
-//            // print("Scrolling is possible")
-            // Perform any additional actions, such as showing a scrollbar indicator
-        } else {
-//            // print("Scrolling is not needed")
-            // Hide scrollbar indicators or adjust layout if necessary
-        }
+    @objc func closeButtonTapped() {
+        dismiss(animated: true, completion: nil)
     }
 }
